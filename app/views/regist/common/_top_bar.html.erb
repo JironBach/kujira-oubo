@@ -1,0 +1,165 @@
+<%
+ loginAccountObj = session["loginAccountObj"]
+%>
+
+   <header class="main-header">
+    <a href="#" class="logo">
+     <span class="logo-mini"><img src="/dist/img/logo_s.png" style="width:40px; height:30px;"></span>
+     <span class="logo-lg"><img src="/dist/img/logo.png" style="width:205px; height:auto;"></span>
+    </a>
+    <nav class="navbar navbar-static-top">
+     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+      <span class="sr-only">Toggle navigation</span>
+     </a>
+     <div class="navbar-custom-menu">
+      <ul class="nav navbar-nav">
+       <li class="dropdown messages-menu">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+         <i class="fa fa-envelope-o"></i>
+        </a>
+        <ul class="dropdown-menu">
+         <li class="header text-center">メールボックス</li>
+         <li>
+          <ul class="menu">
+           <li>
+            <a href="/email_inbox?box=INBOX">
+             <div class="pull-left">
+              <span style="color:black; margin-left: 10px; font-size: 20px;" class="fa fa-inbox"></span>
+             </div>
+             <h4>受信メール</h4>
+            </a>
+           </li>
+           <li>
+            <a href="/email_inbox?box=Sent">
+             <div class="pull-left">
+              <span style="color:black; margin-left: 10px; font-size: 20px;" class="fa fa-envelope-o"></span>
+             </div>
+             <h4>送信メール</h4>
+            </a>
+           </li>
+           <li>
+            <a href="/email_inbox?box=Trash">
+             <div class="pull-left">
+              <span style="color:black; margin-left: 10px; font-size: 20px;" class="fa fa-trash-o"></span>
+             </div>
+             <h4>ゴミ箱</h4>
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li class="footer"><a href="/email_inbox?box=INBOX">すべてのメールボックスを表示</a></li>
+        </ul>
+       </li>
+       <li class="dropdown settings-menu">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+         <i class="fa fa-cogs"></i>
+        </a>
+        <ul class="dropdown-menu">
+         <li class="header text-center">設定</li>
+         <li>
+          <ul class="menu">
+           <li>
+            <a href="/setting_store">
+             <div class="pull-left">
+              <span style="color:black; margin-left: 10px; font-size: 20px;" class="fa fa-cog"></span>
+             </div>
+             <h4>店舗設定</h4>
+            </a>
+           </li>
+           <li>
+            <a href="/setting_group">
+             <div class="pull-left">
+              <span style="color:black; margin-left: 10px; font-size: 20px;" class="fa fa-group"></span>
+             </div>
+             <h4>グループ設定</h4>
+            </a>
+           </li>
+           <li>
+            <a href="/setting_applicant_display">
+             <div class="pull-left">
+              <span style="color:black; margin-left: 10px; font-size: 20px;" class="fa fa-file"></span>
+             </div>
+             <h4>応募者表示設定</h4>
+            </a>
+           </li>
+           <li>
+            <a href="/setting_app_status">
+             <div class="pull-left">
+              <span style="color:black; margin-left: 10px; font-size: 20px;" class="fa fa-cloud"></span>
+             </div>
+             <h4>選考ステータス設定</h4>
+            </a>
+           </li>
+           <li>
+            <a href="/setting_notification">
+             <div class="pull-left">
+              <span style="color:black; margin-left: 10px; font-size: 20px;" class="fa fa-bell"></span>
+             </div>
+             <h4>お知らせ設定</h4>
+            </a>
+           </li>
+           <li>
+            <a href="/setting_auto_data_upload">
+             <div class="pull-left">
+              <span style="color:black; margin-left: 10px; font-size: 20px;" class="fa fa-spinner"></span>
+             </div>
+             <h4>自動取込結果</h4>
+            </a>
+           </li>
+           <li>
+            <a href="/setting_site">
+             <div class="pull-left">
+              <span style="color:black; margin-left: 10px; font-size: 20px;" class="fa fa-floppy-o"></span>
+             </div>
+             <h4>求人掲載サイト管理</h4>
+            </a>
+           </li>
+           <li>
+            <a href="/setting_blacklist">
+             <div class="pull-left">
+              <span style="color:black; margin-left: 10px; font-size: 20px;" class="fa fa-tripadvisor"></span>
+             </div>
+             <h4>ブラックリスト設定</h4>
+            </a>
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </li>
+       <li class="dropdown user user-menu">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+         <span class="hidden-xs"><%=loginAccountObj.nil? ? '' : loginAccountObj.getFullname()%> 様</span>
+         <div class="user-image" style="border:2px solid #f29333; background-color: grey; width:30px; height:30px;">
+          <h1 style="color:white; padding-left:4px; margin-top: 3px;px; font-size: 18px;"><b><%=defined?(pict) ? pict : ''%></b></h1>
+         </div>
+        </a>
+        <ul class="dropdown-menu">
+         <li class="user-header">
+          <center>
+           <div class="img-circle" style="border:2px solid #f29333; background-color: grey; width:80px; height:80px;">
+            <h1 style="color:white; padding-left:4px; margin-top: 3px;px; font-size: 58px;"><b><%=defined?(pict) ? pict : ''%></b></h1>
+           </div>
+          </center>
+          <p><%=loginAccountObj.nil? ? '' : loginAccountObj.getFullname()%> 様</p>
+         </li>
+         <li class="user-body">
+          <div class="row">
+           <div class="text-center" style="padding-left:10px; padding-right:10px;">
+            <a href="/setting_account" style="width:100%;" class="btn btn-default btn-rounded">アカウント設定</a>
+           </div>
+          </div>
+         </li>
+         <li class="user-footer">
+          <div class="pull-left">
+           <a href="/apps_settings" class="btn btn-default btn-rounded">アプリの設定</a>
+          </div>
+          <div class="pull-right">
+           <a href="/login" class="btn btn-default btn-rounded">ログアウト</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+      </ul>
+     </div>
+    </nav>
+   </header>

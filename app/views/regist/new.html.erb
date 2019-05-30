@@ -1,43 +1,22 @@
-<!-- Final -->
-
-<%@ page contentType="text/html; charset=utf-8" %>
-<%@ page import="es.hyrax.object.AccountObject" %>
-<%@ page import="es.hyrax.object.NotificationObject" %>
-<%@ page import="es.hyrax.object.ApplicantsInfo" %>
-<%@ page import="es.hyrax.util.Integer107" %>
-<%@ page import="es.hyrax.constant.Constant"%>
-<%
-
-  String  sidebar_collapse  = "nonsidebar-collapse";
-  Cookie[] cookies = request.getCookies();
-  if (cookies != null) {
-     for (Cookie cookie : cookies) {
-              if("sidebar-collapse".equals(cookie.getName())) {
-                          sidebar_collapse = cookie.getValue();
-               }
-     }
- }
- AccountObject loginAccountObj = (AccountObject)session.getAttribute("loginAccountObj");
- NotificationObject[] notificationArray = (NotificationObject[])request.getAttribute("notificationArray"); 
- int nearDeadLineCount = (Integer)request.getAttribute("nearDeadLineCount");
- int outOfDeadLineCount = (Integer)request.getAttribute("outOfDeadLineCount");
- int todayInterviewCount = (Integer)request.getAttribute("todayInterviewCount");
- int unreadCount         = (Integer)request.getAttribute("unreadCount");
- 
- String ss = (String)loginAccountObj.getFullname();
- String pict = ss.substring(0, 1);
-%>
-<jsp:include page="/WEB-INF/views/common/common.jsp" flush="false" />
 <!DOCTYPE html>
+<%
+  notificationArray = params['notificationArray']
+  loginAccountObj = params["loginAccountObj"]
+  notificationArray = params["notificationArray"]
+  nearDeadLineCount = params["nearDeadLineCount"].to_i
+  outOfDeadLineCount = params["outOfDeadLineCount"].to_i
+  todayInterviewCount = params["todayInterviewCount"].to_i
+  unreadCount         = params["unreadCount"].to_i
+%>
 <html>
  <head>
-  <jsp:include page="/WEB-INF/views/common/index_header.jsp" flush="false" />
+  <%= render partial: "regist/common/index_header" %>
   <title>くじら応募</title>
  </head>
- <body id="cat01" class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>">
+ <body id="cat01" class="hold-transition skin-kujira sidebar-mini <%=@sidebar_collapse%>">
   <div class="wrapper">
-   <jsp:include page="/WEB-INF/views/common/top_bar.jsp" flush="false" />
-   <jsp:include page="/WEB-INF/views/common/side_bar.jsp" flush="false" />
+   <%= render partial: "regist/common/top_bar" %>
+   <%= render partial: "regist/common/side_bar" %>
    <div class="content-wrapper">
     <section class="content-header">
      <h1>トップ</h1>
@@ -64,14 +43,21 @@
              </tr>
             </thead>
             <tbody>
-             <% for(int i = 0; i < notificationArray.length; i++) { %>
+             <%
+              if notificationArray.nil?
+                i = 1
+              else
+                i = notificationArray.length
+              end
+              i.times do
+            %>
              <tr>
-              <td> <%=notificationArray[i].getMakeNotifPeriod() %> </td>
+              <td> <%=notificationArray[i].getMakeNotifPeriod() unless notificationArray.nil? %> </td>
               <td>
-               <a style="color:blue;" id="notif_link_01" onclick="openModal('<%=notificationArray[i].getTitle() %>',  '<%=notificationArray[i].getPurpose() %>')" href="javascript:void(0)"> <%=notificationArray[i].getTitle() %> </a>
+               <a style="color:blue;" id="notif_link_01" onclick="openModal('<%=notificationArray[i].getTitle() unless notificationArray.nil? %>',  '<%=notificationArray[i].getPurpose() unless notificationArray.nil? %>')" href="javascript:void(0)"> <%=notificationArray[i].getTitle() unless notificationArray.nil? %> </a>
               </td>
              </tr>
-             <%}%>
+             <% end %>
             </tbody>
            </table>
           </div>
@@ -170,7 +156,7 @@
     input.setAttribute('value', value);
     return input;
    }
-   function sendSearchData(situation) {   
+   function sendSearchData(situation) {
     var fromWhichInput = setParam("from_which","setting_store_search");
     var input_situation   = setParam("situation",situation);
     var f = document.createElement("form");
