@@ -1,0 +1,197 @@
+<!-- Final -->
+
+<%@ page contentType="text/html; charset=utf-8" %>
+<%@ page import="es.hyrax.object.AccountObject" %>
+<%@ page import="es.hyrax.object.NotificationObject" %>
+<%@ page import="es.hyrax.object.ApplicantsInfo" %>
+<%@ page import="es.hyrax.util.Integer107" %>
+<%@ page import="es.hyrax.constant.Constant"%>
+<%
+
+  String  sidebar_collapse  = "nonsidebar-collapse";
+  Cookie[] cookies = request.getCookies();
+  if (cookies != null) {
+     for (Cookie cookie : cookies) {
+              if("sidebar-collapse".equals(cookie.getName())) {
+                          sidebar_collapse = cookie.getValue();
+               }
+     }
+ }
+ AccountObject loginAccountObj = (AccountObject)session.getAttribute("loginAccountObj");
+ NotificationObject[] notificationArray = (NotificationObject[])request.getAttribute("notificationArray"); 
+ int nearDeadLineCount = (Integer)request.getAttribute("nearDeadLineCount");
+ int outOfDeadLineCount = (Integer)request.getAttribute("outOfDeadLineCount");
+ int todayInterviewCount = (Integer)request.getAttribute("todayInterviewCount");
+ int unreadCount         = (Integer)request.getAttribute("unreadCount");
+ 
+ String ss = (String)loginAccountObj.getFullname();
+ String pict = ss.substring(0, 1);
+%>
+<jsp:include page="/WEB-INF/views/common/common.jsp" flush="false" />
+<!DOCTYPE html>
+<html>
+ <head>
+  <jsp:include page="/WEB-INF/views/common/index_header.jsp" flush="false" />
+  <title>くじら応募</title>
+ </head>
+ <body id="cat01" class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>">
+  <div class="wrapper">
+   <jsp:include page="/WEB-INF/views/common/top_bar.jsp" flush="false" />
+   <jsp:include page="/WEB-INF/views/common/side_bar.jsp" flush="false" />
+   <div class="content-wrapper">
+    <section class="content-header">
+     <h1>トップ</h1>
+     <ol class="breadcrumb">
+      <li><a href="/"><i class="fa fa-home"></i> ホーム</a></li>
+      <li class="active">トップ</li>
+     </ol>
+    </section>
+    <section class="content">
+     <div class="row">
+      <section class="col-md-12">
+       <div class="callout callout-warning">
+        <h4 style="font-size:16px;">システムからのお知らせ</h4>
+       </div>
+       <div class="row">
+        <div class="col-md-12 col-xs-12">
+         <div class="box box-kujira">
+          <div class="box-body table-responsive no-padding">
+           <table class="table table-hover table-striped">
+            <thead>
+             <tr>
+              <th><i class="fa fa-calendar"></i> 日付</th>
+              <th><i class="fa fa-bell-o"></i> 通知</th>
+             </tr>
+            </thead>
+            <tbody>
+             <% for(int i = 0; i < notificationArray.length; i++) { %>
+             <tr>
+              <td> <%=notificationArray[i].getMakeNotifPeriod() %> </td>
+              <td>
+               <a style="color:blue;" id="notif_link_01" onclick="openModal('<%=notificationArray[i].getTitle() %>',  '<%=notificationArray[i].getPurpose() %>')" href="javascript:void(0)"> <%=notificationArray[i].getTitle() %> </a>
+              </td>
+             </tr>
+             <%}%>
+            </tbody>
+           </table>
+          </div>
+         </div>
+        </div>
+       </div>
+       <br/>
+       <h4 class="page-header" style="border-bottom:1px solid #ee7800; font-size:12px;">求人対応状況</h4>
+       <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+         <div class="info-box bg-kujira">
+          <a href="" onclick="sendSearchData(1); return false;"><span class="info-box-icon" style="color:#fff"><i class="fa fa-envelope"></i></span></a>
+          <div class="info-box-content">
+           <span class="info-box-text">未読</span>
+           <div class="progress">
+            <div class="progress-bar" style="width: 100%"></div>
+           </div>
+           <span class="info-box-number"><%=unreadCount%> 名</span>
+          </div>
+         </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+         <div class="info-box bg-kujira-two-gradient">
+          <a href="" onclick="sendSearchData(2); return false;"><span class="info-box-icon" style="color:#fff"><i class="fa fa-calendar"></i></span></a>
+          <div class="info-box-content">
+           <span class="info-box-text">対応期間近</span>
+           <div class="progress">
+            <div class="progress-bar" style="width: 100%"></div>
+           </div>
+           <span class="info-box-number"><%=nearDeadLineCount%> 名</span>
+          </div>
+         </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+         <div class="info-box bg-kujira">
+          <a href="" onclick="sendSearchData(3); return false"><span class="info-box-icon" style="color:#fff"><i class="fa fa-clock-o"></i></span></a>
+          <div class="info-box-content">
+           <span class="info-box-text">対応期限超過</span>
+           <div class="progress">
+            <div class="progress-bar" style="width: 100%"></div>
+           </div>
+           <span class="info-box-number"><%=outOfDeadLineCount%> 名</span>
+          </div>
+         </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+         <div class="info-box bg-kujira-two-gradient">
+          <a href="" onclick="sendSearchData(4); return false"><span class="info-box-icon" style="color:#fff"><i class="fa fa-black-tie"></i></span></a>
+          <div class="info-box-content">
+           <span class="info-box-text">当日面接</span>
+           <div class="progress">
+            <div class="progress-bar" style="width: 100%"></div>
+           </div>
+           <span class="info-box-number"><%=todayInterviewCount%> 名</span>
+          </div>
+         </div>
+        </div>
+       </div>
+      </section>
+     </div>
+    </section>
+   </div>
+   <jsp:include page="/WEB-INF/views/common/footer.jsp" flush="false" />
+  </div>
+
+  <div id="my_modal" class="w3-modal">
+   <div class="w3-modal-content w3-card-4" style="border-radius: 10px;">
+    <header class="w3-container w3-teal" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+     <img src="/res/img/send_email.png" style="width:50px; padding-top:5px; padding-bottom: 5px; padding-right:5px;float:left;"/>
+     <span id="close" class="w3-button w3-display-topright" style="font-size:13px ;border-top-right-radius: 10px;" onclick="closeDialog().style.display='none'">閉じる</span>
+     <h6 style="margin-top: 9px;"><center>お知らせ詳細</center></h6>
+    </header>
+    <div class="w3-container">
+     <h6 id="notif_subject" class=""></h6><hr style="margin: 0px;"/>
+     <h6 id="notif_content_msg" class=""></h6>
+    </div>
+   </div>
+  </div>
+
+  <script>
+   var modal = document.getElementById("my_modal");
+   var span = document.getElementById("close");
+   function closeDialog() {
+    modal.style.display = "none";
+   }
+   function openModal(notif_link_id, msg_status) {
+    var ntf_msg = "";
+    document.getElementById("notif_subject").innerHTML = notif_link_id;
+    document.getElementById("notif_content_msg").innerHTML = msg_status;
+    modal.style.display = "block";
+   }
+   function setParam(name,value) {
+    var input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', name);
+    input.setAttribute('value', value);
+    return input;
+   }
+   function sendSearchData(situation) {   
+    var fromWhichInput = setParam("from_which","setting_store_search");
+    var input_situation   = setParam("situation",situation);
+    var f = document.createElement("form");
+    f.setAttribute('method',"post");
+    f.setAttribute('action',"/applicant");
+    f.appendChild(fromWhichInput);
+    f.appendChild(input_situation);
+    var bodyElement = document.body ;
+    bodyElement.append(f);
+    f.submit();
+   }
+  </script>
+  <script src="/dist/js/jquery.js"></script>
+  <script src="/dist/js/bootstrap.js"></script>
+  <script src="/dist/js/adminlte.js?v=1"></script>
+  <script>
+$(document).ready(function() {
+    // get current URL path and assign 'active' class
+    var pathname = window.location.pathname;
+    $('.sidebar-menu > li > a[href="'+pathname+'"]').parent().addClass('active');
+})
+ </script>
+ </body>
+</html>
