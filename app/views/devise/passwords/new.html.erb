@@ -1,16 +1,43 @@
-<h2>Forgot your password?</h2>
-
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+ <%
+  userEmail = params["email"]
+  message   = params["message"]
+  if message.nil?
+   message = ""
+  end
+ %>
+<html>
+ <head>
+  <%= render partial: "common/login_header" %>
+  <title>くじら応募</title>
+ </head>
+ <body class="hold-transition register-page">
+  <div class="register-box">
+   <div class="register-logo">
+    <a href="#"><img src="/dist/img/logo.png" class="img-responsive img-custom"></a>
+   </div>
+   <div class="register-box-body">
+    <p class="login-box-msg">メールアドレスを入力し、再発行ボタンを押してください。</p>
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+     <input type="hidden" name="from_which" value="login.jsp" />
+     <div class="form-group has-feedback">
+      <input type="email" class="form-control" for="email" autofocus="autofocus"  placeholder="ID（メール）" value="" name="email" id="email" required oninvalid="this.setCustomValidity('emailが入力されていません。')" oninput="setCustomValidity('')" />
+      <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+     </div>
+     <div class="row">
+      <div class="col-md-12 col-xs-12">
+       <input type="submit"  name="commit" data-disable-with="Send me reset password instructions" class="btn btn-primary btn-block btn-rounded" value="再送信する" />
+      </div>
+     </div>
+    <% end %>
+    <div class="social-auth-links text-center">
+     <p>- または -</p>
+     <div class="row">
+      <div class="col-md-12 col-xs-12">
+       <a href="/login"><input class="btn btn-success btn-block btn-rounded" value="ログイン" /></a>
+      </div>
+     </div>
+    </div>
+   </div>
   </div>
-
-  <div class="actions">
-    <%= f.submit "Send me reset password instructions" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+ </body>
+</html>

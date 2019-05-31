@@ -1,22 +1,29 @@
 <!DOCTYPE html>
+<%#@ page import="es.hyrax.object.AccountObject" %>
+<%#@ page import="es.hyrax.object.NotificationObject" %>
+<%#@ page import="es.hyrax.object.ApplicantsInfo" %>
+<%#@ page import="es.hyrax.util.Integer107" %>
+<%#@ page import="es.hyrax.constant.Constant"%>
 <%
-  notificationArray = params['notificationArray']
+  notificationArray = params['setFullname']
   loginAccountObj = params["loginAccountObj"]
-  notificationArray = params["notificationArray"]
+  notificationArray = Notification.where(delete_flg: 0).all#params["notificationArray"]
   nearDeadLineCount = params["nearDeadLineCount"].to_i
   outOfDeadLineCount = params["outOfDeadLineCount"].to_i
   todayInterviewCount = params["todayInterviewCount"].to_i
   unreadCount         = params["unreadCount"].to_i
+  #ss = loginAccountObj.getFullname
+  #pict = ss.substring(0, 1);
 %>
 <html>
  <head>
-  <%= render partial: "regist/common/index_header" %>
+  <%= render partial: "common/index_header" %>
   <title>くじら応募</title>
  </head>
  <body id="cat01" class="hold-transition skin-kujira sidebar-mini <%=@sidebar_collapse%>">
   <div class="wrapper">
-   <%= render partial: "regist/common/top_bar" %>
-   <%= render partial: "regist/common/side_bar" %>
+   <%= render partial: "common/top_bar" %>
+   <%= render partial: "common/side_bar" %>
    <div class="content-wrapper">
     <section class="content-header">
      <h1>トップ</h1>
@@ -44,17 +51,12 @@
             </thead>
             <tbody>
              <%
-              if notificationArray.nil?
-                i = 1
-              else
-                i = notificationArray.length
-              end
-              i.times do
-            %>
+              notificationArray.each do |notification|
+             %>
              <tr>
-              <td> <%=notificationArray[i].getMakeNotifPeriod() unless notificationArray.nil? %> </td>
+              <td> <%=Common.make_japanese_time(notification.start_date)+' 〜 ' + Common.make_japanese_time(notification.end_date)%> </td>
               <td>
-               <a style="color:blue;" id="notif_link_01" onclick="openModal('<%=notificationArray[i].getTitle() unless notificationArray.nil? %>',  '<%=notificationArray[i].getPurpose() unless notificationArray.nil? %>')" href="javascript:void(0)"> <%=notificationArray[i].getTitle() unless notificationArray.nil? %> </a>
+               <a style="color:blue;" id="notif_link_01" onclick="openModal('<%=notification.title %>',  '<%=notification.purpose %>')" href="javascript:void(0)"> <%=notification.title %> </a>
               </td>
              </tr>
              <% end %>
@@ -75,7 +77,7 @@
            <div class="progress">
             <div class="progress-bar" style="width: 100%"></div>
            </div>
-           <span class="info-box-number"><%=unreadCount%> 名</span>
+           <span class="info-box-number"><%=ApplicantsInfo.last.nil? ? 0 : ApplicantsInfo.last.unread_count %> 名</span>
           </div>
          </div>
         </div>
@@ -87,7 +89,7 @@
            <div class="progress">
             <div class="progress-bar" style="width: 100%"></div>
            </div>
-           <span class="info-box-number"><%=nearDeadLineCount%> 名</span>
+           <span class="info-box-number"><%=ApplicantsInfo.last.nil? ? 0 : ApplicantsInfo.last.unread_count%> 名</span>
           </div>
          </div>
         </div>
@@ -99,7 +101,7 @@
            <div class="progress">
             <div class="progress-bar" style="width: 100%"></div>
            </div>
-           <span class="info-box-number"><%=outOfDeadLineCount%> 名</span>
+           <span class="info-box-number"><%=ApplicantsInfo.last.nil? ? 0 : ApplicantsInfo.last.unread_outOfDeadLineCount%> 名</span>
           </div>
          </div>
         </div>
@@ -111,7 +113,7 @@
            <div class="progress">
             <div class="progress-bar" style="width: 100%"></div>
            </div>
-           <span class="info-box-number"><%=todayInterviewCount%> 名</span>
+           <span class="info-box-number"><%=ApplicantsInfo.last.nil? ? 0 : todayInterviewCount%> 名</span>
           </div>
          </div>
         </div>
@@ -120,7 +122,7 @@
      </div>
     </section>
    </div>
-   <jsp:include page="/WEB-INF/views/common/footer.jsp" flush="false" />
+     <%= render partial: "common/footer" %>
   </div>
 
   <div id="my_modal" class="w3-modal">
