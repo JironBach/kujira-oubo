@@ -1,3 +1,4 @@
+<%#@ page import="es.hyrax.object.AccountObject" %>
 <%
  loginAccountObj = session["loginAccountObj"]
 %>
@@ -128,7 +129,7 @@
        </li>
        <li class="dropdown user user-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-         <span class="hidden-xs"><%=loginAccountObj.nil? ? '' : loginAccountObj.getFullname()%> 様</span>
+         <span class="hidden-xs"><%=loginAccountObj.nil? ? '' : loginAccountObj['fullname']%> 様</span>
          <div class="user-image" style="border:2px solid #f29333; background-color: grey; width:30px; height:30px;">
           <h1 style="color:white; padding-left:4px; margin-top: 3px;px; font-size: 18px;"><b><%=defined?(pict) ? pict : ''%></b></h1>
          </div>
@@ -140,7 +141,7 @@
             <h1 style="color:white; padding-left:4px; margin-top: 3px;px; font-size: 58px;"><b><%=defined?(pict) ? pict : ''%></b></h1>
            </div>
           </center>
-          <p><%=loginAccountObj.nil? ? '' : loginAccountObj.getFullname()%> 様</p>
+          <p><%=loginAccountObj.nil? ? '' : loginAccountObj['fullname']%> 様</p>
          </li>
          <li class="user-body">
           <div class="row">
