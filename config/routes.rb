@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   post '/users/password/create', to: 'users/password#create'
   get '/setting_account', to: 'setting_account#show'
   post '/setting_account/:id', to: 'setting_account#post'
+  post '/setting_account', to: 'setting_account#post'
 =begin
   devise_for :users
   devise_scope :user do

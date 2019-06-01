@@ -1,88 +1,9 @@
-<%
-  sidebar_collapse  = "nonsidebar-collapse"
-  cookies["sidebar-collapse"] = "sidebar-collapse"
-
-  loginAccountObj = session["loginAccountObj"]
-	message = params["message"]
-	accountArray = params["accountArray"].nil? ? Account.all : params["accountArray"]
-	onePageLimit = session["one_page_limit"]
-	mode = params["mode"]
-	searchName = params["searchName"]
-	searchPosition = params["searchPosition"]
-	searchGroup = params["searchGroup"]
-	searchStore = params["searchStore"]
-	searchCerStatus = params["searchCerStatus"]
-	#GroupStrGetter groupStrGetter = GroupStrGetter.getInstance();
-	#StoreStrGetter storeStrGetter = StoreStrGetter.getInstance();
-  #StatusStrGetter statusStrGetter = StatusStrGetter.getInstance();
-  #AuthStrGetter authStrGetter = AuthStrGetter.getInstance();
-	groupObjArray = [] #groupStrGetter.getGroupObjArray();
-	storeObjArray = [] #storeStrGetter.getStoreObjArray();
-
-	maxNum = 0;
-  if (accountArray.length > 0)
-    maxNum = accountArray.length
-  end
-	if onePageLimit.blank?
-		onePageLimit = "20";
-	end
-	oneLimit = onePageLimit.to_i #Integer107.parseIfNoDigit(onePageLimit,0);
-	pageNumStr = params["page_num"]
-	if pageNumStr.blank?
-		pageNumStr = "1"
-	end
-	pageNum = pageNumStr.to_i #Integer.parseInt(pageNumStr);
-	maxPageCnt = ((maxNum + (oneLimit - 1)) / oneLimit);
-
-	startPageNum = 1
-	endPageNum = 5
-
-	if pageNum < 6
-		startPageNum = 1
-		if maxPageCnt < 6
-			endPageNum = maxPageCnt;
-		else
-			endPageNum = 5
-		end
-	else
-		if ((pageNum + 2) < maxPageCnt)
-			startPageNum = pageNum - 2;
-			endPageNum = pageNum + 2;
-		else
-			startPageNum = maxPageCnt - 4;
-			endPageNum = maxPageCnt;
-		end
-	end
-
-	startNum = ((pageNum -1 ) * onePageLimit.to_i) + 1; #０件でも１件〜となってしまうため修正要
-	endNum   =  startNum - 1  + accountArray.length;
-
-	prefEnableFlg = (pageNum < 2) ? false : true;
-	highPrefEnableFlg = (pageNum < 6) ? false : true;
-	nextEnableFlg = (pageNum < maxPageCnt) ? true : false;
-	highNextEnableFlg = (pageNum < (maxPageCnt - 4)) ? true : false;
-
-	highPreNum = pageNum - 5;
-	if (highPreNum < 1)
-		highPreNum = 1;
-	end
-	preNum = pageNum - 1;
-	if (preNum < 1)
-		preNum = 1;
-	end
-	highNextNum = pageNum + 5;
-	if (highNextNum > maxPageCnt)
-		highNextNum = maxPageCnt;
-	end
-	nextNum = pageNum + 1;
-	if (nextNum > maxPageCnt)
-		nextNum = maxPageCnt;
-	end
-
- ss = loginAccountObj['fullname'];
- pict = ss.slice(0, 1);
-%>
 <!DOCTYPE html>
+<%
+  @groupObjArray = SGroup.where(delete_flg: 0).where.not(name: nil).all #groupStrGetter.getGroupObjArray();
+  @storeObjArray = Store.where(delete_flg: 0).where.not(company_name: nil).all #storeStrGetter.getStoreObjArray();
+  #@accountArray  = Account.all
+%>
 <html>
  <head>
   <%= render partial: "common/index_header" %>
@@ -98,14 +19,14 @@
 			);
 
 			function take_get_parameter(){
-                document.getElementById("cmbSearchGroup").value = '<%=searchGroup%>';
-			    document.getElementById("cmbSearchStore").value = '<%=searchStore%>';
-			    document.getElementById("cmbSearchPosition").value = '<%=searchPosition%>';
+                document.getElementById("cmbSearchGroup").value = '<%=@searchGroup%>';
+			    document.getElementById("cmbSearchStore").value = '<%=@searchStore%>';
+			    document.getElementById("cmbSearchPosition").value = '<%=@searchPosition%>';
 			}
 			function selectedOnePageLimit(){
-                document.getElementById('txt_one_page_limit').value = "<%=onePageLimit%>";
-                document.getElementById('txt_one_page_limit2').value = "<%=onePageLimit%>";
-                //alert("pagenum"+'<%=pageNum%>'+"maxNum"+'<%=maxNum%>'+"startNum"+'<%=startNum%>'+"endNum"+'<%=endNum%>');
+                document.getElementById('txt_one_page_limit').value = "<%=@onePageLimit%>";
+                document.getElementById('txt_one_page_limit2').value = "<%=@onePageLimit%>";
+                //alert("pagenum"+'<%=@pageNum%>'+"maxNum"+'<%=@maxNum%>'+"startNum"+'<%=@startNum%>'+"@endNum"+'<%=@endNum%>');
 			}
 			function setParam(name,value){
 				var input = document.createElement('input');
@@ -193,7 +114,7 @@
 				var inputSetting02 = setParam("app_setting_02",setting_02);
 				var inputSGroup = setParam("app_group",s_group);
 				var inputStore = setParam("app_store",store);
-				var inputPageNumStr = setParam("pageNumStr",'<%=pageNumStr%>');
+				var inputPageNumStr = setParam("pageNumStr",'<%=@pageNumStr%>');
 				var f = document.createElement("form");
 				f.setAttribute('method',"post");
 				f.setAttribute('action',"/setting_account_upd");
@@ -218,7 +139,7 @@
 */
 			function toDeleteServlet(deleteArr){
 				var inputDeleteArr = setParam('delete_id_arr',deleteArr);
-				var inputPageNumStr = setParam('pageNumStr','<%=pageNumStr%>');
+				var inputPageNumStr = setParam('pageNumStr','<%=@pageNumStr%>');
 				var f = document.createElement("form");
                 f.setAttribute('method',"post");
                 f.setAttribute('action',"/setting_account_delete");
@@ -229,11 +150,11 @@
                 f.submit();
 			}
 			function onePageLimit(){
-				//toServlet('<%=mode%>',getPageNumber(), document.activeElement.value);
-				toServlet('<%=mode%>',"1", document.activeElement.value);
+				//toServlet('<%=@mode%>',getPageNumber(), document.activeElement.value);
+				toServlet('<%=@mode%>',"1", document.activeElement.value);
 			}
 			function moveList(num) {
-				toServlet('<%=mode%>',num, document.getElementById("txt_one_page_limit").value);
+				toServlet('<%=@mode%>',num, document.getElementById("txt_one_page_limit").value);
 			}
 			function nowList(){
 				//alert("!!!!!!!!! nowList()!!!!");
@@ -248,7 +169,7 @@
 
 			//以下はデータ取得メソッド
 			function getPageNumber(){
-				return <%=pageNumStr%>;
+				return <%=@pageNumStr%>;
 		    }
 
 			function redirect_page(){
@@ -360,7 +281,7 @@
 
   </script>
  </head>
- <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>">
+ <body class="hold-transition skin-kujira sidebar-mini <%=@sidebar_collapse%>">
   <div class="wrapper">
    <%= render partial: "common/top_bar" %>
    <%= render partial: "common/side_bar" %>
@@ -396,11 +317,11 @@
            <div class="form-group">
            	<div class="col-md-3 col-xs-12">
            	 <label style="font-size: 12px;">氏名/ふりがな</label>
-           	 <input class="form-control" id="txtSearchName" type="text" value="<%=searchName %>" placeholder="氏名/ふりがな" />
+           	 <input class="form-control" id="txtSearchName" type="text" value="<%=@searchName %>" placeholder="氏名/ふりがな" />
            	</div>
            	<div class="col-md-3 col-xs-12">
            	 <label style="font-size: 12px;">権限</label>
-           	 <select class="form-control" id="cmbSearchPosition" value="<%=searchPosition%>">
+           	 <select class="form-control" id="cmbSearchPosition" value="<%=@searchPosition%>">
            	  <option value="-1"></option>
            	  <option value="1">本部採用担当者</option>
            	  <option value="2">グループマネージャー</option>
@@ -411,7 +332,7 @@
            	 <label style="font-size: 12px;">グループ</label>
            	 <select class="form-control" id="cmbSearchGroup" >
            	  <option value="-1"></option>
-           	  <% groupObjArray.each do |group|%>
+           	  <% @groupObjArray.each do |group|%>
            	    <option value="<%=group.id%>"><%=group.name%></option>
            	  <% end %>
            	 </select>
@@ -420,8 +341,8 @@
            	 <label>店舗マスタ名</label>
            	 <select class="form-control" id="cmbSearchStore" >
            	  <option value="-1"></option>
-           	  <% storeObjArray.each do |store|%>
-           	    <option value="<%=store.id%>"><%=store.Name%></option>
+           	  <% @storeObjArray.each do |store|%>
+           	    <option value="<%=store.id%>"><%=store.name%></option>
            	  <% end %>
            	 </select>
            	</div>
@@ -441,7 +362,7 @@
        <div class="row">
         <div class="col-md-12 col-xs-12">
          <div class="pull-left">
-          <%=maxNum%> 件中 <%=startNum%> ~ <%=endNum%> 件表示
+          <%=@maxNum%> 件中 <%=@startNum%> ~ <%=@endNum%> 件表示
          </div>
          <div class="pull-right">
           <select class="form-control" id="txt_one_page_limit" onchange="onePageLimit()">
@@ -494,7 +415,7 @@
        	    </tr>
        	   </thead>
        	   <tbody>
-       	    <% accountArray.each do |account| %>
+       	    <% @accountArray.each do |account| %>
        	     <tr id="row_0">
        	      <th style="font-size:12px;" scope="row">
        	       <center>
@@ -511,8 +432,8 @@
        	       </a>
        	      </td>
        	      <td style="font-size:12px;" data-title="店舗マスタ"><%=Auth.find(account.position).name%></td>
-       	      <td style="font-size:12px;" data-title="権限"><%=SGroup.where(follow_up: account.s_group).name%></td>
-       	      <td style="font-size:12px;" data-title="グループ"><%=Store.where(follow_up: account.store).name%></td>
+       	      <td style="font-size:12px;" data-title="権限"><%=SGroup.where(id: account.s_group).last.nil? ? '' : SGroup.where(id: account.s_group).last.name%></td>
+       	      <td style="font-size:12px;" data-title="グループ"><%=Store.where(store_group: account.store).last.nil? ? '' : Store.where(store_group: account.store).last.name%></td>
        	      <td style="font-size:12px; display: none;" data-title="店舗マスタ名"><%=Status.where(follow_up: account.cer_status).last.name%></td>
        	      <%
        	       createTime = Common.make_japanese_time(account.created_at);
@@ -550,7 +471,7 @@
        <div class="row">
         <div class="col-md-12 col-xs-12">
          <div class="pull-left">
-          <%=maxNum%> 件中 <%=startNum%> ~ <%=endNum%> 件表示
+          <%=@maxNum%> 件中 <%=@startNum%> ~ <%=@endNum%> 件表示
          </div>
          <div class="pull-right">
           <select class="form-control" id="txt_one_page_limit2" onchange="onePageLimit()">
@@ -564,17 +485,17 @@
        <div class="row">
         <div class="col-md-12 col-xs-12 text-center">
          <ul class="pagination">
-          <% if highPrefEnableFlg %>
+          <% if @highPrefEnableFlg %>
             <li id ="non_selected_list"><a href="#" onClick="moveList(<%=highPreNum%>); return false;"><<</a></li>
           <% end %>
-          <% if prefEnableFlg %>
+          <% if @prefEnableFlg %>
             <li id ="non_selected_list"><a href="#" onClick="moveList(<%=preNum%>); return false;"><</a></li>
-            <% if pageNum >= 10 %>
+            <% if @pageNum >= 10 %>
               <li id ="non_selected_list"><a href="#" onClick="moveList(1); return false;">1</a></li>
               <li id ="omission_list"><a href="javascript:void(0)" >...</a></li>
               <%
-              endPageNum.times do |i|
-                if (i == pageNum) %>
+              @endPageNum.times do |i|
+                if (i == @pageNum) %>
                   <li class="active" id ="selected_list"><a href="javascript:void(0)" ><%=i%></a></li>
                 <% else %>
                   <li id ="non_selected_list"><a href="#" onClick="moveList(<%=i%>); return false;"><%=i%></a></li>
@@ -582,11 +503,11 @@
               <% end %>
             <% end %>
           <% end %>
-          <% if (nextEnableFlg) %>
-            <li id ="non_selected_list"><a href="#" onClick="moveList(<%=nextNum%>); return false;">></a></li>
+          <% if (@nextEnableFlg) %>
+            <li id ="non_selected_list"><a href="#" onClick="moveList(<%=@nextNum%>); return false;">></a></li>
           <% end %>
-          <% if (highNextEnableFlg) %>
-            <li id ="non_selected_list"><a href="#" onClick="moveList(<%=highNextNum%>); return false;">>></a></li>
+          <% if (@highNextEnableFlg) %>
+            <li id ="non_selected_list"><a href="#" onClick="moveList(<%=@highNextNum%>); return false;">>></a></li>
           <% end %>
          </ul>
         </div>
