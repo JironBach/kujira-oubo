@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
-  before_action :authenticate_user! #protect_from_forgery with: :exception
+  #protect_from_forgery with: :exception
+  #before_action :authenticate_user!
   before_action :set_request_filter
 
   def set_request_filter

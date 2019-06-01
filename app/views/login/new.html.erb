@@ -1,7 +1,7 @@
 <%
  require 'common'
 
- @userEmail = params["user_email"]
+ @userEmail = params["email"]
  @message = "" if @message.blank?
  #@message   = params["message"]
  #if @message.blank?
@@ -23,13 +23,13 @@
    <div class="login-box-body">
     <p class="login-box-msg">メールアドレスとパスワードを入力し「ログイン」ボタンを押してください</p>
     <p style='color:red'><strong><%=@message%></strong></p>
-    <%= form_tag do %>
-     <div class="form-group has-feedback">
-      <input autofocus="autofocus" type="email" value="<%=@userEmail %>" name="user_email" id="user_email" class="form-control" placeholder="ID（メール）" required oninvalid="this.setCustomValidity('emailが入力されていません。')" oninput="setCustomValidity('')">
+    <form id="login" action="/login" accept-charset="UTF-8" method="post">
+      <div class="form-group has-feedback">
+      <input autofocus="autofocus" type="email" value="<%=@userEmail %>" name="email" id="email" class="form-control" placeholder="ID（メール）" required oninvalid="this.setCustomValidity('emailが入力されていません。')" oninput="setCustomValidity('')">
       <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
      </div>
      <div class="form-group has-feedback">
-      <input autocomplete="off" type="password"  value="" name="user_password" id="user_password" class="form-control" placeholder="パスワード" required oninvalid="this.setCustomValidity('パスワードは入力されていません。')" oninput="setCustomValidity('')">
+      <input autocomplete="off" type="password"  value="" name="password" id="password" class="form-control" placeholder="パスワード" required oninvalid="this.setCustomValidity('パスワードは入力されていません。')" oninput="setCustomValidity('')">
       <span class="glyphicon glyphicon-lock form-control-feedback"></span>
      </div>
      <input type="hidden" name="from_which" value="login.jsp">
@@ -38,10 +38,10 @@
        <label><input type="checkbox" name="RememberMe" class="flat-red"> ログインIDを記憶する</label>
       </div>
       <div class="col-md-12 col-xs-12">
-       <button type="submit" name="commit" class="btn btn-primary btn-block btn-rounded"><span class="glyphicon glyphicon-user"></span> &nbsp; ログイン</button>
+        <button type="submit" name="commit" class="btn btn-primary btn-block btn-rounded"><span class="glyphicon glyphicon-user"></span> &nbsp; ログイン</button>
       </div>
      </div>
-    <% end %>
+    </form>>
     <div class="social-auth-links text-center">
      <p>- または -</p>
     </div>

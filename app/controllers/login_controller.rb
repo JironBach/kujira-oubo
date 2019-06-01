@@ -1,15 +1,12 @@
-require 'openssl'
-require 'base64'
-
 class LoginController < ApplicationController
-  def login
-    session["message"] = ''
-    render 'login'
+  def new
+    render 'new'
   end
 
-  def post
-    @userEmail = params["user_email"]
-    @password = Common.encrypt(params["user_password"])
+  #POST /resource/sign_in
+  def create
+    @userEmail = params["email"]
+    @password = Common.encrypt(params["password"])
     @fromWhich = params["from_which"]
     @message = session["message"]
     account = Account.where(delete_flg: 0, main_mail: @userEmail, password: @password).first
@@ -18,18 +15,17 @@ class LoginController < ApplicationController
         @message = "メールドレスとパスワードを入力してください。";
         session["message"] = @message
         session["loginAccountObj"] = nil
-        render 'login' and return
+        render 'new'
       elsif account.nil?
         @message = "メールアドレスとパスワードが一致しません。"
+        logger.debug "debug:message=#{params.inspect}"
         session["message"] = @message
         session["loginAccountObj"] = nil
-        render 'login'
-        return
+        render 'new'
       else
         session["loginAccountObj"] = account
-        redirect_to "/" and return
+        redirect_to top_path and return
       end
     end
   end
-
 end

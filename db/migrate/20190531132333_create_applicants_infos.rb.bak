@@ -1,8 +1,0 @@
-class CreateApplicantsInfos < ActiveRecord::Migration[5.1]
-  def change
-    create_table :applicants_infos do |t|
-
-      t.timestamps
-    end
-  end
-end
