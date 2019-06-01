@@ -2,7 +2,6 @@
 <%
   @groupObjArray = SGroup.where(delete_flg: 0).where.not(name: nil).all #groupStrGetter.getGroupObjArray();
   @storeObjArray = Store.where(delete_flg: 0).where.not(company_name: nil).all #storeStrGetter.getStoreObjArray();
-  #@accountArray  = Account.all
 %>
 <html>
  <head>

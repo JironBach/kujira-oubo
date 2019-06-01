@@ -1,8 +1,5 @@
 class SettingAccountController < ApplicationController
   def init(account_array)
-    if @accountArray.nil?
-      accountArray = [Account.new]
-    end
     @accountArray = account_array
     @sidebar_collapse  = "nonsidebar-collapse"
     cookies["sidebar-collapse"] = "sidebar-collapse"
@@ -95,7 +92,13 @@ class SettingAccountController < ApplicationController
     render 'show'
   end
 
+  def chk_param(account)
+    (!account.blank? && (account != -1))
+  end
+
   def post
+    @accountArray
+
     @message = "";
     @onePageLimit = params["one_page_limit"]
     if @onePageLimit.blank?
@@ -108,7 +111,7 @@ class SettingAccountController < ApplicationController
     @fromWhich = params["fromWhich"]
     @mode = params["mode"]
     @searchName = params["searchName"]
-    @searchPosition = params["searchPosition"].blank? ? 0 : params["searchPosition"].to_i
+    @searchPosition = params["searchPosition"].blank? ? -1 : params["searchPosition"].to_i
     @searchGroup = params["searchGroup"].blank? ? 0 : params["searchGroup"].to_i
     @searchStore = params["searchStore"].blank? ? 0 : params["searchStore"].to_i
     @searchCerStatus = params["searchCerStatus"]
@@ -116,14 +119,26 @@ class SettingAccountController < ApplicationController
     @searchStore = "" if @searchStore.blank?
     @searchCerStatus = "-1" if @searchCerStatus.blank?
     if "search" == @mode
-      logger.debug "debug:account_search=#{params.inspect}"
-      logger.debug "debug:search_posision=#{@searchPosition} & #{@searchGroup}"
-      logger.debug "debug:Account=#{Account.where(position: @searchPosition, s_group: @searchGroup).first.inspect}"
-      if (@searchPosition == -1) && (@searchGroup == -1) && (@searchStore == -1)
-        init(Account.all)
+      if ((chk_param(@searchPosition) && (chk_param(@searchGroup)) && (chk_param(@searchStore.))))
+        @accountArray = Account.where(s_group: @searchGroup, store: @searchStore).all
+      elsif ((@searchPosition != -1) && (@searchGroup == -1) && (!@searchStore.blank?))
+        @accountArray = Account.where(position: @searchPosition, store: @searchStore).all
+      elsif ((@searchPosition != -1) && (@searchGroup != -1) && (@searchStore.blank?))
+        @accountArray = Account.where(position: @searchPosition, s_group: @searchGroup).all
+      elsif ((@searchPosition == -1) && (@searchGroup != -1) && (@searchStore.blank?))
+        @accountArray = Account.where(store: @searchStore).all
+      elsif ((@searchPosition != -1) && (@searchGroup == -1) && (@searchStore.blank?))
+        @accountArray = Account.where(s_group: @searchGroup).all
+      elsif ((@searchPosition == -1) && (@searchGroup == -1) && (!@searchStore.blank?))
+        @accountArray = Account.where(position: @searchPosition).all
+      elsif ((@searchPosition == -1) && (@searchGroup == -1) && (@searchStore.blank?))
+        @accountArray = Account.all
       else
-        init(Account.where(position: @searchPosition, s_group: @searchGroup, store: @searchStore).all)
+        @accountArray = Account.all
       end
+      logger.debug "debug:params = #{params.inspect}"
+      logger.debug "debug:accountArray = #{@accountArray.first.inspect}"
+      init(@accountArray)
       @mode = "search";
       render 'show'
     else
