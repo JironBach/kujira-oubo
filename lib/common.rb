@@ -29,4 +29,9 @@ class Common
 		return sb
 	end
 
+  def valid_email(email)
+    VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+    email ~= VALID_EMAIL_REGEX
+  end
+
 end

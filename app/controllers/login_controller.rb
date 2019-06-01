@@ -1,5 +1,7 @@
 class LoginController < ApplicationController
   def new
+    @message = '続けるにはログインが必要です。'
+    session["message"] = @message
     render 'new'
   end
 
