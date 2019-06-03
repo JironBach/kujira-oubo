@@ -15,6 +15,9 @@ Rails.application.routes.draw do
   get '/setting_account_upd_conf', to: 'setting_account_upd_conf#post'
   post '/setting_account_update', to: 'setting_account_update#post'
   post '/setting_account_delete', to: 'setting_account_delete#post'
+  get '/setting_site', to: 'setting_site#show'
+  get '/setting_site_create', to: 'setting_site_create#show'
+  get '/setting_store', to: 'setting_store#show'
 =begin
   devise_for :users
   devise_scope :user do

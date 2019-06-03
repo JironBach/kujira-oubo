@@ -1,0 +1,2 @@
+module SettingStoreHelper
+end

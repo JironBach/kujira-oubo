@@ -1,0 +1,2 @@
+module SettingSiteCreateHelper
+end

@@ -1,0 +1,2 @@
+module SettingSiteHelper
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190601013450) do
+ActiveRecord::Schema.define(version: 20190603125357) do
 
   create_table "account", id: :integer, default: nil, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "password"
@@ -318,6 +318,16 @@ ActiveRecord::Schema.define(version: 20190601013450) do
 
   create_table "reachable", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "id"
+  end
+
+  create_table "recruitment_site", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci" do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "site_name", null: false
+    t.string "url", null: false
+    t.integer "scraping_type"
+    t.integer "order_key"
+    t.integer "del_flg", default: 0
   end
 
   create_table "route", id: :integer, default: nil, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
