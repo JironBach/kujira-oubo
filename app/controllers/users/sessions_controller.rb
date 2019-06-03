@@ -25,7 +25,6 @@ class Users::SessionsController < Devise::SessionsController
         render 'login' and return
       elsif account.nil?
         @message = "メールアドレスとパスワードが一致しません。"
-        logger.debug "debug:message=#{params.inspect}"
         session["message"] = @message
         session["loginAccountObj"] = nil
         render 'login'

@@ -30,8 +30,8 @@ class Common
 	end
 
   def valid_email(email)
-    VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
-    email ~= VALID_EMAIL_REGEX
+    valic_email_regex = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+    email =~ valic_email_regex
   end
 
 end

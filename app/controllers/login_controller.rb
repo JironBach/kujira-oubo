@@ -20,7 +20,6 @@ class LoginController < ApplicationController
         render 'new'
       elsif account.nil?
         @message = "メールアドレスとパスワードが一致しません。"
-        logger.debug "debug:message=#{params.inspect}"
         session["message"] = @message
         session["loginAccountObj"] = nil
         render 'new'

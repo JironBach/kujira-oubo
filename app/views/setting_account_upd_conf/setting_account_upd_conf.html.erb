@@ -1,0 +1,272 @@
+<%
+  sidebar_collapse  = cookies["nonsidebar-collapse"]
+  appStore = params["app_store"]
+  appGroup = params["app_group"]
+  appPosition = params["app_position"]
+
+  #ss = @loginAccountObj.fullname;
+  #pict = ss.slice(0, 1);
+%>
+<!DOCTYPE html>
+<html>
+ <head>
+  <%= render partial: "common/index_header" %>
+  <title>くじら応募</title>
+  <script src="/dist/js/jquery.js"></script>
+  <script src="/dist/js/bootstrap.js"></script>
+  <script src="/dist/js/adminlte.js?v=1"></script>
+  <script>
+		   document.addEventListener('DOMContentLoaded',
+				function(){
+                     //take_get_parameter();
+					initialize_screen();
+					clear_all_input_field();
+					take_get_parameter();
+				}
+			);
+
+
+			function initialize_screen(){
+
+			}
+			function setParam(name,value){
+				//alert("@C@C@C@C@C@C@C brand_upd_conf     setParam     name = "+name+" value = "+value);
+				var input = document.createElement('input');
+				input.setAttribute('type','hidden');
+				input.setAttribute('name',name);
+				input.setAttribute('value',value);
+				return input;
+			}
+
+			//function take get_parameter from link
+			function take_get_parameter(){
+				/*var app_password = S_GET("app_password"),
+					app_fullname = S_GET("app_fullname"),
+					app_fullname_furigana = S_GET("app_fullname_furigana"),
+					app_main_mail = S_GET("app_main_mail"),
+					app_cc_mail_01 = S_GET("app_cc_mail_01"),
+					app_cc_mail_02 = S_GET("app_cc_mail_02"),
+					app_position = S_GET("app_position"),
+					app_setting_00 = S_GET("app_setting_00"),
+					app_setting_01 = S_GET("app_setting_01"),
+					app_setting_02 = S_GET("app_setting_02"),
+					app_group = S_GET("app_group"),
+					app_store = S_GET("app_store");*/
+
+
+				var 	app_id			= '<%=@app_id%>';
+				var  	pageNumStr		= '<%=@pageNumStr%>';
+				var 	app_password	= '<%=@app_password%>';
+				var    app_fullname	= '<%=@accountObj['fullname']%>'
+				var 	app_fullname_furigana	= '<%=@accountObj['fullname_furigana']%>'
+				var    app_main_mail	= '<%=@accountObj['main_mail']%>'
+				var 	app_cc_mail_01	= '<%=@accountObj['cc_mail_01']%>'
+				var    app_cc_mail_02	= '<%=@accountObj['cc_mail_02']%>'
+				var 	app_position	= '<%=@accountObj['position']%>'
+				var    app_setting_00	= '<%=@accountObj['setting_00']%>'
+				var 	app_setting_01	= '<%=@accountObj['setting_01']%>'
+				var   	app_setting_02 	= '<%=@accountObj['setting_02']%>'
+        var	  app_position		= '<%=Auth.find(@appPosition).name %>';
+        var	  app_group		= '<%=appGroup%>';
+				var   	app_store		= '<%=appStore%>';
+
+                if(app_setting_00 == "1")
+					app_setting_00 = "ON";
+				else
+					app_setting_00 = "OFF";
+				if(app_setting_01 == "1")
+					app_setting_01 = "ON";
+				else
+					app_setting_01 = "OFF";
+				if(app_setting_02 == "1")
+					app_setting_02 = "ON";
+				else
+					app_setting_02 = "OFF";
+
+				document.getElementById("txt_password").value = app_password;
+				document.getElementById("span_fullname").innerHTML = app_fullname;
+				document.getElementById("span_fullname_furigana").innerHTML = app_fullname_furigana;
+				document.getElementById("span_main_email").innerHTML = app_main_mail;
+				document.getElementById("span_cc_email_01").innerHTML = app_cc_mail_01;
+				document.getElementById("span_cc_email_02").innerHTML = app_cc_mail_02;
+				document.getElementById("span_position").innerHTML = app_position;
+				document.getElementById("span_setting_00").innerHTML = app_setting_00;
+				document.getElementById("span_setting_01").innerHTML = app_setting_01;
+				document.getElementById("span_setting_02").innerHTML = app_setting_02;
+				document.getElementById("span_group").innerHTML = app_group,
+				document.getElementById("span_store").innerHTML = app_store;
+			}
+
+			function back(){
+				var f = document.createElement("form");
+				f.setAttribute('method',"post");
+				f.setAttribute('action',"/setting_account_upd");
+
+				<%
+				params.each do |key, value| #for(Map.Entry<String, String[]> e : paramsMap.entrySet()){
+				%>
+					f.appendChild(setParam('<%=key%>','<%=value%>'));
+				<%
+				end
+				%>
+				f.appendChild(setParam('from_which','back'));
+				var bodyElement = document.body ;
+				bodyElement.append(f);
+				f.submit();
+			}
+
+			function sendConfirmedData(){
+				var f = document.createElement("form");
+				f.setAttribute('method',"post");
+				f.setAttribute('action',"/setting_account_update");
+				<%
+				params.each do |key, value|
+				%>
+				f.appendChild(setParam('<%=key%>','<%=value%>'));
+				<%
+				end
+				%>
+				var bodyElement = document.body;
+				bodyElement.append(f);
+				f.submit();
+			}
+  </script>
+ </head>
+ <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>">
+  <div class="wrapper">
+   <%= render partial: "common/top_bar" %>
+   <%= render partial: "common/side_bar" %>
+   <div class="content-wrapper">
+    <section class="content-header">
+     <h1>アカウント編集</h1>
+     <ol class="breadcrumb">
+      <li><a href="/"><i class="fa fa-home"></i> ホーム</a></li>
+      <li><a href="/setting_account"><i class="fa fa-cogs"></i> 設定</a></li>
+      <li class="active">アカウント編集</li>
+     </ol>
+    </section>
+    <section class="content">
+     <div class="row">
+      <section class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+       <div class="callout callout-warning">
+        <h4 style="font-size:16px;">アカウント編集</h4>
+       </div>
+       <div class="row">
+        <div class="col-md-12 col-xs-12">
+         <div class="box box-kujira">
+          <div class="box-body">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">ログインID</h6>
+            <h6 class="col-sm-4 col-xs-12" style="font-size:12px;">システムにより自動採番されます。</h6>
+           </div>
+          </div>
+          <div class="box-body" style="background-color: rgb(238, 120, 0, 0.2)">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">パスワード</h6>
+            <div class="col-lg-3 col-sm-10 col-xs-12">
+             <input type="password" id="txt_password" class="form-control" disabled="true"/>
+            </div>
+           </div>
+          </div>
+          <div class="box-body">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">氏名</h6>
+            <div class="col-sm-10 col-xs-12" id="span_fullname"></div>
+           </div>
+          </div>
+          <div class="box-body" style="background-color: rgb(238, 120, 0, 0.2)">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">氏名（ふりがな）</h6>
+            <div class="col-sm-10 col-xs-12" id="span_fullname_furigana"></div>
+           </div>
+          </div>
+          <div class="box-body">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">メールアドレス（メイン）</h6>
+            <div class="col-sm-10 col-xs-12" id="span_main_email"></div>
+           </div>
+          </div>
+          <div class="box-body" style="background-color: rgb(238, 120, 0, 0.2)">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">メールアドレス（CC）</h6>
+            <div class="col-sm-10 col-xs-12" id="span_cc_email_01"></div>
+           </div>
+          </div>
+          <div class="box-body">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">メールアドレス（BCC）</h6>
+            <div class="col-sm-10 col-xs-12" id="span_cc_email_02"></div>
+           </div>
+          </div>
+          <div class="box-body" style="background-color: rgb(238, 120, 0, 0.2)">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">権限</h6>
+            <div class="col-sm-10 col-xs-12" id="span_position"></div>
+           </div>
+          </div>
+          <div class="box-body" style="display:none">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">応募者からの受信メール通知</h6>
+            <div class="col-sm-10 col-xs-12" id="span_setting_00"></div>
+           </div>
+          </div>
+          <div class="box-body" style="display:none; background-color: rgb(238, 120, 0, 0.2)">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">自動取込み通知</h6>
+            <div class="col-sm-10 col-xs-12" id="span_setting_01"></div>
+           </div>
+          </div>
+          <div class="box-body" style="display:none">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">対応期限通知</h6>
+            <div class="col-sm-10 col-xs-12" id="span_setting_02"></div>
+           </div>
+          </div>
+          <div class="box-body" style="background-color: rgb(238, 120, 0, 0.2)">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">グループ</h6>
+            <div class="col-sm-10 col-xs-12" id="span_group"></div>
+           </div>
+          </div>
+          <div class="box-body">
+           <div class="form-group">
+            <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">店舗マスタ</h6>
+            <div class="col-sm-10 col-xs-12" id="span_store"></div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <br/>
+       <div class="row">
+        <div class="col-md-12 col-xs-12">
+         <div id="footer_go_to_confirmation">
+          <div class="pull-left">
+           <a class="btn btn-warning" style="font-size: 12px;" id="btn_back" onClick="back()">< 戻る</a>
+          </div>
+          <div class="text-center">
+           <a class="btn btn-warning" id="btn_confirm_data_change" style="font-size: 12px;" onClick="sendConfirmedData()">登録</a>
+          </div>
+         </div>
+        </div>
+       </div>
+      </section>
+     </div>
+    </section>
+   </div>
+   <%= render partial: "common/footer" %>
+  </div>
+  <script>
+	function clear_all_input_field(){
+	//document.getElementById("").value = "";
+   }
+  </script>
+  <script>
+$(document).ready(function() {
+    // get current URL path and assign 'active' class
+    var pathname = window.location.pathname;
+    $('.setting').parent().addClass('active') && $('.setting > li > a[href="/setting_account"]').parent().addClass('active');
+})
+  </script>
+ </body>
+</html>
