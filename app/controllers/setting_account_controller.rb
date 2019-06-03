@@ -92,8 +92,8 @@ class SettingAccountController < ApplicationController
     render 'show'
   end
 
-  def chk_param(account)
-    (!account.blank? && (account != -1))
+  def chk_null(param)
+    (param.blank? || (param == -1) || (param == 0))
   end
 
   def post
@@ -119,25 +119,24 @@ class SettingAccountController < ApplicationController
     @searchStore = "" if @searchStore.blank?
     @searchCerStatus = "-1" if @searchCerStatus.blank?
     if "search" == @mode
-      if ((chk_param(@searchPosition) && (chk_param(@searchGroup)) && (chk_param(@searchStore.))))
-        @accountArray = Account.where(s_group: @searchGroup, store: @searchStore).all
-      elsif ((@searchPosition != -1) && (@searchGroup == -1) && (!@searchStore.blank?))
-        @accountArray = Account.where(position: @searchPosition, store: @searchStore).all
-      elsif ((@searchPosition != -1) && (@searchGroup != -1) && (@searchStore.blank?))
-        @accountArray = Account.where(position: @searchPosition, s_group: @searchGroup).all
-      elsif ((@searchPosition == -1) && (@searchGroup != -1) && (@searchStore.blank?))
-        @accountArray = Account.where(store: @searchStore).all
-      elsif ((@searchPosition != -1) && (@searchGroup == -1) && (@searchStore.blank?))
-        @accountArray = Account.where(s_group: @searchGroup).all
-      elsif ((@searchPosition == -1) && (@searchGroup == -1) && (!@searchStore.blank?))
-        @accountArray = Account.where(position: @searchPosition).all
-      elsif ((@searchPosition == -1) && (@searchGroup == -1) && (@searchStore.blank?))
+      query = Account
+      if (!chk_null(@searchPosition))
+        query = query.where(position: @searchPosition)
+      end
+      if (!chk_null(@searchGroup))
+        query = query.where(s_group: @searchGroup)
+      end
+      if (!chk_null(@searchStore))
+        query = query.where(store: @searchStore)
+      end
+      if (chk_null(@searchPosition) && chk_null(@searchGroup) && chk_null(@searchStore))
         @accountArray = Account.all
       else
-        @accountArray = Account.all
+        @accountArray = query.all
       end
-      logger.debug "debug:params = #{params.inspect}"
-      logger.debug "debug:accountArray = #{@accountArray.first.inspect}"
+      @searchStatus = params["searchStatus"]
+      @searchStatus = "" if @searchStatus.blank?
+
       init(@accountArray)
       @mode = "search";
       render 'show'
