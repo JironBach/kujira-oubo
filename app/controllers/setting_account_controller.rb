@@ -120,6 +120,9 @@ class SettingAccountController < ApplicationController
     @searchCerStatus = "-1" if @searchCerStatus.blank?
     if "search" == @mode
       query = Account
+      if !@searchName.blank?
+        query = query.where("fullname LIKE ?", "%#{@searchName}%").or(query.where("fullname_furigana LIKE ?", "%#{@searchName}%"))
+      end
       if (!chk_null(@searchPosition))
         query = query.where(position: @searchPosition)
       end
@@ -129,7 +132,7 @@ class SettingAccountController < ApplicationController
       if (!chk_null(@searchStore))
         query = query.where(store: @searchStore)
       end
-      if (chk_null(@searchPosition) && chk_null(@searchGroup) && chk_null(@searchStore))
+      if (@searchName.blank? && chk_null(@searchPosition) && chk_null(@searchGroup) && chk_null(@searchStore))
         @accountArray = Account.all
       else
         @accountArray = query.all

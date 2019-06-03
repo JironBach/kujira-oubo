@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <%
+  def chk_null(param)
+    (param.blank? || (param == -1) || (param == 0))
+  end
+
   @searchStatus = params["searchStatus"]
   @searchStatus = "" if @searchStatus.blank?
 %>
