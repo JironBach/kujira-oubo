@@ -10,6 +10,11 @@ Rails.application.routes.draw do
   get '/setting_account', to: 'setting_account#show'
   post '/setting_account/:id', to: 'setting_account#post'
   post '/setting_account', to: 'setting_account#post'
+  post '/setting_account_upd', to: 'setting_account_upd#post'
+  post '/setting_account_upd_conf', to: 'setting_account_upd_conf#post'
+  get '/setting_account_upd_conf', to: 'setting_account_upd_conf#post'
+  post '/setting_account_update', to: 'setting_account_update#post'
+  post '/setting_account_delete', to: 'setting_account_delete#post'
 =begin
   devise_for :users
   devise_scope :user do

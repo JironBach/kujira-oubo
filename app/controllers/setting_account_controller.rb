@@ -6,7 +6,6 @@ class SettingAccountController < ApplicationController
 
     @loginAccountObj = session["loginAccountObj"]
   	@message = params["message"]
-  	@onePageLimit = session["one_page_limit"]
   	@mode = params["mode"]
   	@searchName = params["searchName"]
   	@searchPosition = params["searchPosition"].to_i
@@ -18,9 +17,14 @@ class SettingAccountController < ApplicationController
     if (account_array.length > 0)
       @maxNum = account_array.length
     end
+    @onePageLimit = params["one_page_limit"]
   	if @onePageLimit.blank?
-  		@onePageLimit = "20";
+  		@onePageLimit = session["one_page_limit"]
   	end
+  	if @onePageLimit.blank?
+  		@onePageLimit = "20"
+  	end
+    session["one_page_limit"] = @onePageLimit
   	@oneLimit = @onePageLimit.to_i #Integer107.parseIfNoDigit(onePageLimit,0);
   	@pageNumStr = params["page_num"]
   	if @pageNumStr.blank?
@@ -82,7 +86,7 @@ class SettingAccountController < ApplicationController
    #StatusStrGetter statusStrGetter = StatusStrGetter.getInstance();
    #AuthStrGetter authStrGetter = AuthStrGetter.getInstance();
    @groupObjArray = SGroup.where(delete_flg: 0).where.not(name: nil).all #groupStrGetter.getGroupObjArray();
-   @storeObjArray = Store.where(delete_flg: 0).where.not(company_name: nil).all #storeStrGetter.getStoreObjArray();
+   @storeObjArray = Store.where(delete_flg: 0, ).where.not(company_name: nil).all #storeStrGetter.getStoreObjArray();
   end
 
   def show
