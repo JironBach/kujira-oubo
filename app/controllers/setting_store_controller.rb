@@ -1,3 +1,6 @@
 class SettingStoreController < ApplicationController
-  render 'setting_store'
+  def show
+    render 'setting_store'
+  end
+  
 end

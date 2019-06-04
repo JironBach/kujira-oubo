@@ -1,0 +1,2 @@
+module SettingSiteDeleteHelper
+end

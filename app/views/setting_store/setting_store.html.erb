@@ -1,149 +1,95 @@
-<!-- Final -->
+<%
+  sidebar_collapse  = "nonsidebar-collapse";
+  loginAccountObj = session["loginAccountObj"]
+	message = params["message"]
+	@storeArray = params["storeArray"].nil? ? Store.all : params["storeArray"]
+	onePageLimit = params["one_page_limit"]
 
-<%@ page contentType="text/html; charset=utf-8" %>
-<%@ page import="es.hyrax.object.StoreObject" %>
-<%@ page import="es.hyrax.object.GroupObject" %>
-<%@ page import="es.hyrax.object.AreaObject" %>
-<%@ page import="es.hyrax.object.PrefObject" %>
-<%@ page import="es.hyrax.object.CityObject" %>
-<%@ page import="es.hyrax.object.AccountObject" %>
-<%@ page import="es.hyrax.util.Integer107" %>
-<%@ page import="es.hyrax.object.singleton.AccountStrGetter" %>
-
-
-<%  
-  String  sidebar_collapse  = "nonsidebar-collapse";
-  Cookie[] cookies = request.getCookies();
-  if (cookies != null) {
-     for (Cookie cookie : cookies) {
-              if("sidebar-collapse".equals(cookie.getName())) {
-                          sidebar_collapse = cookie.getValue();
-               }
-     }
- }
-    AccountObject loginAccountObj = (AccountObject)session.getAttribute("loginAccountObj"); 
-	String message = (String)request.getAttribute("message");  
-	StoreObject[] storeArray = (StoreObject[])request.getAttribute("storeArray");
-	String onePageLimit = (String)session.getAttribute("one_page_limit");
-	
-	int maxNum = 0;
-	if(null != storeArray && storeArray.length > 0){
-	    maxNum = storeArray[0].getMaxCount();
-    }
-	
-	if(null == onePageLimit){
+	maxNum = 0;
+	if (@storeArray.nil? && @storeArray.length > 0)
+	    maxNum = @storeArray.length
+  end
+	if onePageLimit.nil?
 		onePageLimit = "20";
-	}
-	int oneLimit = Integer107.parseIfNoDigit(onePageLimit,0);
-	
-	String pageNumStr = (String)request.getAttribute("page_num");
-	if(null== pageNumStr){
+	end
+	oneLimit = onePageLimit.to_i
+
+	pageNumStr = params["page_num"]
+	if pageNumStr.nil?
 		pageNumStr = "1";
-	}
-	String searchMode =  (String)request.getAttribute("search_mode");
-	if(null == searchMode || "" == searchMode) {
+	end
+	searchMode =  params["search_mode"]
+	if (searchMode.nil? || "" == searchMode)
 		searchMode = "false";
-	}
-	int pageNum = Integer.parseInt(pageNumStr);
-	int maxPageCnt = ((maxNum + (oneLimit - 1)) / oneLimit);
-	
-	int startPageNum = 1;
-	int endPageNum = 5;
-	
-	if (pageNum < 6) {
+	end
+	pageNum = pageNumStr.to_i
+  if oneLimit == 0 #debug
+    maxPageCnt = 1
+  else
+	  maxPageCnt = ((maxNum + (oneLimit - 1)) / oneLimit);
+  end
+
+	startPageNum = 1;
+	endPageNum = 5;
+
+	if (pageNum < 6)
 		startPageNum = 1;
-		if (maxPageCnt < 6) {
+		if (maxPageCnt < 6)
 			endPageNum = maxPageCnt;
-		} else {
+		else
 			endPageNum = 5;
-		}
-	} else {
-		if((pageNum + 2) < maxPageCnt){
+		end
+	else
+		if((pageNum + 2) < maxPageCnt)
 			startPageNum = pageNum - 2;
 			endPageNum = pageNum + 2;
-		} else {
+		else
 			startPageNum = maxPageCnt - 4;
 			endPageNum = maxPageCnt;
-		}
-	}
-	
-	int startNum = ((pageNum -1 ) * Integer.parseInt(onePageLimit)) + 1; //０件でも１件〜となってしまうため修正要
-	int endNum   =  startNum - 1  + storeArray.length;
-	
-	/*
-	int onePageLimitNum = Integer107.parseInt(onePageLimit);
-	int maxNum = 0;
-	int startNum = 1;
-	int endNum = 20;
+		end
+	end
 
-	if(null != storeArray && storeArray.length > 0){
-		maxNum = storeArray[0].getMaxCount();
-		startNum = (pageNum-1)*onePageLimitNum + 1;
-		endNum = onePageLimitNum;
-		if((startNum + onePageLimitNum) > maxNum){
-			endNum = maxNum - ((pageNum-1)*onePageLimitNum);
-		}
-		
-	}else{
-		startNum = 0;
-		endNum = 0;
-	}
-	
-	
-	Boolean prefEnableFlg = (pageNum < 2) ? false : true; 
-	Boolean highPrefEnableFlg = (pageNum < 6) ? false : true;
-	int highPreNum = pageNum - 5;
-	int preNum = pageNum - 1;
-	int highNextNum = pageNum + 5;
-	int nextNum = pageNum + 1;
-	String javascript_test = "alert('20');";
-	*/
-	
-	Boolean prefEnableFlg = (pageNum < 2) ? false : true; 
-	Boolean highPrefEnableFlg = (pageNum < 6) ? false : true;
-						 
-	Boolean nextEnableFlg = (pageNum < maxPageCnt) ? true : false; 
-	Boolean highNextEnableFlg = (pageNum < (maxPageCnt - 4)) ? true : false;	
-						 
-	int highPreNum = pageNum - 5;
-	if (highPreNum < 1){
+	startNum = ((pageNum -1 ) * onePageLimit.to_i) + 1; #０件でも１件〜となってしまうため修正要
+	endNum   =  startNum - 1  + @storeArray.length;
+
+	prefEnableFlg = (pageNum < 2) ? false : true;
+	highPrefEnableFlg = (pageNum < 6) ? false : true;
+
+	nextEnableFlg = (pageNum < maxPageCnt) ? true : false;
+	highNextEnableFlg = (pageNum < (maxPageCnt - 4)) ? true : false;
+
+	highPreNum = pageNum - 5;
+	if (highPreNum < 1)
 		highPreNum = 1;
-	}
-	int preNum = pageNum - 1;
-	if (preNum < 1){
+	end
+	preNum = pageNum - 1;
+	if (preNum < 1)
 		preNum = 1;
-	}
-	int highNextNum = pageNum + 5;
-	if (highNextNum > maxPageCnt){
+	end
+	highNextNum = pageNum + 5;
+	if (highNextNum > maxPageCnt)
 		highNextNum = maxPageCnt;
-	}
-	int nextNum = pageNum + 1;
-	if (nextNum > maxPageCnt){
+	end
+	nextNum = pageNum + 1;
+	if (nextNum > maxPageCnt)
 		nextNum = maxPageCnt;
-	}
-	
-	AccountStrGetter accountStrGetter = AccountStrGetter.getInstance();
-	
-	
-	GroupObject[] groupObjArray = (GroupObject[])request.getAttribute("groupObjArray");
-	AreaObject[]  areaObjArray  = (AreaObject[])request.getAttribute("areaObjArray");
-    PrefObject[]  prefObjArray = (PrefObject[])request.getAttribute("prefObjArray");
-	CityObject[]  cityObjArray = (CityObject[])request.getAttribute("cityObjArray");
-	AccountObject[] accountObjArray = accountStrGetter.getAccountObjArray();
-	/*
-	 * 
-	 *       request.setAttribute("prefObjArray",prefObjArray);
-      request.setAttribute("cityObjArray",cityObjArray);
-       
-	 * */
+	end
 
- String ss = (String)loginAccountObj.getFullname();
- String pict = ss.substring(0, 1);
+	#AccountStrGetter accountStrGetter = AccountStrGetter.getInstance();
+
+	@groupObjArray = SGroup.all
+	@areaObjArray  = Area.all
+  @prefObjArray = Prefecture.all
+	@cityObjArray = City.all
+	@accountObjArray = Account.all
+
+  ss = @loginAccountObj.fullname unless @loginAccountObj.nil?
+  pict = ss.blank? ? '' : ss.slice(0, 1)
 %>
 <!DOCTYPE html>
 <html>
  <head>
-  <jsp:include page="/WEB-INF/views/common/index_header.jsp" flush="false" />
+  <%= render partial: "common/index_header" %>
   <title>くじら応募</title>
   <script>
 			document.addEventListener('DOMContentLoaded', function() {
@@ -154,16 +100,16 @@
                 document.getElementById('txt_one_page_limit').value = "<%=onePageLimit%>";
                 document.getElementById('txt_one_page_limit2').value = "<%=onePageLimit%>";
 			}
-			
+
             function takeGetParameter(){
-				
-				var store_name = '${param.store_name}',
+
+				var store_name = '',
 				    store_manager =  '${param.store_manager}',
 				    store_group   =  '${param.store_group}',
 				    store_area   =  '${param.store_area}',
 				    work_loc_todoufuken = '${param.work_loc_todoufuken}',
 				    work_loc_shikuchouson =  '${param.work_loc_shikuchouson}'
-				    
+
 				/*
 				 * 				var app_store_name = '${param.app_store_name}',
 					app_company_name = '${param.app_company_name}',
@@ -174,7 +120,7 @@
 					app_work_loc_shikuchouson = '${param.app_work_loc_shikuchouson}',
 					app_access_todofuken = '${param.app_access_todofuken}',
 					app_access_train_company = '${param.app_access_train_company}',
-					app_access_train_line = '${param.app_access_train_line}', 
+					app_access_train_line = '${param.app_access_train_line}',
 					app_access_train_station = '${param.app_access_train_station}',
 					app_access_from_station = '${param.app_access_from_station}',
 					app_access_by = '${param.app_access_by}',
@@ -194,22 +140,22 @@
 					app_admin_comment = '${param.app_admin_comment}',
 					app_store_term = '${param.app_store_term}';
 
-				document.getElementById("txt_store_name").value = app_store_name;		
+				document.getElementById("txt_store_name").value = app_store_name;
 				document.getElementById("txt_company_name").value = app_company_name;
 				document.getElementById("txt_company_furigana").value = app_company_furigana;
-				 * 
+				 *
 				 * */
 				document.getElementById("txt_store_name").value = store_name;
 				document.getElementById("txt_store_manager").value = store_manager;
-				document.getElementById("txt_store_group").value = store_group;	
+				document.getElementById("txt_store_group").value = store_group;
 				document.getElementById("txt_store_area").value = store_area;
 				document.getElementById("txt_work_loc_todoufuken").value = work_loc_todoufuken;
 				document.getElementById("txt_work_loc_shikuchouson").value = work_loc_shikuchouson;
-				
+
 		    }
-		    
-		    
-		    
+
+
+
 	 function getSelecterJson(fromSelecter,toSelecter,url){
 		    var prefSelect = document.getElementById(fromSelecter);
 			var index = prefSelect.selectedIndex;
@@ -218,15 +164,15 @@
               selected = prefSelect.options[index].value;
             }
            url = url + selected;
-            
+
             var request = new XMLHttpRequest();
             request.onreadystatechange = function() {
-				if (request.readyState == 4 && request.status == 200) {		 
+				if (request.readyState == 4 && request.status == 200) {
 				    var jsonArray =  JSON.parse(request.responseText);
-				    var select = document.getElementById(toSelecter); 
+				    var select = document.getElementById(toSelecter);
                         while (select.options.length) {
                            select.remove(0);
-                         }   
+                         }
                       var initOption = document.createElement('option');
                        initOption.setAttribute('value','');
 					   initOption.innerHTML = '選択してください';
@@ -236,14 +182,14 @@
 					   option.setAttribute('value',(jsonArray[i].id));
 					   option.innerHTML = jsonArray[i].name;
 					   select.appendChild(option);
-						
+
 					}
 				}
 	       }
             request.open("GET", url, true);
             request.send("");
 		}
-			
+
 		</script>
 
 		<script>
@@ -262,10 +208,10 @@
 				var input_one_page_limit = setParam("one_page_limit",one_page_limit);
 				var input_search_mode = setParam("search_mode",searchMode);
 				var f = document.createElement("form");
-				
+
 				if (searchMode == true) {
 					setSearchFormDatas(f);
-				} 
+				}
 				f.setAttribute('method',"post");
 				f.setAttribute('action',"/setting_store/" + page_num);
 				f.appendChild(input_from_which);
@@ -275,16 +221,16 @@
                 bodyElement.append(f);
 				f.submit();
 			}
-			
+
 			function moveToSettingStoreUpd(id){
 				var pageNum = pageNumDesStr;
 				var inputOnePageLimit = setParam("one_page_limit",onePageLimit);
 				var inputId           = setParam("app_store_id",id);
 				var inputPageNum      = setParam("page_num",pageNum);
 				var fromWhichInput         = setParam("from_which","setting_store");
-				
+
 				var f = document.createElement("form");
-				
+
 				f.setAttribute('method',"post");
 				f.setAttribute('action',"/setting_store_upd");
 				f.appendChild(inputOnePageLimit);
@@ -294,9 +240,9 @@
 				var bodyElement = document.body ;
                 bodyElement.append(f);
 				f.submit();
-							
+
 		    }
-			
+
 			function onePageLimit(){
 				//alert("!!!!!!!!! onePageLimit()!!!!");
 				makeStoreFormToServlet("one_page_limit",getPageNumDes(), document.activeElement.value);
@@ -313,7 +259,7 @@
 			}
 			function setSearchFormDatas(f) {
 				var app_store_name = document.getElementById("txt_store_name").value;
-	
+
 				var app_store_manager = document.getElementById("txt_store_manager").value;
 
 				var app_group = document.getElementById("txt_store_group").value;
@@ -339,7 +285,7 @@
 			}
 
 		    			//redirect to confirmation page
-			function sendSearchData() {			
+			function sendSearchData() {
 			 	var fromWhichInput = setParam("from_which","setting_store_search");
 			 	var input_search_mode = setParam("search_mode","true");
 			    var f = document.createElement("form");
@@ -352,13 +298,13 @@
                 bodyElement.append(f);
                 f.submit();
 			}
-			
+
 			//以下はデータ取得メソッド
 			function getPageNumDes(){
 				//return pageNumDesStr;
 				return "1";
 		    }
-		    
+
 		    function get_total_selected_rad(){
 				var rad = document.getElementsByName("cb_data");
 				var counter = 0;
@@ -374,8 +320,8 @@
 			function delete_per_line(index){
 				var del_conf = confirm("削除します。よろしいですか？");
 
-				if (del_conf == true) 
-					toDeleteServlet(index);	
+				if (del_conf == true)
+					toDeleteServlet(index);
 			}
 
 			function delete_all_line(){
@@ -391,14 +337,14 @@
 							if(rad[i].checked == true){
 								index[counter] = rad[i].value;
 								deleteArr = deleteArr + ','+rad[i].value;
-								counter ++;			
+								counter ++;
 							}
 						}
 
 						/*for (var i = 0; i < counter; i++) {
 							$("#row_" + index[i]).remove();
 						};*/
-						
+
 
 						if(counter > 0){
 						    toDeleteServlet(deleteArr);
@@ -408,9 +354,9 @@
 					}
 				}
 				else
-					alert("削除処理対象を選択してください。");		
-			}			
-			
+					alert("削除処理対象を選択してください。");
+			}
+
 			function toDeleteServlet(deleteArr){
 				inputDeleteArr = setParam('delete_id_arr',deleteArr);
 				var inputPageNumStr = setParam('pageNumStr','<%=pageNumStr%>');
@@ -431,7 +377,7 @@
 					if (rad_all.checked == true)
 						rad[i].checked = true;
 					else
-						rad[i].checked = false;					
+						rad[i].checked = false;
 				}
 			}
 			function clear_check_all(){
@@ -439,16 +385,14 @@
 				document.getElementById("cb_data_x").checked = false;
 				for (var i = 0; i < rad.length; i++)
 					rad[i].checked = false;
-			}		    
-		    
-		    
-		    
+			}
+
   </script>
  </head>
  <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>">
   <div class="wrapper">
-   <jsp:include page="/WEB-INF/views/common/top_bar.jsp" flush="false" />
-   <jsp:include page="/WEB-INF/views/common/side_bar.jsp" flush="false" />
+   <%= render partial: "common/top_bar" %>
+   <%= render partial: "common/side_bar" %>
    <div class="content-wrapper">
     <section class="content-header">
      <h1>店舗設定</h1>
@@ -487,18 +431,18 @@
            	 <label style="font-size: 12px;">担当者</label>
            	 <select class="form-control" id="txt_store_manager">
            	  <option value="">選択してください。</option>
-           	  <%for(int i= 0; i < accountObjArray.length;i++){%>
-           	  <option value="<%=accountObjArray[i].getId()%>"><%=accountObjArray[i].getFullname()%></option>
-           	  <%}%>
+           	  <% @accountObjArray.each do |account| %>
+           	    <option value="<%=account.id%>"><%=account.fullname%></option>
+           	  <% end %>
            	 </select>
            	</div>
            	<div class="col-md-4 col-xs-12">
            	 <label style="font-size: 12px;">グループ</label>
            	 <select class="form-control" id="txt_store_group">
            	  <option value="">選択してください。</option>
-           	  <%for(int i = 0; i < groupObjArray.length;i++){%>
-           	  <option value="<%=groupObjArray[i].getId()%>"><%=groupObjArray[i].getName()%></option>
-           	  <%}%>
+           	  <% @groupObjArray.each do |group| %>
+           	    <option value="<%=group.id%>"><%=group.name%></option>
+           	  <% end %>
            	 </select>
            	</div>
            </div>
@@ -509,27 +453,27 @@
            	 <label>エリア</label>
            	 <select class="form-control" id="txt_store_area"  onChange="getSelecterJson('txt_store_area','txt_work_loc_todoufuken','/get_prefecture?area=')">
            	  <option value="">選択してください。</option>
-           	  <%for(int i= 0; i < areaObjArray.length;i++){%>
-           	  <option value="<%=areaObjArray[i].getId()%>"><%=areaObjArray[i].getName()%></option>
-           	  <%}%>
+           	  <% @areaObjArray.each do |area| %>
+           	    <option value="<%=area.id%>"><%=area.name%></option>
+           	  <% end %>
            	 </select>
            	</div>
            	<div class="col-md-4 col-xs-12">
            	 <label>都道府県</label>
            	 <select class="form-control" id="txt_work_loc_todoufuken" onChange="getSelecterJson('txt_work_loc_todoufuken','txt_work_loc_shikuchouson','/get_city?pref=')">
            	  <option value=""></option>
-           	  <%for(int i= 0; i < prefObjArray.length;i++){%>
-           	  <option value="<%=prefObjArray[i].getId()%>"><%=prefObjArray[i].getName()%></option>
-           	  <%}%>
+           	  <% @prefObjArray.each do |pref| %>
+           	    <option value="<%=pref.id%>"><%=pref.name%></option>
+           	  <% end %>
            	 </select>
            	</div>
            	<div class="col-md-4 col-xs-12">
            	 <label>市区町村</label>
            	 <select class="form-control" id="txt_work_loc_shikuchouson">
            	  <option value=""></option>
-           	  <%for(int i= 0; i < cityObjArray.length;i++){%>
-           	  <option value="<%=cityObjArray[i].getId()%>"><%=cityObjArray[i].getName()%></option>
-           	  <%}%>
+           	  <% @cityObjArray.each do |city| %>
+           	  <option value="<%=city.id%>"><%=city.name%></option>
+           	  <% end %>
            	 </select>
            	</div>
            </div>
@@ -562,21 +506,16 @@
        <div class="row">
         <div class="col-md-12 col-xs-12 text-center">
          <ul class="pagination">
-          <% if (highPrefEnableFlg) { %>  <li id ="non_selected_list"><a href="#" onClick="moveList(<%=highPreNum%>); return false;"><<</a></li>  <% }%>
-          <% if (prefEnableFlg) { %>      <li id ="non_selected_list"><a href="#" onClick="moveList(<%=preNum%>); return false;"><</a></li>   <% }%>
-          <% if (pageNum >= 10) { %>
-          <li id ="non_selected_list"><a href="#" onClick="moveList(1); return false;">1</a></li>
-          <li id ="omission_list"><a href="javascript:void(0)" >...</a></li>
-          <% }
-          for (int i = startPageNum; i <= endPageNum; i++) {
-          if (i == pageNum) { %>
-          <li class="active" id ="selected_list"><a href="javascript:void(0)" ><%=i%></a></li>
-          <% } else {%>
-          <li id ="non_selected_list"><a href="#" onClick="moveList(<%=i%>); return false;"><%=i%></a></li>
-          <%}
-          } %>
-          <% if (nextEnableFlg) { %>  <li id ="non_selected_list"><a href="#" onClick="moveList(<%=nextNum%>); return false;">></a></li>  <% }%>
-          <% if (highNextEnableFlg) { %><li id ="non_selected_list"><a href="#" onClick="moveList(<%=highNextNum%>); return false;">>></a></li>  <% }%>
+          <% if highPrefEnableFlg %>
+            <li id ="non_selected_list"><a href="#" onClick="moveList(<%=highPreNum%>); return false;"><<</a></li>
+          <% end %>
+          <% if prefEnableFlg %>
+            <li id ="non_selected_list"><a href="#" onClick="moveList(<%=preNum%>); return false;"><</a></li>
+          <% end %>
+          <% if pageNum >= 10 %>
+            <li id ="non_selected_list"><a href="#" onClick="moveList(1); return false;">1</a></li>
+            <li id ="omission_list"><a href="javascript:void(0)" >...</a></li>
+          <% end %>
          </ul>
         </div>
        </div>
@@ -613,40 +552,40 @@
        	    </tr>
        	   </thead>
        	   <tbody>
-       	    <% for(int i = 0 ; i < storeArray.length;i++){if(null!=storeArray[i]){%>
+       	    <% @storeArray.each do |store| %>
        	     <tr id="row_0">
        	      <th style="font-size:12px;" scope="row">
        	       <center>
        	       	<label class="switch">
-       	       	 <input class="input_form_field_radio" name="cb_data" id="cb_data_2" value='<%=storeArray[i].getId()%>' type="checkbox"/>
+       	       	 <input class="input_form_field_radio" name="cb_data" id="cb_data_2" value='<%=store.id%>' type="checkbox"/>
        	       	 <span class="slider round"></span>
        	       	</label>
        	       </center>
        	      </th>
-       	      <td style="font-size:12px;" data-title="店舗ID"><%=storeArray[i].getId()%></td>
+       	      <td style="font-size:12px;" data-title="店舗ID"><%=store.id%></td>
        	      <td style="font-size:12px;" data-title="店舗マスタ名">
-       	       <a href="javascript:void(0)" onclick="moveToSettingStoreUpd(<%=storeArray[i].getId()%>)"><%=storeArray[i].getName()%></a>
+       	       <a href="javascript:void(0)" onclick="moveToSettingStoreUpd(<%=store.id%>)"><%=store.name%></a>
        	      </td>
-       	      <td style="font-size:12px;" data-title="グループ"><%=storeArray[i].getStoreGroupStr()%></td>
-       	      <td style="font-size:12px;" data-title="担当者"><%=storeArray[i].getManagersStr()%></td>
+       	      <td style="font-size:12px;" data-title="グループ"><%= SGroup.where(id: store.store_group.to_i).first.name %></td>
+       	      <td style="font-size:12px;" data-title="担当者"><%= SGroup.where(id: store.store_manager.to_i) %></td>
 
        	      <%
-       	       String created = (String)storeArray[i].getCreatedAt();
-       	       String finalCreated = created.substring(0, 16);
+       	       created = Common.make_japanese_time(store.created_at)
+       	       finalCreated = created.slice(0, 16)
 
-       	       String updated = (String)storeArray[i].getUpdatedAt();
-       	       String finalUpdated = updated.substring(0, 16);
+       	       updated = Common.make_japanese_time(store.updated_at)
+       	       finalUpdated = updated.slice(0, 16)
        	      %>
 
        	      <td style="font-size:12px;" data-title="作成日 / 最終更新日"><%=finalCreated%><br/><%=finalUpdated%></td>
        	      <td style="font-size:12px;" data-title="操作">
        	       <div class="text-center">
-       	       	<a id="edit_row_0" href="javascript:void(0)" onclick="moveToSettingStoreUpd(<%=storeArray[i].getId()%>)">編集</a> | 
-       	       	<a id="delete_row_2" href="javascript:void(0)" onclick="delete_per_line('<%=storeArray[i].getId()%>')">削除</a>
+       	       	<a id="edit_row_0" href="javascript:void(0)" onclick="moveToSettingStoreUpd(<%=store.id%>)">編集</a> |
+       	       	<a id="delete_row_2" href="javascript:void(0)" onclick="delete_per_line('<%=store.id%>')">削除</a>
        	       </div>
        	      </td>
        	     </tr>
-       	    <%} } %>
+       	    <% end %>
        	   </tbody>
        	  </table>
        	 </div>
@@ -669,21 +608,29 @@
        <div class="row">
         <div class="col-md-12 col-xs-12 text-center">
          <ul class="pagination">
-          <% if (highPrefEnableFlg) { %>  <li id ="non_selected_list"><a href="#" onClick="moveList(<%=highPreNum%>); return false;"><<</a></li>  <% }%>
-          <% if (prefEnableFlg) { %>      <li id ="non_selected_list"><a href="#" onClick="moveList(<%=preNum%>); return false;"><</a></li>   <% }%>
-          <% if (pageNum >= 10) { %>
-          <li id ="non_selected_list"><a href="#" onClick="moveList(1); return false;">1</a></li>
-          <li id ="omission_list"><a href="javascript:void(0)" >...</a></li>
-          <% } 
-          for (int i = startPageNum; i <= endPageNum; i++) {
-          if (i == pageNum) { %>
-          <li class="active" id ="selected_list"><a href="javascript:void(0)" ><%=i%></a></li>
-          <% } else {%>
-          <li id ="non_selected_list"><a href="#" onClick="moveList(<%=i%>); return false;"><%=i%></a></li>
-          <%}
-          } %>
-          <% if (nextEnableFlg) { %>  <li id ="non_selected_list"><a href="#" onClick="moveList(<%=nextNum%>); return false;">></a></li>  <% }%>
-          <% if (highNextEnableFlg) { %><li id ="non_selected_list"><a href="#" onClick="moveList(<%=highNextNum%>); return false;">>></a></li>  <% }%>
+          <% if highPrefEnableFlg %>
+            <li id ="non_selected_list"><a href="#" onClick="moveList(<%=highPreNum%>); return false;"><<</a></li>
+          <% end %>
+          <% if prefEnableFlg %>      <li id ="non_selected_list"><a href="#" onClick="moveList(<%=preNum%>); return false;"><</a></li>
+          <% end %>
+          <% if pageNum >= 10 %>
+            <li id ="non_selected_list"><a href="#" onClick="moveList(1); return false;">1</a></li>
+            <li id ="omission_list"><a href="javascript:void(0)" >...</a></li>
+          <% end %>
+          <%
+          endPageNum.times do |i|
+            if (i == pageNum) %>
+              <li class="active" id ="selected_list"><a href="javascript:void(0)" ><%=i%></a></li>
+            <% else %>
+              <li id ="non_selected_list"><a href="#" onClick="moveList(<%=i%>); return false;"><%=i%></a></li>
+            <% end %>
+          <% end %>
+          <% if nextEnableFlg %>
+            <li id ="non_selected_list"><a href="#" onClick="moveList(<%=nextNum%>); return false;">></a></li>
+          <% end %>
+          <% if highNextEnableFlg %>
+            <li id ="non_selected_list"><a href="#" onClick="moveList(<%=highNextNum%>); return false;">>></a></li>
+          <% end %>
          </ul>
         </div>
        </div>
@@ -691,7 +638,7 @@
      </div>
     </section>
    </div>
-   <jsp:include page="/WEB-INF/views/common/footer.jsp" flush="false" />
+   <%= render partial: "common/footer" %>
   </div>
   <script src="/dist/js/jquery.js"></script>
   <script src="/dist/js/bootstrap.js"></script>

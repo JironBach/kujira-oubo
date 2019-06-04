@@ -1,9 +1,20 @@
 <%
-  sidebar_collapse  = cookies["nonsidebar-collapse"]
+  sidebar_collapse = cookies["nonsidebar-collapse"]
+  @siteObj = MSite.where(id: params['app_id'].to_i).first #params["siteObj"]
 %>
 <!DOCTYPE html>
 <html>
  <head>
+  <style>
+   .non_select {
+	-webkit-appearance: none;/* ベンダープレフィックス(Google Chrome、Safari用) */
+	-moz-appearance: none;	/* ベンダープレフィックス(Firefox用) */
+	appearance: none;		/* 標準のスタイルを無効にする */
+   }
+   ::-ms-expand {		/* select要素のデザインを無効にする（IE用） */
+	display: none;
+   }
+  </style>
   <%= render partial: "common/index_header" %>
   <title>くじら応募</title>
   <script>
@@ -54,16 +65,31 @@
 
 			//function take get_parameter from link
 			function take_get_parameter(){
-				var app_site_id = '${param.app_site_id}',
-					app_job_offer_name = '',
-					app_id = '',
-					app_password = '',
-					app_url = '',
+				var app_id = '', app_site_id = '', app_job_offer_name = '',	app_user_id = '', app_password = '', app_url = '', app_no_scraping_flg = '';
+
+				if('${param.from_which}' == 'back'){
+					app_id       =  '${param.app_id}',
+					app_site_id = '${param.app_site_id}',
+					app_job_offer_name = '${param.app_job_offer_name}',
+					app_user_id = '${param.app_user_id}',
+					app_password = '${param.app_password}',
+					app_url = '${param.app_url}',
 					app_no_scraping_flg = '${param.app_no_scraping_flg}';
+
+			    }else{
+					app_id       =  '<%=@siteObj.id%>',
+					app_site_id = '<%=@siteObj.recruitment_site_id%>', //debug
+					app_job_offer_name = '<%=@siteObj.name%>',
+					app_user_id = '<%=@siteObj.user_id%>',
+					app_password = '<%=@siteObj.password%>',
+					app_url = '<%=@siteObj.url%>',
+					app_no_scraping_flg = '<%=@siteObj.no_scraping_flg%>';
+
+			    }
 
 				document.getElementById("cmb_site_id").value = app_site_id;
 				document.getElementById("txt_job_offer_name").value = app_job_offer_name;
-				document.getElementById("txt_id").value = app_id;
+				document.getElementById("txt_id").value = app_user_id;
 				document.getElementById("txt_password").value = app_password;
 				document.getElementById("txt_url").value = app_url;
 				document.getElementById("cmb_no_scraping_flg").value = app_no_scraping_flg;
@@ -97,6 +123,9 @@
     				return;
     			}
 
+    			var id = '${param.app_id}';
+    			var inputId = setParam('app_id',id);
+
     			var inputSiteId = setParam('app_site_id',document.getElementById('cmb_site_id').value);
 
     			var select_box = document.getElementById( "cmb_site_id" ) ;
@@ -107,14 +136,38 @@
     			var job_offer_name = document.getElementById("txt_job_offer_name").value;
 				var inputJobOfferName = setParam('app_job_offer_name',job_offer_name);
 
-				var id = document.getElementById("txt_id").value;
-				var inputId = setParam('app_id',id);
+				var userId = document.getElementById("txt_id").value;
+				var inputUserId = setParam('app_user_id',userId);
 
 				var password = document.getElementById("txt_password").value;
 				var inputPassword = setParam('app_password',password);
 
+				var extra1 = '${param.app_extra1}';
+				if(extra1 == ""){
+					extra1 = '<%=@siteObj.extra1%>'
+				}
+    			var inputExtra1 = setParam('app_extra1',extra1);
+
+    			var extra2 = '${param.app_extra2}';
+    			if(extra2 == ""){
+					extra2 = '<%=@siteObj.extra2%>'
+				}
+    			var inputExtra2 = setParam('app_extra2',extra2);
+
+    			var extra3 = '${param.app_extra3}';
+    			if(extra3 == ""){
+					extra3 = '<%=@siteObj.extra3%>'
+				}
+    			var inputExtra3 = setParam('app_extra3',extra3);
+
 				var url = document.getElementById("txt_url").value;
 				var inputUrl = setParam('app_url',url);
+
+				var enterpriseCnt = '${param.app_enterprise_cnt}';
+				if(enterpriseCnt == ""){
+					enterpriseCnt = '<%=@siteObj.enterprise_cnt%>'
+				}
+    			var inputEnterpriseCnt = setParam('app_enterprise_cnt',enterpriseCnt);
 
 				var inputNoScrapingFlg = setParam('app_no_scraping_flg',document.getElementById('cmb_no_scraping_flg').value);
 
@@ -123,17 +176,43 @@
     			var no_scraping_txt = select_box.options[idx].text;
     			var inputNoScrapingTxt = setParam('app_no_scraping_txt',no_scraping_txt);
 
+    			var orderKey = '${param.app_order_key}';
+    			if(orderKey == ""){
+					orderKey = '<%=@siteObj.order_key%>'
+				}
+    			var inputOrderKey = setParam('app_order_key',orderKey);
+
+    			var scrapingId = '${param.app_scraping_id}';
+    			if(scrapingId == ""){
+					scrapingId = '<%=@siteObj.scraping_id%>'
+				}
+    			var inputScrapingId = setParam('app_scraping_id',scrapingId);
+
+    			var delFlg = '${param.app_del_flg}';
+    			if(delFlg == ""){
+					delFlg = '<%=@siteObj.del_flg%>'
+				}
+    			var inputDelFlg = setParam('app_del_flg',delFlg);
+
 				var f = document.createElement("form");
                 f.setAttribute('method',"post");
-                f.setAttribute('action',"/setting_site_create_conf");
+                f.setAttribute('action',"/setting_site_upd_conf");
+                f.appendChild(inputId);
                 f.appendChild(inputSiteId);
                 f.appendChild(inputSiteName);
                 f.appendChild(inputJobOfferName);
-                f.appendChild(inputId);
+                f.appendChild(inputUserId);
                 f.appendChild(inputPassword);
+                f.appendChild(inputExtra1);
+                f.appendChild(inputExtra2);
+                f.appendChild(inputExtra3);
                 f.appendChild(inputUrl);
+                f.appendChild(inputEnterpriseCnt);
                 f.appendChild(inputNoScrapingFlg);
                 f.appendChild(inputNoScrapingTxt);
+                f.appendChild(inputOrderKey);
+                f.appendChild(inputScrapingId);
+                f.appendChild(inputDelFlg);
 
 				var bodyElement = document.body ;
                 bodyElement.append(f);
@@ -190,7 +269,8 @@
 					if (txt_conf_password == "") {
 						$("#div_conf_password_error").html("パスワード（確認用）は必須です。");
 						status = 1;
-					} else {
+					}
+					else {
 						if (txt_conf_password != txt_password) {
 							$("#div_conf_password_error").html("確認用のパスワードが間違っています。");
 							status = 1;
@@ -214,7 +294,7 @@
 
   </script>
  </head>
- <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>" id="check">
+ <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>" style="line-height:normal" id="check">
   <div class="wrapper">
    <%= render partial: "common/top_bar" %>
    <%= render partial: "common/side_bar" %>
@@ -231,7 +311,7 @@
      <div class="row">
       <section class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
        <div class="callout callout-warning">
-        <h4 style="font-size:16px;">求人掲載サイト登録</h4>
+        <h4 style="font-size:16px;">求人掲載サイト編集</h4>
        </div>
        <div class="row">
        	<div class="col-md-12 col-xs-12">
@@ -240,9 +320,10 @@
        	  <div class="box-body">
        	   <div class="form-group">
        	   	<h6 class="col-lg-2 col-md-3 col-sm-12 col-xs-12" style="font-size:12px;">掲載サイト</h6>
-       	   	<h6 class="col-lg-1 col-md-1 col-sm-12 col-xs-12 text-center"><span style="font-size:10px; background-color: #d9534f; border-color: #d43f3a; padding:3px; border-radius: 3px; color: #fff;">必須</span></h6>
+       	   	<!-- <h6 class="col-lg-1 col-md-1 col-sm-12 col-xs-12 text-center"><span style="font-size:10px; background-color: #d9534f; border-color: #d43f3a; padding:3px; border-radius: 3px; color: #fff;">必須</span></h6> -->
+       	   	<h6 class="col-lg-1 col-md-1 col-sm-12 col-xs-12 text-center"></h6>
        	   	<div class="col-md-4 col-xs-12">
-       	   	 <select id="cmb_site_id" class="form-control" onchange="change_site()">
+       	   	 <select id="cmb_site_id" class="form-control non_select" onchange="change_site()"  disabled="true">
        	   	  <option value="">選択してください</option>
        	   	  <% @recruitmentSiteArray.each do |recruitmentSite| %>
        	   	    <option value="<%=recruitmentSite.id%>" data-type="<%=recruitmentSite.scraping_type%>" data-url="<%=recruitmentSite.url%>"><%=recruitmentSite.site_name%></option>

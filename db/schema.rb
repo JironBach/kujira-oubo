@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190603125357) do
+ActiveRecord::Schema.define(version: 20190604000857) do
 
   create_table "account", id: :integer, default: nil, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "password"
@@ -29,6 +29,15 @@ ActiveRecord::Schema.define(version: 20190603125357) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "delete_flg", default: 0
+  end
+
+  create_table "app_settings", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "company_name"
+    t.string "contact_email"
+    t.string "contact_tel"
+    t.string "reception_time"
+    t.string "mail_footer", limit: 4000
+    t.integer "id"
   end
 
   create_table "app_status", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -58,11 +67,11 @@ ActiveRecord::Schema.define(version: 20190603125357) do
   end
 
   create_table "applicants_info", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "id", null: false
     t.integer "unread_count", default: 0, null: false
     t.integer "deadline_count", default: 0, null: false
     t.integer "out_deadline_count", default: 0, null: false
     t.integer "today_interview_count", default: 0, null: false
-    t.integer "id"
   end
 
   create_table "area", id: :integer, default: nil, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -96,6 +105,14 @@ ActiveRecord::Schema.define(version: 20190603125357) do
     t.integer "status", default: 0
     t.integer "capture_num", default: 0
     t.string "message"
+  end
+
+  create_table "blacklist", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci" do |t|
+    t.string "name", limit: 200
+    t.string "mail", limit: 200
+    t.string "mail2", limit: 200
+    t.string "tel", limit: 200
+    t.string "tel2", limit: 200
   end
 
   create_table "brand", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -233,7 +250,7 @@ ActiveRecord::Schema.define(version: 20190603125357) do
     t.integer "enable_fri", default: 0
     t.integer "enable_sat", default: 0
     t.integer "enable_sun", default: 0
-    t.string "enable_week_memo", limit: 1000, default: ""
+    t.string "enable_week_memo", limit: 1024, default: ""
     t.integer "enable_morning", default: 0
     t.integer "enable_noon", default: 0
     t.integer "enable_evening", default: 0
@@ -241,14 +258,15 @@ ActiveRecord::Schema.define(version: 20190603125357) do
     t.integer "enable_only_earlymorning", default: 0
     t.integer "enable_only_noon", default: 0
     t.integer "enable_only_night", default: 0
-    t.string "enable_time_memo", limit: 1000, default: ""
+    t.string "enable_time_memo", limit: 1024, default: ""
     t.integer "final_education", default: -1
     t.datetime "gradu_date"
     t.string "school_name", limit: 510, default: ""
     t.string "school_subject", limit: 510, default: ""
-    t.string "experience_job", limit: 1000, default: ""
-    t.string "qualify", limit: 1000, default: ""
-    t.string "self_pr", limit: 1000, default: ""
+    t.string "experience_job", limit: 1024, default: ""
+    t.string "qualify", limit: 1024, default: ""
+    t.string "self_pr", limit: 2048, default: ""
+    t.string "remarks", limit: 2048, default: ""
     t.integer "read_flg", default: 0
     t.integer "dup", default: 0
     t.integer "del_flg", default: 0
@@ -268,6 +286,7 @@ ActiveRecord::Schema.define(version: 20190603125357) do
   end
 
   create_table "m_site", id: :integer, default: nil, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "recruitment_site_id", null: false
     t.string "name", limit: 100, null: false
     t.string "sub_name", limit: 100, default: "", null: false
     t.string "user_id", limit: 100, null: false
@@ -283,7 +302,7 @@ ActiveRecord::Schema.define(version: 20190603125357) do
     t.integer "del_flg", default: 0
   end
 
-  create_table "m_store_term", primary_key: "store_term", id: :string, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "m_store_term", primary_key: "store_term", id: :string, limit: 128, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "store", null: false
   end
 
@@ -320,11 +339,9 @@ ActiveRecord::Schema.define(version: 20190603125357) do
     t.integer "id"
   end
 
-  create_table "recruitment_site", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci" do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "site_name", null: false
-    t.string "url", null: false
+  create_table "recruitment_site", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "site_name", limit: 100, null: false
+    t.string "url", limit: 200, null: false
     t.integer "scraping_type"
     t.integer "order_key"
     t.integer "del_flg", default: 0
@@ -396,8 +413,8 @@ ActiveRecord::Schema.define(version: 20190603125357) do
     t.string "telephone_2", default: ""
     t.string "telephone_comment", default: ""
     t.string "telephone_more_comment", default: ""
-    t.string "admin_comment", default: ""
-    t.string "store_term", default: ""
+    t.string "admin_comment", limit: 1024, default: ""
+    t.string "store_term", limit: 2048, default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "ip", default: ""
@@ -471,6 +488,102 @@ ActiveRecord::Schema.define(version: 20190603125357) do
     t.integer "manager", null: false
   end
 
+  create_table "template_parameter", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "identification_character", limit: 16
+    t.string "template_name", default: ""
+    t.integer "media_name", default: 13
+    t.string "recruit_title", default: ""
+    t.string "job_category", default: ""
+    t.string "store_name", default: ""
+    t.string "name_disp_title", default: "名前"
+    t.integer "name_disp_type", default: 1
+    t.integer "name_disp_priority", default: 0
+    t.integer "name_anyItem_flg", default: 0
+    t.integer "name_close_flg", default: 0
+    t.string "furigana_disp_title", default: "ふりがな"
+    t.integer "furigana_disp_type", default: 1
+    t.integer "furigana_disp_priority", default: 1
+    t.integer "furigana_anyItem_flg", default: 0
+    t.integer "furigana_close_flg", default: 0
+    t.string "gender_disp_title", default: "性別"
+    t.integer "gender_disp_type", default: 3
+    t.integer "gender_disp_priority", default: 2
+    t.integer "gender_anyItem_flg", default: 0
+    t.integer "gender_close_flg", default: 0
+    t.string "tel1_disp_title", default: "電話番号１"
+    t.integer "tel1_disp_type", default: 1
+    t.integer "tel1_disp_priority", default: 3
+    t.integer "tel1_anyItem_flg", default: 0
+    t.integer "tel1_close_flg", default: 0
+    t.string "tel2_disp_title", default: "電話番号２"
+    t.integer "tel2_disp_type", default: 1
+    t.integer "tel2_disp_priority", default: 4
+    t.integer "tel2_anyItem_flg", default: 0
+    t.integer "tel2_close_flg", default: 0
+    t.string "mail1_disp_title", default: "メールアドレス１"
+    t.integer "mail1_disp_type", default: 1
+    t.integer "mail1_disp_priority", default: 5
+    t.integer "mail1_anyItem_flg", default: 0
+    t.integer "mail1_close_flg", default: 0
+    t.string "mail2_disp_title", default: "メールアドレス２"
+    t.integer "mail2_disp_type", default: 1
+    t.integer "mail2_disp_priority", default: 6
+    t.integer "mail2_anyItem_flg", default: 0
+    t.integer "mail2_close_flg", default: 0
+    t.string "address_disp_title", default: "住所"
+    t.integer "address_disp_type", default: 2
+    t.integer "address_disp_priority", default: 7
+    t.integer "address_anyItem_flg", default: 0
+    t.integer "address_close_flg", default: 0
+    t.string "birthday_disp_title", default: "生年月日"
+    t.integer "birthday_disp_type", default: 5
+    t.integer "birthday_disp_priority", default: 8
+    t.integer "birthday_anyItem_flg", default: 0
+    t.integer "birthday_close_flg", default: 0
+    t.string "current_job_disp_title", default: "現在の職業"
+    t.integer "current_job_disp_type", default: 4
+    t.integer "current_job_disp_priority", default: 9
+    t.integer "current_job_anyItem_flg", default: 0
+    t.integer "current_job_close_flg", default: 0
+    t.string "graduate_date_disp_title", default: "卒業年月日"
+    t.integer "graduate_date_disp_type", default: 5
+    t.integer "graduate_date_disp_priority", default: 10
+    t.integer "graduate_date_anyItem_flg", default: 0
+    t.integer "graduate_date_close_flg", default: 0
+    t.string "school_name_disp_title", default: "学校名"
+    t.integer "school_name_disp_type", default: 1
+    t.integer "school_name_disp_priority", default: 11
+    t.integer "school_name_anyItem_flg", default: 0
+    t.integer "school_name_close_flg", default: 0
+    t.string "major_disp_title", default: "専攻"
+    t.integer "major_disp_type", default: 1
+    t.integer "major_disp_priority", default: 12
+    t.integer "major_anyItem_flg", default: 0
+    t.integer "major_close_flg", default: 0
+    t.string "experience_disp_title", default: "経験の有無"
+    t.integer "experience_disp_type", default: 3
+    t.integer "experience_disp_priority", default: 13
+    t.integer "experience_anyItem_flg", default: 0
+    t.integer "experience_close_flg", default: 0
+    t.string "qualification_disp_title", default: "資格"
+    t.integer "qualification_disp_type", default: 2
+    t.integer "qualification_disp_priority", default: 14
+    t.integer "qualification_anyItem_flg", default: 0
+    t.integer "qualification_close_flg", default: 0
+    t.string "self_pr_disp_title", default: "自己ＰＲ"
+    t.integer "self_pr_disp_type", default: 2
+    t.integer "self_pr_disp_priority", default: 15
+    t.integer "self_pr_anyItem_flg", default: 0
+    t.integer "self_pr_close_flg", default: 0
+    t.string "reply_mail_address", default: ""
+    t.string "reply_mail_subject", default: ""
+    t.string "reply_mail_content", limit: 2000, default: ""
+    t.integer "close_flg", default: 0
+    t.integer "delete_flg", default: 0
+    t.integer "max_count", default: 0
+    t.index ["identification_character"], name: "identification_character", unique: true
+  end
+
   create_table "train_company", id: :integer, default: nil, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name", default: ""
     t.integer "prefecture"
@@ -493,10 +606,6 @@ ActiveRecord::Schema.define(version: 20190603125357) do
     t.string "unconfirmed_email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "admin", default: false
-    t.string "failed_attempts"
-    t.string "unlock_token"
-    t.datetime "locked_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

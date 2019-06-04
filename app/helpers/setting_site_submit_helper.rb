@@ -1,0 +1,2 @@
+module SettingSiteSubmitHelper
+end

@@ -1,6 +1,5 @@
 <%
 	sidebar_collapse  = cookies["nonsidebar-collapse"]
-	siteArray = params["siteArray"]
 	#RecruitmentSiteObject[] recruitmentSiteArray = (RecruitmentSiteObject[])request.getAttribute("recruitmentSiteArray");
 
 	onePageLimit = session["one_page_limit"]
@@ -11,9 +10,9 @@
 	searchSite = params["searchSiteStr"].to_i
 
 	maxNum = 0;
-	unless siteArray.nil?
-	  if(siteArray.length > 0)
-	    maxNum = Array.all.count
+	unless @siteArray.nil?
+	  if(@siteArray.length > 0)
+	    maxNum = @siteArray.count
 	  end
 	end
 
@@ -54,7 +53,7 @@
 	end
 
 	startNum = ((pageNum -1 ) * onePageLimit.to_i) + 1; #０件でも１件〜となってしまうため修正要
-	endNum   =  startNum - 1  + (siteArray.nil? ? 1 : siteArray.length)
+	endNum   =  startNum - 1  + (@siteArray.nil? ? 1 : @siteArray.length)
 
 	prefEnableFlg = (pageNum < 2) ? false : true;
 	highPrefEnableFlg = (pageNum < 6) ? false : true;
@@ -334,13 +333,13 @@
            	 <select class="form-control" id="cmbSearchSite" >
            	  <option value="-1"></option>
            	  <% @recruitmentSiteArray.each do |recruitmentSite|%>
-           	  	<option value="<%=recruitmentSiteArray.id%>"><%=recruitmentSiteArray.site_name()%></option>
+           	  	<option value="<%=recruitmentSite.id%>"><%=recruitmentSite.site_name%></option>
            	  <% end %>
            	 </select>
            	</div>
            	<div class="col-md-6 col-xs-12">
            	 <label style="font-size: 12px;">求人案件名</label>
-           	 <input class="form-control" id="txtSearchTitle" type="text" value="<%=searchTitle %>" placeholder="求人案件名" />
+           	 <input class="form-control" id="txtSearchTitle" type="text" value="<%=searchTitle%>" placeholder="求人案件名" />
            	</div>
            </div>
           </div>
@@ -432,34 +431,39 @@
        	    </tr>
        	   </thead>
        	   <tbody>
-       	    <% @siteArray.length.times do |i| %>
+       	    <% @m_siteArray.each do |m_site| %>
        	     <tr id="row_0">
        	      <th style="font-size:12px;" scope="row">
        	       <center>
        	       	<label class="switch">
-       	       	 <input class="input_form_field_radio" name="cb_data" id="cb_data_2" value='<%=siteArray[i].getId()%>' type="checkbox"/>
+       	       	 <input class="input_form_field_radio" name="cb_data" id="cb_data_2" value='<%=m_site.id%>' type="checkbox"/>
        	       	 <span class="slider round"></span>
        	       	</label>
        	       </center>
        	      </th>
-       	      <td style="font-size:12px;" data-title="掲載サイト"><%=siteArray[i].getName()%></td>
-       	      <td style="font-size:12px;" data-title="求人案件名"><%=siteArray[i].getSubName()%></td>
-       	      <td style="font-size:12px;" data-title="ID"><%=siteArray[i].getUserId()%></td>
+       	      <td style="font-size:12px;" data-title="掲載サイト">
+								<% if m_site.recruitment_site_id != 0 %>
+									<%=RecruitmentSite.where(id: m_site.recruitment_site_id.to_i).first.site_name%>
+								<% else %>
+								<% end %>
+							</td>
+       	      <td style="font-size:12px;" data-title="求人案件名"><%=m_site.name%></td>
+       	      <td style="font-size:12px;" data-title="ID"><%#=RecruitmentSite.where(id: m_site.user_id.to_i).first.site_name%></td>
        	      <td style="font-size:16px;" data-title="状態">
-              <% if (siteArray[i].getNoScrapingFlg() == 0) %>
+              <% if m_site.no_scraping_flg == 0 %>
                <center><span class="label label-success">利用中</span></center>
-              <% elsif(siteArray[i].getNoScrapingFlg() == 1) %>
+              <% elsif(m_site.no_scraping_flg == 1) %>
                <center><span class="label label-warning">不利用</span></center>
-              <%　elsif(siteArray[i].getNoScrapingFlg() == 5) %>
+              <% elsif(m_site.no_scraping_flg == 5) %>
                <center><span class="label label-danger">応募者入力</span></center>
-              <% elsif(siteArray[i].getNoScrapingFlg() == 9) %>
+              <% elsif(m_site.no_scraping_flg == 9) %>
                <center><span class="label label-danger">利用不可</span></center>
               <% end %>
               </td>
        	      <td style="font-size:12px;" data-title="操作">
        	       <div class="text-center">
-       	       	<a id="edit_row_2" href="javascript:void(0)" onClick="toUpdServlet('<%=siteArray[i].getId()%>','<%=siteArray[i].getPassword()%>')">編集</a> |
-       	       	<a id="delete_row_2" href="javascript:void(0)" onclick="delete_per_line('<%=siteArray[i].getId()%>')">削除</a>
+       	       	<a id="edit_row_2" href="javascript:void(0)" onClick="toUpdServlet('<%=m_site.id%>','<%=m_site.password%>')">編集</a> |
+       	       	<a id="delete_row_2" href="javascript:void(0)" onclick="delete_per_line('<%=m_site.id%>')">削除</a>
        	       </div>
        	      </td>
        	     </tr>
