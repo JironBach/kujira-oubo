@@ -1,0 +1,2 @@
+module SettingSiteCreateConfHelper
+end

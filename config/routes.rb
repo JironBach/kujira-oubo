@@ -18,6 +18,13 @@ Rails.application.routes.draw do
   get '/setting_site', to: 'setting_site#show'
   get '/setting_site_create', to: 'setting_site_create#show'
   get '/setting_store', to: 'setting_store#show'
+  post '/setting_site_create_conf', to: 'setting_site_create_conf#post'
+  post '/setting_site_submit', to: 'setting_site_submit#post'
+  post '/setting_site_upd', to: 'setting_site_upd#post'
+  post '/setting_site_delete', to: 'setting_site_delete#post'
+  post 'setting_site_upd_conf', to: 'setting_site_upd_conf#post'
+  post '/setting_site_update', to: 'setting_site_update#post'
+  post '/setting_site/:id', to: 'setting_site#post'
 =begin
   devise_for :users
   devise_scope :user do

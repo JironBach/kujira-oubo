@@ -1,0 +1,2 @@
+module SettingSiteUpdHelper
+end

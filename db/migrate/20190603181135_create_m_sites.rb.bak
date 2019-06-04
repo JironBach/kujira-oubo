@@ -1,0 +1,8 @@
+class CreateMSites < ActiveRecord::Migration[5.1]
+  def change
+    create_table :m_sites do |t|
+
+      t.timestamps
+    end
+  end
+end
