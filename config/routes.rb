@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   post '/setting_site_delete', to: 'setting_site_delete#post'
   post 'setting_site_upd_conf', to: 'setting_site_upd_conf#post'
   post '/setting_site_update', to: 'setting_site_update#post'
+  post '/setting_site/:id', to: 'setting_site#post'
 =begin
   devise_for :users
   devise_scope :user do

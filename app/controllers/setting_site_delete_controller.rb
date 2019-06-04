@@ -1,8 +1,12 @@
 class SettingSiteDeleteController < ApplicationController
   def post
-    logger.debug "debug:params=#{params.inspect}"
-
-    MSite.where(id: params['delete_id_arr'].to_i).first.destroy!
+    idArray = params['delete_id_arr'].split(",")
+    idArray.each do |id|
+      begin
+        MSite.where(id: id.to_i).first.destroy!
+      rescue
+      end
+    end
     redirect_to '/setting_site'
   end
 

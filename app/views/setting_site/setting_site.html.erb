@@ -332,7 +332,7 @@
            	 <label style="font-size: 12px;">掲載サイト</label>
            	 <select class="form-control" id="cmbSearchSite" >
            	  <option value="-1"></option>
-           	  <% @recruitmentSiteArray.each do |recruitmentSite|%>
+           	  <% @recruitmentSiteArray.each do |recruitmentSite| %>
            	  	<option value="<%=recruitmentSite.id%>"><%=recruitmentSite.site_name%></option>
            	  <% end %>
            	 </select>
