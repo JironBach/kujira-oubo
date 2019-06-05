@@ -1,6 +1,10 @@
 class Common
-  def self.make_japanese_time(date)
-    date.to_s.slice(0,4)+'年'+date.to_s.slice(5,2)+'月'+date.to_s.slice(8,2)+'日'+date.to_s.slice(11,2)+'時'+date.to_s.slice(14,2)+'分'
+  def self.make_japanese_time(time)
+    time.to_s.slice(0,4)+'年'+time.to_s.slice(5,2)+'月'+time.to_s.slice(8,2)+'日'+time.to_s.slice(11,2)+'時'+time.to_s.slice(14,2)+'分'
+  end
+
+  def self.make_japanese_date(date)
+    date.to_s.slice(0,4)+'年'+date.to_s.slice(5,2)+'月'+date.to_s.slice(8,2)+'日'
   end
 
   def self.encrypt(pass)

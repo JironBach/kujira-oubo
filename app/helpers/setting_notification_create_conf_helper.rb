@@ -1,0 +1,2 @@
+module SettingNotificationCreateConfHelper
+end

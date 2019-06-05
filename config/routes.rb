@@ -35,6 +35,11 @@ Rails.application.routes.draw do
   get '/setting_applicant_display', to: 'setting_applicant_display#show'
   get '/setting_app_status', to: 'setting_app_status#show'
   post '/setting_app_status_create', to: 'setting_app_status_create#post'
+  get '/setting_notification', to: 'setting_notification#show'
+  get '/setting_notification_create', to: 'setting_notification_create#show'
+  post '/setting_notification_create', to: 'setting_notification_create#post'
+  post '/setting_notification_create_conf', to: 'setting_notification_create_conf#post'
+  post '/setting_notification_upd', to: 'setting_notification_upd#post'
 =begin
   devise_for :users
   devise_scope :user do

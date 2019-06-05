@@ -6,8 +6,8 @@
 	onePageLimit = params["one_page_limit"]
 
 	maxNum = 0;
-	if (@storeArray.nil? && @storeArray.length > 0)
-	    maxNum = @storeArray.length
+	if (!@storeArray.nil? && @storeArray.count > 0)
+	    maxNum = @storeArray.count
   end
 	if onePageLimit.nil?
 		onePageLimit = "20";

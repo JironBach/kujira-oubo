@@ -28,8 +28,8 @@
 	endNum = 20;
 	maxNum = 0;
 
-	if (!accountArray.nil? && accountArray.length > 0)
-		maxNum = accountArray[0].getMaxNum();
+	if (!accountArray.nil? && accountArray.count > 0)
+		maxNum = accountArray.count
 
 		startNum = (pageNum-1)*onePageLimitNum + 1;
 		endNum = onePageLimitNum;

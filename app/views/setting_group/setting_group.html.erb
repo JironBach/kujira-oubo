@@ -13,8 +13,8 @@
 	accountObjArray = Account.where(delete_flg: 0).all
 
 	maxNum = 0;
-  if(groupArray.length > 0)
-    maxNum = groupArray.length #[0].getMaxNum();
+  if(!groupArray.count > 0)
+    maxNum = groupArray.count #[0].getMaxNum();
   end
   if (onePageLimit.nil? || (onePageLimit == ""))
 		onePageLimit = "20";
