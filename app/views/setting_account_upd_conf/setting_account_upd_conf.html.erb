@@ -1,11 +1,13 @@
 <%
   sidebar_collapse  = cookies["nonsidebar-collapse"]
+  loginAccountObj = session["loginAccountObj"]
+
   appStore = params["app_store"]
   appGroup = params["app_group"]
   appPosition = params["app_position"]
 
-  #ss = @loginAccountObj.fullname;
-  #pict = ss.slice(0, 1);
+  ss = loginAccountObj'fullname']
+  pict = ss.slice(0, 1);
 %>
 <!DOCTYPE html>
 <html>

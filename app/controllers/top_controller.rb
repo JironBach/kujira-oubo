@@ -3,7 +3,7 @@ class TopController < ApplicationController
     @applicant_info = ApplicantInfo.last
 
     @loginAccountObj = session["loginAccountObj"]
-    @notificationArray = Notification.where(delete_flg: 0).all
+    @notificationArray = Notification.where(delete_flg: 0).:# QUESTION
     @nearDeadLineCount = @applicant_info.nil? ? 0 : @applicant_info.deadline_count
     @outOfDeadLineCount = @applicant_info.nil? ? 0 : @applicant_info.out_deadline_count
     @todayInterviewCount = @applicant_info.nil? ? 0 : @applicant_info.today_interview_count

@@ -1,0 +1,2 @@
+module SettingNotificationCreateHelper
+end

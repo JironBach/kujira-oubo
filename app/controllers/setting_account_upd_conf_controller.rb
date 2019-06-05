@@ -56,7 +56,7 @@ class SettingAccountUpdConfController < ApplicationController
     end
 
     #@accountObj = params["loginAccountObj"].nil? ? session["loginAccountObj"] : params["loginAccountObj"]
-    @loginAccountObj = @accountObj
+    #@loginAccountObj = @accountObj
 
     if !session[:app_id].blank?
       render 'setting_account_upd_conf'

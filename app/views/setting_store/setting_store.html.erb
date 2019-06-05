@@ -2,12 +2,12 @@
   sidebar_collapse  = "nonsidebar-collapse";
   loginAccountObj = session["loginAccountObj"]
 	message = params["message"]
-	@storeArray = params["storeArray"].nil? ? Store.all : params["storeArray"]
+	@storeArray = Store.where(delete_flg: 0).all
 	onePageLimit = params["one_page_limit"]
 
 	maxNum = 0;
-	if (@storeArray.nil? && @storeArray.length > 0)
-	    maxNum = @storeArray.length
+	if (!@storeArray.nil? && @storeArray.count > 0)
+	    maxNum = @storeArray.count
   end
 	if onePageLimit.nil?
 		onePageLimit = "20";
@@ -77,11 +77,11 @@
 
 	#AccountStrGetter accountStrGetter = AccountStrGetter.getInstance();
 
-	@groupObjArray = SGroup.all
-	@areaObjArray  = Area.all
+	@groupObjArray = SGroup.where(delete_flg: 0).all
+	@areaObjArray  = Area.where(delete_flg: 0).all
   @prefObjArray = Prefecture.all
 	@cityObjArray = City.all
-	@accountObjArray = Account.all
+	@accountObjArray = Account.where(delete_flg: 0).all
 
   ss = @loginAccountObj.fullname unless @loginAccountObj.nil?
   pict = ss.blank? ? '' : ss.slice(0, 1)
@@ -566,9 +566,9 @@
        	      <td style="font-size:12px;" data-title="店舗マスタ名">
        	       <a href="javascript:void(0)" onclick="moveToSettingStoreUpd(<%=store.id%>)"><%=store.name%></a>
        	      </td>
-       	      <td style="font-size:12px;" data-title="グループ"><%= SGroup.where(id: store.store_group.to_i).first.name %></td>
-       	      <td style="font-size:12px;" data-title="担当者"><%= SGroup.where(id: store.store_manager.to_i) %></td>
-
+              <%#debug%>
+       	      <td style="font-size:12px;" data-title="グループ"><%=SGroup.where(id: 1).first.name%></td>
+       	      <td style="font-size:12px;" data-title="担当者"><%=''%></td>
        	      <%
        	       created = Common.make_japanese_time(store.created_at)
        	       finalCreated = created.slice(0, 16)

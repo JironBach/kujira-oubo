@@ -1,0 +1,39 @@
+
+.content_table_cell_log_s_spread
+{
+    text-align: center;
+    display: table-cell;
+    border-collapse: collapse;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 13px;
+    border-collapse: collapse;
+    border: 1px solid black;
+    width:10%;
+}
+
+.content_table_cell_log_m_spread
+{
+    text-align: center;
+    display: table-cell;
+    border-collapse: collapse;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 13px;
+    border-collapse: collapse;
+    border: 1px solid black;
+    width:20%;
+}
+
+.content_table_cell_log_l_spread
+{
+    text-align: center;
+    display: table-cell;
+    border-collapse: collapse;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 13px;
+    border-collapse: collapse;
+    border: 1px solid black;
+    width:40%;
+}

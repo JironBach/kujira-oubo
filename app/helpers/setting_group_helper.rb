@@ -1,0 +1,2 @@
+module SettingGroupHelper
+end
