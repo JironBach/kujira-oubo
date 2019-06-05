@@ -1,0 +1,8 @@
+class CreateFollowUps < ActiveRecord::Migration[5.1]
+  def change
+    create_table :follow_ups do |t|
+
+      t.timestamps
+    end
+  end
+end

@@ -1,0 +1,2 @@
+module SettingApplicantDisplayHelper
+end

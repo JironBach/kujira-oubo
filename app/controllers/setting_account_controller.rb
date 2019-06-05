@@ -90,7 +90,7 @@ class SettingAccountController < ApplicationController
   end
 
   def show
-    accounts = Account.all
+    accounts = Account.where(delete_flg: 0).all
     init(accounts)
     @accountArray  = accounts
     render 'show'
@@ -137,9 +137,9 @@ class SettingAccountController < ApplicationController
         query = query.where(store: @searchStore)
       end
       if (@searchName.blank? && chk_null(@searchPosition) && chk_null(@searchGroup) && chk_null(@searchStore))
-        @accountArray = Account.all
+        @accountArray = Account.(delete_flg: 0).all
       else
-        @accountArray = query.all
+        @accountArray = query.where(delete_flg: 0).all
       end
       @searchStatus = params["searchStatus"]
       @searchStatus = "" if @searchStatus.blank?
@@ -148,7 +148,7 @@ class SettingAccountController < ApplicationController
       @mode = "search";
       render 'show'
     else
-      init(Account.all)
+      init(Account.where(delete_flg: 0).all)
       @mode = "";
       render 'show'
     end

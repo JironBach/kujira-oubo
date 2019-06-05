@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190604000857) do
+ActiveRecord::Schema.define(version: 20190601013450) do
 
   create_table "account", id: :integer, default: nil, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "password"
@@ -67,11 +67,11 @@ ActiveRecord::Schema.define(version: 20190604000857) do
   end
 
   create_table "applicants_info", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "id", null: false
     t.integer "unread_count", default: 0, null: false
     t.integer "deadline_count", default: 0, null: false
     t.integer "out_deadline_count", default: 0, null: false
     t.integer "today_interview_count", default: 0, null: false
+    t.integer "id"
   end
 
   create_table "area", id: :integer, default: nil, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -606,6 +606,10 @@ ActiveRecord::Schema.define(version: 20190604000857) do
     t.string "unconfirmed_email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "admin", default: false
+    t.string "failed_attempts"
+    t.string "unlock_token"
+    t.datetime "locked_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

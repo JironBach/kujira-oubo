@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   get '/setting_account_upd_conf', to: 'setting_account_upd_conf#post'
   post '/setting_account_update', to: 'setting_account_update#post'
   post '/setting_account_delete', to: 'setting_account_delete#post'
+  get '/setting_account_create', to: 'setting_account_create#show'
   get '/setting_site', to: 'setting_site#show'
   get '/setting_site_create', to: 'setting_site_create#show'
   get '/setting_store', to: 'setting_store#show'
@@ -25,6 +26,15 @@ Rails.application.routes.draw do
   post 'setting_site_upd_conf', to: 'setting_site_upd_conf#post'
   post '/setting_site_update', to: 'setting_site_update#post'
   post '/setting_site/:id', to: 'setting_site#post'
+  get '/setting_group', to: 'setting_group#show'
+  post '/setting_group/:id', to: 'setting_group#post'
+  get '/setting_group_create', to: 'setting_group_create#show'
+  get '/setting_group_create_conf', to: 'setting_group_create_conf#show'
+  post '/setting_group_create_conf', to: 'setting_group_create_conf#post'
+  post '/setting_group_upd', to: 'setting_group_upd#post'
+  get '/setting_applicant_display', to: 'setting_applicant_display#show'
+  get '/setting_app_status', to: 'setting_app_status#show'
+  post '/setting_app_status_create', to: 'setting_app_status_create#post'
 =begin
   devise_for :users
   devise_scope :user do
