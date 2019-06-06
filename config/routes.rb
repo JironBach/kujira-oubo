@@ -40,6 +40,9 @@ Rails.application.routes.draw do
   post '/setting_notification_create', to: 'setting_notification_create#post'
   post '/setting_notification_create_conf', to: 'setting_notification_create_conf#post'
   post '/setting_notification_upd', to: 'setting_notification_upd#post'
+  get '/setting_auto_data_upload', to: 'setting_auto_data_upload#show'
+  get '/setting_blacklist', to: 'setting_blacklist#show'
+  post '/blacklist_add', to: 'blacklist_add#post'
 =begin
   devise_for :users
   devise_scope :user do
