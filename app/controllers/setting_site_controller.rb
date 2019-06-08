@@ -1,13 +1,13 @@
 class SettingSiteController < ApplicationController
   def show
-    @recruitmentSiteArray = RecruitmentSite.all
+    @recruitmentSiteArray = RecruitmentSite.where(del_flg: 0).all
     @m_siteArray = MSite.where(del_flg: 0).all
 
     render 'setting_site'
   end
 
   def post
-    @recruitmentSiteArray = RecruitmentSite.where(delete_flg: 0).all
+    @recruitmentSiteArray = RecruitmentSite.where(del_flg: 0).all
     @m_site = MSite
     if !params[:searchSite].blank?
       @m_site = @m_site.where(recruitment_site_id: params[:searchSite]).where(del_flg: 0)

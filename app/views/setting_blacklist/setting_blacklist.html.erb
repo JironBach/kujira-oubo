@@ -1,12 +1,28 @@
 <%
   sidebar_collapse = cookies["nonsidebar-collapse"]
 
- blacklistArray = Blacklist.all #(BlacklistObject[])request.getAttribute("blacklistParameterArray");
  input_name = params["bl_name"]
  input_mail = params["bl_mail"]
  countDeleteArray = 0;
  onePageLimit = session["one_page_limit"]
  maxNum = 0;
+
+ @blacklist = Blacklist
+ if !params['bl_name'].blank?
+   @blacklist = @blacklist.where("name LIKE ?", "%#{params['bl_name']}%")
+ end
+ if !params['bl_mail'].blank?
+   @blacklist = @blacklist.where("mail LIKE ? OR mail2 LIKE ? OR tel LIKE ? OR tel2 LIKE ?", \
+     "%#{params['bl_mail']}%", "%#{params['bl_mail']}%", \
+     "%#{params['bl_mail']}%", "%#{params['bl_mail']}%")
+ end
+ blacklistArray = @blacklist.all #(BlacklistObject[])request.getAttribute("blacklistParameterArray");
+
+ if params['bl_name'].blank? && params['bl_mail'].blank?
+   @blacklist = Blacklist.all
+ else
+   @blacklist = @blacklist.all
+ end
  if (blacklistArray.nil? && blacklistArray.count > 0)
  	maxNum = blacklistArray.count
  end
@@ -39,7 +55,7 @@
   end
  end
  startNum = ((pageNum -1 ) * onePageLimit.to_i) + 1;
- endNum   =  startNum - 1  + blacklistArray.length;
+ endNum   =  startNum - 1  + blacklistArray.count;
  prefEnableFlg = (pageNum < 2) ? false : true;
  highPrefEnableFlg = (pageNum < 6) ? false : true;
  nextEnableFlg = (pageNum < maxPageCnt) ? true : false;

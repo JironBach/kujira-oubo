@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   get '/setting_site', to: 'setting_site#show'
   get '/setting_site_create', to: 'setting_site_create#show'
   get '/setting_store', to: 'setting_store#show'
+  get '/setting_store_create', to: 'setting_store_create#show'
   post '/setting_site_create_conf', to: 'setting_site_create_conf#post'
   post '/setting_site_submit', to: 'setting_site_submit#post'
   post '/setting_site_upd', to: 'setting_site_upd#post'
@@ -42,6 +43,7 @@ Rails.application.routes.draw do
   post '/setting_notification_upd', to: 'setting_notification_upd#post'
   get '/setting_auto_data_upload', to: 'setting_auto_data_upload#show'
   get '/setting_blacklist', to: 'setting_blacklist#show'
+  post '/setting_blacklist/:id', to: 'setting_blacklist#post'
   post '/blacklist_add', to: 'blacklist_add#post'
 =begin
   devise_for :users

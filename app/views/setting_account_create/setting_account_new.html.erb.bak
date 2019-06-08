@@ -1,6 +1,6 @@
 <%
 	message = params["message"]
-	accountArray = params["accountArray"]
+	accountArray = Account.where(delete_flg: 0).all #params["accountArray"]
 	onePageLimit = session["onePageLimit"]
 	mode = params["mode"]
 	searchName = params["searchName"]
@@ -12,14 +12,14 @@
 	#StoreStrGetter storeStrGetter = StoreStrGetter.getInstance();
   #StatusStrGetter statusStrGetter = StatusStrGetter.getInstance();
   #AuthStrGetter authStrGetter = AuthStrGetter.getInstance();
-	#GroupObject[] groupObjArray = groupStrGetter.getGroupObjArray();
-	#StoreObject[] storeObjArray = storeStrGetter.getStoreObjArray();
+	groupObjArray = SGroup.where(delete_flg: 0).all #groupStrGetter.getGroupObjArray();
+	storeObjArray = Store.where(delete_flg: 0).all #storeStrGetter.getStoreObjArray();
 
 	if (onePageLimit.nil? || (onePageLimit == ""))
 		onePageLimit = "20";
 	end
 	pageNumStr = params["pageNumStr"]
-	if (null.nil? || (pageNumStr == ""))
+	if (pageNumStr.nil? || pageNumStr.blank?)
 		pageNumStr = "1";
 	end
 	onePageLimitNum = onePageLimit.to_i
@@ -33,15 +33,13 @@
 
 		startNum = (pageNum-1)*onePageLimitNum + 1;
 		endNum = onePageLimitNum;
-		if((startNum + onePageLimitNum) > maxNum){
+		if((startNum + onePageLimitNum) > maxNum)
 			endNum = maxNum - ((pageNum-1)*onePageLimitNum);
-		}
-
-	}else{
+		end
+	else
 		startNum = 0;
 		endNum = 0;
-	}
-
+	end
 %>
 <html>
 	<head>
@@ -445,9 +443,9 @@
 							<td>
 							    <select class="input_form_field_cmbbox" id="cmbSearchGroup" >
 							        <option value="-1"></option>
-							        <%for(int i =0 ; i < groupObjArray.length;i++){%>
-										<option value="<%=groupObjArray[i].getId()%>"><%=groupObjArray[i].getName()%></option>
-									<%}%>
+							        <% groupObjArray.each do |group| %>
+												<option value="<%=group.id%>"><%=group.name()%></option>
+											<% end %>
 							    </select>
 							</td>
 							<td><p class="input_form_text">ステータス</p></td>
@@ -462,9 +460,9 @@
 							<td>
 								<select class="input_form_field_cmbbox" id="cmbSearchStore" >
 							        <option value="-1"></option>
-							        <%for(int i =0 ; i < storeObjArray.length;i++){%>
-										<option value="<%=storeObjArray[i].getId()%>"><%=storeObjArray[i].getName()%></option>
-									<%}%>
+							        <% storeObjArray.each do |store| %>
+										<option value="<%=store.id%>"><%=store.name%></option>
+									<% end %>
 							    </select>
 							</td>
 							<td></td>
@@ -535,28 +533,30 @@
 
 <!-- 2016 12-21 Start -->
 
-					<% for(int i = 0 ; i < accountArray.length;i++){ %>
+					<% accountArray.each do |account| %>
 						<tr id="row_0">
-							<td class="data_table_selector"><input name="cb_data" id="cb_data_2" value='<%=accountArray[i].getId()%>' type="checkbox"/></td>
-							<td class="data_table_data"><%=accountArray[i].getId()%></td>
-							<td class="data_table_data"><a href="javascript:void(0)" onClick="toUpdServlet('<%=accountArray[i].getId()%>'"><%=accountArray[i].getFullname()%></a></td>
-							<!--<td class="data_table_data"><a href="javascript:void(0)" onClick="toUpdServlet('<%=accountArray[i].getId()%>','<%=accountArray[i].getPassword()%>','<%=accountArray[i].getFullname()%>','<%=accountArray[i].getFullnameFurigana()%>','<%=accountArray[i].getMainMail()%>','<%=accountArray[i].getCcMail01()%>','<%=accountArray[i].getCcMail01()%>','<%=accountArray[i].getPosition()%>','<%=accountArray[i].getSetting00()%>','<%=accountArray[i].getSetting01()%>','<%=accountArray[i].getSetting02()%>','<%=accountArray[i].getSGroup()%>','<%=accountArray[i].getStore()%>')"><%=accountArray[i].getFullname()%></a></td>-->
-							<td class="data_table_data"><%=authStrGetter.getAuthStr(accountArray[i].getPosition())%></td>
-							<td class="data_table_data"><%=groupStrGetter.getGroupStr(accountArray[i].getSGroup())%></td>
-							<td class="data_table_data"><%=storeStrGetter.getStoreStr(accountArray[i].getStore())%></td>
-							<td class="data_table_data"><%=statusStrGetter.getStatusStr(accountArray[i].getCerStatus())%></td>
-							<td class="data_table_data"><%=accountArray[i].getCreateTime()%><br/><%=accountArray[i].getUpdateTime()%></td>
+							<td class="data_table_selector"><input name="cb_data" id="cb_data_2" value='<%=account.id%>' type="checkbox"/></td>
+							<td class="data_table_data"><%=account.id%></td>
+							<td class="data_table_data"><a href="javascript:void(0)" onClick="toUpdServlet('<%=account.id%>'"><%=account.fullname%></a></td>
+							<!--<td class="data_table_data"><a href="javascript:void(0)" onClick="toUpdServlet('<%=account.id%>','<%=account.password%>','<%=account.fullname%>','<%=account.fullname_furigana%>','<%=account.main_mail%>','<%=account.cc_mail_01%>','<%=account.cc_mail_01%>','<%=account.position%>','<%=account.setting_00%>','<%=account.setting_01%>','<%=account.setting_02%>','<%=account.s_group%>','<%=account.store%>')"><%=account.fullname%></a></td>-->
+							<td class="data_table_data"><%=Auth.where(id: account.position.to_i).first.name%></td>
+							<% s_group = ((account.s_group == -1) ? '' : SGroup.where(id: account.s_group.to_i).first.name) %>
+							<td class="data_table_data"><%=s_group%></td>
+							<% store = ((account.store == -1) ? '' : Store.where(id: account.store.to_i).first.name) %>
+							<td class="data_table_data"><%=store%></td>
+							<% status = ((account.cer_status.to_i == -1) ? '' : Status.where(id: account.cer_status.to_i).first.name) %>
+							<td class="data_table_data"><%=status%></td>
+							<td class="data_table_data"><%=Common.make_japanese_time(account.created_at)%><br/><%=Common.make_japanese_time(account.updated_at)%></td>
 							<td>
 								<div>
 									<ul class="ul_navigation">
-										<li><a id="edit_row_2" href="javascript:void(0)" onClick="toUpdServlet('<%=accountArray[i].getId()%>','<%=accountArray[i].getPassword()%>','<%=accountArray[i].getFullname()%>','<%=accountArray[i].getFullnameFurigana()%>','<%=accountArray[i].getMainMail()%>','<%=accountArray[i].getCcMail01()%>','<%=accountArray[i].getCcMail01()%>','<%=accountArray[i].getPosition()%>','<%=accountArray[i].getSetting00()%>','<%=accountArray[i].getSetting01()%>','<%=accountArray[i].getSetting02()%>','<%=accountArray[i].getSGroup()%>','<%=accountArray[i].getStore()%>')">編集</a></li>
-										<li><a id="delete_row_2" href="javascript:void(0)" onclick="delete_per_line('<%=accountArray[i].getId()%>')">削除</a></li>
-
+										<li><a id="edit_row_2" href="javascript:void(0)" onClick="toUpdServlet('<%=account.id%>','<%=account.password%>','<%=account.fullname%>','<%=account.fullname_furigana%>','<%=account.main_mail%>','<%=account.cc_mail_01%>','<%=account.cc_mail_01%>','<%=account.position%>','<%=account.setting_00%>','<%=account.setting_01%>','<%=account.setting_02%>','<%=account.s_group%>','<%=account.store%>')">編集</a></li>
+										<li><a id="delete_row_2" href="javascript:void(0)" onclick="delete_per_line('<%=account.id%>')">削除</a></li>
 									</ul>
 								</div>
 							</td>
 						</tr>
-					<%}%>
+					<% end %>
 
 <!-- 2016 12-21 End -->
 
@@ -565,7 +565,6 @@
 			</div>
 		</div>
 		</div>
-
 
 		<div style="clear:both">
 			<ul class="ul_pre_navigation">
