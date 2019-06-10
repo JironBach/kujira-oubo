@@ -343,8 +343,11 @@
            	<div class="col-md-3 col-xs-12">
            	 <label>店舗マスタ名</label>
            	 <select class="form-control" id="cmbSearchStore" >
+               <% stores = Account.where.not(store: -1).pluck(:store) %>
+               <% accounts = Account.where(delete_flg: 0, store: stores).all %>
            	  <option value="-1"></option>
-           	  <% @storeObjArray.each do |store|%>
+           	  <% accounts.each do |account|%>
+                <% store = Store.where(id: account.store.to_i).first %>
            	    <option value="<%=store.id%>"><%=store.name%></option>
            	  <% end %>
            	 </select>

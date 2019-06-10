@@ -4,6 +4,10 @@ class SettingGroupController < ApplicationController
   end
 
   def post
+    if !params['searchName'].nil?
+    end
+
+    render 'setting_group'
   end
 
 end

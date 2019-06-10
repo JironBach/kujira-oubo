@@ -1,0 +1,4 @@
+<p id="notice"><%= notice %></p>
+
+<%= link_to 'Edit', edit_s_group_path(@s_group) %> |
+<%= link_to 'Back', s_groups_path %>

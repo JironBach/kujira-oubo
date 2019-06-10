@@ -1,0 +1,6 @@
+<h1>Editing S Group</h1>
+
+<%= render 'form', s_group: @s_group %>
+
+<%= link_to 'Show', @s_group %> |
+<%= link_to 'Back', s_groups_path %>

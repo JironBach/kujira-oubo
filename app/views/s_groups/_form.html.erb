@@ -1,0 +1,89 @@
+<%= form_with(model: @s_group, local: true) do |form| %>
+  <% if @s_group.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(s_group.errors.count, "error") %> prohibited this s_group from being saved:</h2>
+
+      <ul>
+      <% @s_group.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <section class="col-md-12 col-xs-12">
+   <div class="callout callout-warning">
+    <h4 style="font-size:16px;">グループ登録</h4>
+   </div>
+   <div class="row">
+    <div class="col-md-12 col-xs-12">
+     <div class="box box-kujira box-solid">
+      <div class="box-header with-border">
+       グループ登録
+      </div>
+      <div class="box-body">
+       <div class="form-group">
+        <h6 class="col-lg-3 col-md-4 col-sm-12 col-xs-12" style="font-size:12px;">グループID</h6>
+        <h6 class="col-sm-6 col-xs-12" style="font-size:12px;">システムにより自動採番されます。 </h6>
+       </div>
+      </div>
+      <div class="box-body" style="background-color: rgb(238, 120, 0, 0.2)">
+       <div class="form-group">
+        <h6 class="col-lg-3 col-md-4 col-sm-12 col-xs-12" style="font-size:12px;">グループ名 <span style="font-size:12px; background-color: #d9534f; border-color: #d43f3a; padding:5px; border-radius: 3px; color: #fff;">必須</span></h6>
+        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+         <%= text_field :s_group, :name %>
+         <div id="div_group_name_error" style="color: red;" class="error_msg"></div>
+        </div>
+       </div>
+      </div>
+      <div class="box-body">
+       <div class="form-group">
+        <h6 class="col-lg-3 col-md-4 col-sm-12 col-xs-12" style="font-size:12px;">グループ担当者</h6>
+        <div class="col-lg-7 col-md-4 col-sm-12 col-xs-12">
+         <div id="div_group_manager_all"></div>
+         <!--div><a class='btn btn-rounded btn-kujira' style='margin-top:5px;' id="btn_add_group_manager">追加</a></div-->
+         <div id="div_group_manager_error" style="color: red;" class="error_msg"></div>
+         <%= text_field :s_group, :manager %>
+         <!--input type="hidden" id="hidden_group_manager" value="0"/-->
+        </div>
+       </div>
+      </div>
+      <div class="box-body" style="background-color: rgb(238, 120, 0, 0.2)">
+       <div class="form-group">
+        <h6 class="col-lg-3 col-md-4 col-sm-12 col-xs-12" style="font-size:12px;">管理者コメント</h6>
+        <div class="col-lg-7 col-md-4 col-sm-12 col-xs-12">
+         <%= text_area :s_group, :admin_comment, rows: 4, cols: 40 %>
+         (<span id="span_admin_comment_total_char">0</span> / 1000文字)
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+
+   <br>
+   <div class="row">
+    <div class="col-md-12 col-xs-12" id="footer_go_to_confirmation">
+     <div class="pull-left">
+      <a class="btn btn-warning btn-rounded" href="/s_groups">< 戻る</a>
+     </div>
+     <!--div class="text-center">
+      <a class="btn btn-rounded  btn-warning" id="btn_confirm_data_change">入力内容を確認</a>
+     </div-->
+    </div>
+   </div>
+  </section>
+
+  <div class="row">
+   <div class="box-body">
+    <div class="form-group">
+     <div class="pull-right">
+       <div class="actions">
+         <%= form.submit '登録' %>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+
+<% end %>

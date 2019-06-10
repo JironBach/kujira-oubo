@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :s_groups
+  post '/s_groups/search', to: 's_groups#search'
+  post '/s_groups/batch_del', to: 's_groups#batch_del'
+
   root 'top#show'
 
   get '/top', to: 'top#show'
@@ -45,6 +49,7 @@ Rails.application.routes.draw do
   get '/setting_blacklist', to: 'setting_blacklist#show'
   post '/setting_blacklist/:id', to: 'setting_blacklist#post'
   post '/blacklist_add', to: 'blacklist_add#post'
+  post '/setting_account_create_conf', to: 'setting_account_create_conf#post'
 =begin
   devise_for :users
   devise_scope :user do

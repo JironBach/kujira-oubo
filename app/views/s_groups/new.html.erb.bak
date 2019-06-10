@@ -1,0 +1,5 @@
+<h1>New S Group</h1>
+
+<%= render 'form', s_group: @s_group %>
+
+<%= link_to 'Back', s_groups_path %>

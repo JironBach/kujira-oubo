@@ -19,9 +19,10 @@ default: &default
 
 development:
   <<: *default
-  host: oubo2.cbkiwkjr51qs.ap-northeast-1.rds.amazonaws.com
-  database: kujira_oubo_development
-  password: password
+  # host: oubo2.cbkiwkjr51qs.ap-northeast-1.rds.amazonaws.com
+  database: kujira-oubo_development
+  user: js
+  password: tangerine3
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

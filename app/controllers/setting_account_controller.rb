@@ -93,7 +93,7 @@ class SettingAccountController < ApplicationController
     accounts = Account.where(delete_flg: 0).all
     init(accounts)
     @accountArray  = accounts
-    render 'show'
+    render 'setting_account'
   end
 
   def chk_null(param)
@@ -146,11 +146,11 @@ class SettingAccountController < ApplicationController
 
       init(@accountArray)
       @mode = "search";
-      render 'show'
+      render 'setting_account'
     else
       init(Account.where(delete_flg: 0).all)
       @mode = "";
-      render 'show'
+      render 'setting_account'
     end
     @searchStatus = params["searchStatus"]
     @searchStatus = "" if @searchStatus.blank?
