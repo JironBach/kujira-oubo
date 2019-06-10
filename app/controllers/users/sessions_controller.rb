@@ -10,13 +10,14 @@ class Users::SessionsController < Devise::SessionsController
 
   #POST /resource/sign_in
   def create
-    #super
+    super
+=begin
     @userEmail = params["email"]
     #@password = Common.encrypt(params["password"])
     @password = params["password"]
     @fromWhich = params["from_which"]
     @message = session["message"]
-    account = Account.where(delete_flg: 0, main_mail: @userEmail, password: @password).first
+    account = Account.where(delete_flg: 0, email: @userEmail, password: @password).first
     if "login.jsp" == @fromWhich
       if @userEmail.blank? || @password.blank?
         @message = "メールドレスとパスワードを入力してください。";
@@ -34,6 +35,7 @@ class Users::SessionsController < Devise::SessionsController
         redirect_to "/" and return
       end
     end
+=end
   end
 
   # DELETE /resource/sign_out
