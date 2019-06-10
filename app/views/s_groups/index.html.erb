@@ -9,15 +9,12 @@
 %>
 <!DOCTYPE html>
 <html>
- <head>
-  <%= render partial: "common/index_header" %>
-  <title>くじら応募</title>
-  <script src="/dist/js/jquery.js"></script>
-  <script src="/dist/js/bootstrap.js"></script>
-  <script src="/dist/js/adminlte.js?v=1"></script>
- </head>
- <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>">
-  <div class="wrapper">
+<head>
+ <%= render partial: "common/index_header" %>
+ <title>くじら応募</title>
+</head>
+<body id="cat01" class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>">
+ <div class="wrapper">
    <%= render partial: "/common/top_bar" %>
    <%= render partial: "/common/side_bar" %>
    <div class="content-wrapper">

@@ -4,6 +4,7 @@ class SGroupsController < ApplicationController
   # GET /s_groups
   # GET /s_groups.json
   def index
+    @sidebar_collapse = cookies['sidebar_collapse']
     per = params['per'].blank? ? 20 : params['per']
     @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all
     @accounts = Account.where(delete_flg: 0).all
@@ -17,6 +18,7 @@ class SGroupsController < ApplicationController
 
   # GET /s_groups/new
   def new
+    @sidebar_collapse = cookies['sidebar_collapse']
     @s_group = SGroup.new
     per = params['per'].blank? ? 20 : params['per']
     @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all
@@ -26,6 +28,7 @@ class SGroupsController < ApplicationController
 
   # GET /s_groups/1/edit
   def edit
+    @sidebar_collapse = cookies['sidebar_collapse']
     @s_group = SGroup.find(params[:id])
     per = params['per'].blank? ? 20 : params['per']
     @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all
@@ -78,8 +81,9 @@ class SGroupsController < ApplicationController
   end
 
   def search
-    logger.debug "debug:params=#{params.inspect}"
     per = params['per'].blank? ? 20 : params['per']
+    @sidebar_collapse = cookies['sidebar_collapse']
+
     @s_groups = SGroup
     if !params[:name].blank?
       @s_groups = @s_groups.ransack(delete_flg: 0, name_cont: params[:name]).result
@@ -89,11 +93,13 @@ class SGroupsController < ApplicationController
     end
     if params[:name].blank? && (params[:manager] == '選択してください。')
       @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all
+      session[:search] = false
     else
       @s_groups = @s_groups.where(delete_flg: 0).page(params[:page]).per(per).all
     end
 
     @accounts = Account.where(delete_flg: 0).all
+    session[:search] = true
 
     render 'index'
   end
