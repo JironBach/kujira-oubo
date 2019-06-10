@@ -36,9 +36,9 @@
             <tbody>
              <% @notificationArray.all.each do |notification| %>
              <tr>
-              <td> <%=Common.make_japanese_time(notification.start_date)+' 〜 '+ Common.make_japanese_time(notification.end_date)%> </td>
+              <td> <%=notification.start_date.strftime("%Y年%-m月%-d日")%> 〜  <%=notification.end_date.strftime("%Y年%-m月%-d日")%> </td>
               <td>
-               <a style="color:blue;" id="notif_link_01" onclick="openModal('<%=notification.title %>',  '<%=notification.purpose %>')" href="javascript:void(0)"> <%=notification.title %> </a>
+               <a style="color:blue;" id="notif_link_01" onclick="openModal('<%=notification.title%>',  '<%=notification.purpose%>')" href="javascript:void(0)"> <%=notification.title %> </a>
               </td>
              </tr>
              <% end %>
