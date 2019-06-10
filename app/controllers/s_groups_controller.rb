@@ -71,6 +71,7 @@ class SGroupsController < ApplicationController
   # DELETE /s_groups/1.json
   def destroy
     #@s_group.destroy
+    @s_group = SGroup.find(params[:id].to_i)
     @s_group.delete_flg = 1
     @s_group.save!
 
