@@ -2,8 +2,8 @@
   sidebar_collapse  = cookies["nonsidebar-collapse"]
   loginAccountObj = session["loginAccountObj"]
 
-  ss = loginAccountObj['fullname']
-  pict = ss.slice(0, 1);
+  ss = loginAccountObj['fullname'] unless loginAccountObj.nil?
+  pict = ss.nil? ? '' : ss.slice(0, 1)
 %>
 <!DOCTYPE html>
 <html>
