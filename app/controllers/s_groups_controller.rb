@@ -6,7 +6,7 @@ class SGroupsController < ApplicationController
   def index
     @sidebar_collapse = cookies['sidebar_collapse']
     per = params['per'].blank? ? 20 : params['per']
-    @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all
+    @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all.order(id: "DESC")
     @accounts = Account.where(delete_flg: 0).all
   end
 
@@ -21,7 +21,7 @@ class SGroupsController < ApplicationController
     @sidebar_collapse = cookies['sidebar_collapse']
     @s_group = SGroup.new
     per = params['per'].blank? ? 20 : params['per']
-    @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all
+    @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all.order(id: "DESC")
     @accounts = Account.where(delete_flg: 0).all
     @areas = Area.where(delete_flg: 0).all
   end
@@ -31,7 +31,7 @@ class SGroupsController < ApplicationController
     @sidebar_collapse = cookies['sidebar_collapse']
     @s_group = SGroup.find(params[:id])
     per = params['per'].blank? ? 20 : params['per']
-    @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all
+    @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all.order(id: "DESC")
     @accounts = Account.where(delete_flg: 0).all
     @areas = Area.where(delete_flg: 0).all
   end
@@ -93,10 +93,10 @@ class SGroupsController < ApplicationController
       @s_groups = @s_groups.ransack(delete_flg: 0, manager_cont: params[:manager]).result
     end
     if params[:name].blank? && (params[:manager] == '選択してください。')
-      @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all
+      @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all.order(id: "DESC")
       session[:search] = false
     else
-      @s_groups = @s_groups.where(delete_flg: 0).page(params[:page]).per(per).all
+      @s_groups = @s_groups.where(delete_flg: 0).page(params[:page]).per(per).all.order(id: "DESC")
     end
 
     @accounts = Account.where(delete_flg: 0).all
