@@ -5,15 +5,15 @@ Rails.application.routes.draw do
 
   root 'top#show'
 
-  devise_for :users
+  devise_for :users, :controllers => {
+    :registrations => 'users/registrations',
+    :sessions => 'users/sessions'
+  }
   devise_scope :user do
-    authenticated :user do
-      root to: 'top#show'
-    end
-    unauthenticated :user do
-      root to: 'top#show', as: :unauthenticated_root
-      get '/login', to: 'devise/sessions#new'
-    end
+    get "user/:id", :to => "users/registrations#detail"
+    get "signup", :to => "users/registrations#new"
+    get "login", :to => "users/sessions#new"
+    get "logout", :to => "users/sessions#destroy"
   end
 =begin
   get '/top', to: 'top#show'

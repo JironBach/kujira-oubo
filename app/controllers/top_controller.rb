@@ -11,7 +11,7 @@ class TopController < ApplicationController
     @sidebar_collapse = cookies['sidebar_collapse']
 
     ss = @loginAccountObj.nil? ? '' : @loginAccountObj['fullname']
-    @pict = ss.slice(0, 1);
+    pict = ss.nil? ? '' : ss.slice(0, 1)
 
     render :show
   end
