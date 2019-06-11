@@ -1,86 +1,86 @@
 <%
   sidebar_collapse = cookies["nonsidebar-collapse"]
-	message = params["message"]
-	autoDataUploadArray = AutoDataUpload.all #(AutoDataUploadObject[])request.getAttribute("autoDataUploadArray");
-	#SiteStrGetter siteStrGetter = SiteStrGetter.getInstance();
+  message = params["message"]
+  autoDataUploadArray = AutoDataUpload.all #(AutoDataUploadObject[])request.getAttribute("autoDataUploadArray");
+  #SiteStrGetter siteStrGetter = SiteStrGetter.getInstance();
 
-	loginAccountObj = session["loginAccountObj"]
-	onePageLimit		= params["one_page_limit"]
-	mode				= params["mode"]
-	searchBegDa		= params["search_beg_da"]
-	searchEndDa		= params["search_end_da"]
-	searchStatus		= params["search_status"]
-	searchStatusInt = searchStatus.to_i
+  loginAccountObj = session["loginAccountObj"]
+  onePageLimit		= params["one_page_limit"]
+  mode				= params["mode"]
+  searchBegDa		= params["search_beg_da"]
+  searchEndDa		= params["search_end_da"]
+  searchStatus		= params["search_status"]
+  searchStatusInt = searchStatus.to_i
 
-	maxNum = 0;
-	if (autoDataUploadArray.nil? && autoDataUploadArray.count > 0)
-	    maxNum = autoDataUploadArray.count
+  maxNum = 0;
+  if (autoDataUploadArray.nil? && autoDataUploadArray.count > 0)
+      maxNum = autoDataUploadArray.count
   end
 
-	if (onePageLimit.nil? || onePageLimit.blank?)
-		onePageLimit = "20";
-	end
-	oneLimit = onePageLimit.to_i
+  if (onePageLimit.nil? || onePageLimit.blank?)
+    onePageLimit = "20";
+  end
+  oneLimit = onePageLimit.to_i
 
-	pageNumStr = params["page_num"]
-	if (pageNumStr.nil? || pageNumStr.blank?)
-		pageNumStr = "1";
-	end
+  pageNumStr = params["page_num"]
+  if (pageNumStr.nil? || pageNumStr.blank?)
+    pageNumStr = "1";
+  end
 
-	pageNum = pageNumStr.to_i
-	maxPageCnt = ((maxNum + (oneLimit - 1)) / oneLimit);
+  pageNum = pageNumStr.to_i
+  maxPageCnt = ((maxNum + (oneLimit - 1)) / oneLimit);
 
-	startPageNum = 1;
-	endPageNum = 5;
+  startPageNum = 1;
+  endPageNum = 5;
 
-	if (pageNum < 6)
-		startPageNum = 1;
-		if (maxPageCnt < 6)
-			endPageNum = maxPageCnt;
-		else
-			endPageNum = 5;
-		end
-	else
-		if((pageNum + 2) < maxPageCnt)
-			startPageNum = pageNum - 2;
-			endPageNum = pageNum + 2;
-		else
-			startPageNum = maxPageCnt - 4;
-			endPageNum = maxPageCnt;
-		end
-	end
+  if (pageNum < 6)
+    startPageNum = 1;
+    if (maxPageCnt < 6)
+      endPageNum = maxPageCnt;
+    else
+      endPageNum = 5;
+    end
+  else
+    if((pageNum + 2) < maxPageCnt)
+      startPageNum = pageNum - 2;
+      endPageNum = pageNum + 2;
+    else
+      startPageNum = maxPageCnt - 4;
+      endPageNum = maxPageCnt;
+    end
+  end
 
-	startNum = ((pageNum -1 ) * onePageLimit.to_i) + 1; #０件でも１件〜となってしまうため修正要
-	endNum   =  startNum - 1  + autoDataUploadArray.count;
+  startNum = ((pageNum -1 ) * onePageLimit.to_i) + 1; #０件でも１件〜となってしまうため修正要
+  endNum   =  startNum - 1  + autoDataUploadArray.count;
 
-	prefEnableFlg = (pageNum < 2) ? false : true;
-	highPrefEnableFlg = (pageNum < 6) ? false : true;
+  prefEnableFlg = (pageNum < 2) ? false : true;
+  highPrefEnableFlg = (pageNum < 6) ? false : true;
 
-	nextEnableFlg = (pageNum < maxPageCnt) ? true : false;
-	highNextEnableFlg = (pageNum < (maxPageCnt - 4)) ? true : false;
+  nextEnableFlg = (pageNum < maxPageCnt) ? true : false;
+  highNextEnableFlg = (pageNum < (maxPageCnt - 4)) ? true : false;
 
-	highPreNum = pageNum - 5;
-	if (highPreNum < 1)
-		highPreNum = 1;
-	end
-	preNum = pageNum - 1;
-	if (preNum < 1)
-		preNum = 1;
-	end
-	highNextNum = pageNum + 5;
-	if (highNextNum > maxPageCnt)
-		highNextNum = maxPageCnt;
-	end
-	nextNum = pageNum + 1;
-	if (nextNum > maxPageCnt)
-		nextNum = maxPageCnt;
-	end
+  highPreNum = pageNum - 5;
+  if (highPreNum < 1)
+    highPreNum = 1;
+  end
+  preNum = pageNum - 1;
+  if (preNum < 1)
+    preNum = 1;
+  end
+  highNextNum = pageNum + 5;
+  if (highNextNum > maxPageCnt)
+    highNextNum = maxPageCnt;
+  end
+  nextNum = pageNum + 1;
+  if (nextNum > maxPageCnt)
+    nextNum = maxPageCnt;
+  end
 
-	if (autoDataUploadArray.nil?)
-		autoDataUploadArray = new AutoDataUploadObject[0];
-	end
+  if (autoDataUploadArray.nil?)
+    autoDataUploadArray = new AutoDataUploadObject[0];
+  end
 
-  ss = loginAccountObj['gullname'];
+  ss = loginAccountObj['fullname'] unless loginAccountObj.nil?
   pict = ss.nil? ? '' : ss.slice(0, 1)
 %>
 <!DOCTYPE html>
@@ -92,96 +92,96 @@
   <script src="/dist/js/bootstrap.js"></script>
  <script src="/dist/js/adminlte.js?v=1"></script>
   <script>
-			document.addEventListener('DOMContentLoaded',
-				function(){
-					take_get_parameter();
-					document.getElementById("txt_begda").value = '<%=searchBegDa%>';
-					document.getElementById("txt_endda").value = '<%=searchEndDa%>';
-					document.getElementById("txt_one_page_limit").value = '<%=onePageLimit %>';
-					document.getElementById("txt_one_page_limit_botom").value = '<%=onePageLimit %>';
-				}
-			);
+      document.addEventListener('DOMContentLoaded',
+        function(){
+          take_get_parameter();
+          document.getElementById("txt_begda").value = '<%=searchBegDa%>';
+          document.getElementById("txt_endda").value = '<%=searchEndDa%>';
+          document.getElementById("txt_one_page_limit").value = '<%=onePageLimit %>';
+          document.getElementById("txt_one_page_limit_botom").value = '<%=onePageLimit %>';
+        }
+      );
 
-			function take_get_parameter(){
-				statusRadSet();
+      function take_get_parameter(){
+        statusRadSet();
 
-			}
+      }
 
-			function setParam(name,value){
-				var input = document.createElement('input');
+      function setParam(name,value){
+        var input = document.createElement('input');
                 input.setAttribute('type', 'hidden');
                 input.setAttribute('name', name);
                 input.setAttribute('value', value);
                 return input;
-			}
-			function statusRadSet(){
-				var radSet0 = document.getElementById("rad_set_00");
-				var radSet1 = document.getElementById("rad_set_01");
-				var radSet2 = document.getElementById("rad_set_02");
-				var searchStatus = '<%=searchStatus%>';
-				if("1" == ('<%=searchStatus%>')){			//成功 1
-					rad_set_01.checked = true;
-				}else if("-1" == ('<%=searchStatus%>')){		//指定なし -1
-					rad_set_00.checked = true;
-				}else if("0" == ('<%=searchStatus%>')){	//失敗 0
-					rad_set_02.checked = true;
-				}else{
-					rad_set_00.checked = true;
-				}
-			}
-			function toServlet(mode,num, onePageLimit){
-				var inputOnePageLimit	= setParam("one_page_limit",onePageLimit);
-				var inputMode			= setParam("mode",mode);
+      }
+      function statusRadSet(){
+        var radSet0 = document.getElementById("rad_set_00");
+        var radSet1 = document.getElementById("rad_set_01");
+        var radSet2 = document.getElementById("rad_set_02");
+        var searchStatus = '<%=searchStatus%>';
+        if("1" == ('<%=searchStatus%>')){			//成功 1
+          rad_set_01.checked = true;
+        }else if("-1" == ('<%=searchStatus%>')){		//指定なし -1
+          rad_set_00.checked = true;
+        }else if("0" == ('<%=searchStatus%>')){	//失敗 0
+          rad_set_02.checked = true;
+        }else{
+          rad_set_00.checked = true;
+        }
+      }
+      function toServlet(mode,num, onePageLimit){
+        var inputOnePageLimit	= setParam("one_page_limit",onePageLimit);
+        var inputMode			= setParam("mode",mode);
 
-				var f = document.createElement("form");
-				f.setAttribute('method',"post");
-				f.setAttribute('action',"/setting_auto_data_upload/"+num);
-				f.appendChild(inputOnePageLimit);
-				f.appendChild(inputMode);
-				if(mode == "search"){
-					var searchBegDa = document.getElementById("txt_begda").value;
-					var searchEndDa = document.getElementById("txt_endda").value;
-					var rad0 = document.getElementById("rad_set_00"),
-						rad1 = document.getElementById("rad_set_01"),
-						rad2 = document.getElementById("rad_set_02");
-					var searchStatus = "";
-					if(rad0.checked ==true){
-						searchStatus = "-1";			//指定なし	-1
-					}else if(rad1.checked == true){
-						searchStatus = "1";				//成功		1
-					}else if(rad2.checked == true){
-						searchStatus = "0";				//失敗		0
-					}else{
-						searchStatus = "-1";
-					}
-					var inputSearchBegDa = setParam('search_beg_da',searchBegDa);
-					var inputSearchEndDa = setParam('search_end_da',searchEndDa);
-					var inputSearchStatus = setParam('search_status',searchStatus);
-					f.appendChild(inputSearchBegDa);
-					f.appendChild(inputSearchEndDa);
-					f.appendChild(inputSearchStatus);
-			   }
-				var bodyElement = document.body ;
+        var f = document.createElement("form");
+        f.setAttribute('method',"post");
+        f.setAttribute('action',"/setting_auto_data_upload/"+num);
+        f.appendChild(inputOnePageLimit);
+        f.appendChild(inputMode);
+        if(mode == "search"){
+          var searchBegDa = document.getElementById("txt_begda").value;
+          var searchEndDa = document.getElementById("txt_endda").value;
+          var rad0 = document.getElementById("rad_set_00"),
+            rad1 = document.getElementById("rad_set_01"),
+            rad2 = document.getElementById("rad_set_02");
+          var searchStatus = "";
+          if(rad0.checked ==true){
+            searchStatus = "-1";			//指定なし	-1
+          }else if(rad1.checked == true){
+            searchStatus = "1";				//成功		1
+          }else if(rad2.checked == true){
+            searchStatus = "0";				//失敗		0
+          }else{
+            searchStatus = "-1";
+          }
+          var inputSearchBegDa = setParam('search_beg_da',searchBegDa);
+          var inputSearchEndDa = setParam('search_end_da',searchEndDa);
+          var inputSearchStatus = setParam('search_status',searchStatus);
+          f.appendChild(inputSearchBegDa);
+          f.appendChild(inputSearchEndDa);
+          f.appendChild(inputSearchStatus);
+         }
+        var bodyElement = document.body ;
                 bodyElement.append(f);
-				f.submit();
-			}
+        f.submit();
+      }
 
-			function getPageNumber(){
-				return <%=pageNum %>;
-			}
+      function getPageNumber(){
+        return <%=pageNum %>;
+      }
 
 
 
-			function onePageLimit(){
-				//toServlet('<%=mode%>',getPageNumber(), document.activeElement.value);
-				toServlet('<%=mode%>',"1", document.activeElement.value);
-			}
-			function moveList(num) {
-				toServlet('<%=mode%>',num, document.getElementById("txt_one_page_limit").value);
-			}
-			function searchAutoData(){
-				toServlet("search",getPageNumber(),document.getElementById("txt_one_page_limit").value) ;
-			}
+      function onePageLimit(){
+        //toServlet('<%=mode%>',getPageNumber(), document.activeElement.value);
+        toServlet('<%=mode%>',"1", document.activeElement.value);
+      }
+      function moveList(num) {
+        toServlet('<%=mode%>',num, document.getElementById("txt_one_page_limit").value);
+      }
+      function searchAutoData(){
+        toServlet("search",getPageNumber(),document.getElementById("txt_one_page_limit").value) ;
+      }
   </script>
  </head>
  <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>" onload="initial_selection_screen()">
@@ -211,14 +211,14 @@
           </div>
           <div class="box-body">
            <div class="form-group">
-           	<div class="col-md-3 col-xs-12">
-           	 <label style="font-size: 12px;">取込日From</label>
-           	 <input class="form-control text-center" type="text" id="txt_begda"/>
-           	</div>
-           	<div class="col-md-3 col-xs-12">
-           	 <label style="font-size: 12px;">取込日To</label>
-           	 <input class="form-control text-center" type="text" id="txt_endda"/>
-           	</div>
+             <div class="col-md-3 col-xs-12">
+              <label style="font-size: 12px;">取込日From</label>
+              <input class="form-control text-center" type="text" id="txt_begda"/>
+             </div>
+             <div class="col-md-3 col-xs-12">
+              <label style="font-size: 12px;">取込日To</label>
+              <input class="form-control text-center" type="text" id="txt_endda"/>
+             </div>
            </div>
           </div>
           <div class="box-body">
@@ -228,7 +228,7 @@
              <div class="col-md-3 col-xs-12">
               <div class="form-group">
                <label>
-               	<input id="rad_set_00" class="flat-red" name="search_setting" type="radio" value=""/> &nbsp;
+                 <input id="rad_set_00" class="flat-red" name="search_setting" type="radio" value=""/> &nbsp;
                 指定しない
                </label>
               </div>
@@ -254,9 +254,9 @@
           </div>
           <div class="box-body">
            <div class="col-md-12 col-xs-12">
-           	<div class="text-center">
-           	 <button class="btn btn-rounded btn-kujira" id="search_button" onClick="searchAutoData()">検索</button>
-           	</div>
+             <div class="text-center">
+              <button class="btn btn-rounded btn-kujira" id="search_button" onClick="searchAutoData()">検索</button>
+             </div>
            </div>
           </div>
          </div>
@@ -404,27 +404,27 @@ $(document).ready(function() {
   </script>
 
    <!--　カレンダー表示　-->
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
-	<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css" rel="stylesheet" />
-	<script type="text/javascript">
-		$(function(){
-			$("#txt_begda").datepicker({
-				autoclose: true,
-				onClose: function(dateText, inst) {
-					$('#txt_endda').datepicker('option', 'minDate', dateText);
-				}
-			});
-			$("#txt_endda").datepicker({
-				autoclose: true,
-				onClose: function(dateText, inst) {
-					$('#txt_begda').datepicker('option', 'maxDate', dateText);
-				}
-			});
-			$(".ui-datepicker").css("font-size", "100%");
-		});
-	</script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+  <link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css" rel="stylesheet" />
+  <script type="text/javascript">
+    $(function(){
+      $("#txt_begda").datepicker({
+        autoclose: true,
+        onClose: function(dateText, inst) {
+          $('#txt_endda').datepicker('option', 'minDate', dateText);
+        }
+      });
+      $("#txt_endda").datepicker({
+        autoclose: true,
+        onClose: function(dateText, inst) {
+          $('#txt_begda').datepicker('option', 'maxDate', dateText);
+        }
+      });
+      $(".ui-datepicker").css("font-size", "100%");
+    });
+  </script>
  <!--　カレンダー表示　-->
 
  </body>
