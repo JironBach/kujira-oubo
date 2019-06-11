@@ -1,127 +1,16 @@
 <%
-  String  sidebar_collapse  = "nonsidebar-collapse";
-  Cookie[] cookies = request.getCookies();
-  if (cookies != null) {
-     for (Cookie cookie : cookies) {
-              if("sidebar-collapse".equals(cookie.getName())) {
-                          sidebar_collapse = cookie.getValue();
-               }
-     }
- }
-    AccountObject loginAccountObj = (AccountObject)session.getAttribute("loginAccountObj");
-  String message = (String)request.getAttribute("message");
-  NotificationObject[] notificationArray = (NotificationObject[])request.getAttribute("notificationArray");
+  sidebar_collapse  = "nonsidebar-collapse";
+  loginAccountObj = session["loginAccountObj"]
+  message = params["message"]
+  notificationArray = @notifications
 
-  int maxNum = 0;
-  if(null != notificationArray && notificationArray.length > 0){
-      maxNum = notificationArray[0].getMaxNum();
-    }
-
-  String onePageLimit = (String)session.getAttribute("one_page_limit");
-  if((null == onePageLimit) || (onePageLimit.equals(""))){
-    onePageLimit = "1";
-  }
-  int oneLimit = Integer107.parseIfNoDigit(onePageLimit,0);
-
-  String pageNumStr = (String)request.getAttribute("page_num");
-  if((null== pageNumStr) || pageNumStr.equals("")){
-    pageNumStr = "1";
-  }
-
-  int pageNum = Integer.parseInt(pageNumStr);
-  int maxPageCnt = ((maxNum + (oneLimit - 1)) / oneLimit);
-
-  int startPageNum = 1;
-  int endPageNum = 5;
-
-  if (pageNum < 6) {
-    startPageNum = 1;
-    if (maxPageCnt < 6) {
-      endPageNum = maxPageCnt;
-    } else {
-      endPageNum = 5;
-    }
-  } else {
-    if((pageNum + 2) < maxPageCnt){
-      startPageNum = pageNum - 2;
-      endPageNum = pageNum + 2;
-    } else {
-      startPageNum = maxPageCnt - 4;
-      endPageNum = maxPageCnt;
-    }
-  }
-
-  int startNum = ((pageNum -1 ) * Integer.parseInt(onePageLimit)) + 1; //０件でも１件〜となってしまうため修正要
-  int endNum   =  startNum - 1  + notificationArray.length;
-
-  Boolean prefEnableFlg = (pageNum < 2) ? false : true;
-  Boolean highPrefEnableFlg = (pageNum < 6) ? false : true;
-
-  Boolean nextEnableFlg = (pageNum < maxPageCnt) ? true : false;
-  Boolean highNextEnableFlg = (pageNum < (maxPageCnt - 4)) ? true : false;
-
-  int highPreNum = pageNum - 5;
-  if (highPreNum < 1){
-    highPreNum = 1;
-  }
-  int preNum = pageNum - 1;
-  if (preNum < 1){
-    preNum = 1;
-  }
-  int highNextNum = pageNum + 5;
-  if (highNextNum > maxPageCnt){
-    highNextNum = maxPageCnt;
-  }
-  int nextNum = pageNum + 1;
-  if (nextNum > maxPageCnt){
-    nextNum = maxPageCnt;
-  }
-
-  /*
-  if (Integer.parseInt(pageNumStr) < 3) {
-    startPageNum = 1;
-    endPageNum = 5;
-  } else {
-    startPageNum = pageNum - 2;
-    endPageNum = pageNum + 2;
-
-  }
-  Boolean prefEnableFlg = (pageNum < 2) ? false : true;
-  Boolean highPrefEnableFlg = (pageNum < 6) ? false : true;
-  int highPreNum = pageNum - 5;
-  int preNum = pageNum - 1;
-  int highNextNum = pageNum + 5;
-  int nextNum = pageNum + 1;
-
-
-  int onePageLimitNum = Integer107.parseInt(onePageLimit);
-  int startNum = 1;
-  int endNum = 20;
-  int maxNum = 0;
-
-  if(null != notificationArray && notificationArray.length > 0){
-    maxNum = notificationArray[0].getMaxNum();
-
-    startNum = (pageNum-1)*onePageLimitNum + 1;
-    endNum = onePageLimitNum;
-    if((startNum + onePageLimitNum) > maxNum){
-      endNum = maxNum - ((pageNum-1)*onePageLimitNum);
-    }
-
-  }else{
-    startNum = 0;
-    endNum = 0;
-  }
-  */
-
-
- String ss = (String)loginAccountObj.getFullname();
- String pict = ss.substring(0, 1);
+  ss = loginAccountObj['fullname'] unless loginAccountObj.nil?
+  pict = ss.nil? ? '' : ss.slice(0, 1)
 %>
 <!DOCTYPE html>
 <html>
  <head>
-  <jsp:include page="/WEB-INF/views/common/index_header.jsp" flush="false" />
+  <%= render partial: "/common/index_header" %>
   <title>くじら応募</title>
   <script>
 
@@ -134,15 +23,15 @@
           //final action button
          });
       function selectedOnePageLimit(){
-                document.getElementById('txt_one_page_limit').value = "<%=onePageLimit%>";
-                document.getElementById('txt_one_page_limit2').value = "<%=onePageLimit%>";
-                //alert("pagenum"+'<%=pageNum%>'+"maxNum"+'<%=maxNum%>'+"startNum"+'<%=startNum%>'+"endNum"+'<%=endNum%>');
+                document.getElementById('txt_one_page_limit').value = "<%=20%>";
+                document.getElementById('txt_one_page_limit2').value = "<%=20%>";
+
       }
       function take_get_parameter(){
         var del_row_no = S_GET("del_row_no");
 
         $("#row_" + del_row_no).remove();
-        var pageNum = '<%= pageNum%>';
+        var pageNum = '<%= 1%>';
 
       }
 
@@ -237,7 +126,7 @@
 
       function toDeleteServlet(deleteArr){
         var inputDeleteArr = setParam('delete_id_arr',deleteArr);
-        var inputPageNumStr = setParam('page_num','<%=pageNumStr%>');
+        var inputPageNumStr = setParam('page_num','<%=1%>');
         var f = document.createElement("form");
                 f.setAttribute('method',"post");
                 f.setAttribute('action',"/setting_notification_delete");
@@ -250,7 +139,7 @@
       function update_selected_row(id,startDate,endDate,title,purpose,situation,createTime) {
 
         var onePageLimit = document.getElementById("txt_one_page_limit").value;
-        var pageNumStr = <%=pageNumStr%>;
+        var pageNumStr = <%=1%>;
         var inputOnePageLimit = setParam("one_page_limit",onePageLimit);
         var inputPageNum      = setParam("page_num",pageNumStr);
         var f = document.createElement("form");
@@ -295,15 +184,15 @@
         toServlet(num, document.getElementById("txt_one_page_limit").value);
       }
       function getPageNumber(){
-        return <%=pageNumStr%>;
+        return <%=1%>;
         }
 
   </script>
  </head>
  <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>">
   <div class="wrapper">
-   <jsp:include page="/WEB-INF/views/common/top_bar.jsp" flush="false" />
-   <jsp:include page="/WEB-INF/views/common/side_bar.jsp" flush="false" />
+   <%= render partial: "/common/top_bar" %>
+   <%= render partial: "/common/side_bar" %>
    <div class="content-wrapper">
     <section class="content-header">
      <h1>お知らせ設定</h1>
@@ -322,7 +211,7 @@
        <div class="row">
         <div class="col-md-12 col-xs-12">
          <div class="pull-left">
-          <%=maxNum%> 件中 <%=startNum%> ~ <%=endNum%> 件表示
+          <%='debug'%> 件中 <%=0%> ~ <%=0%> 件表示
          </div>
          <div class="pull-right">
           <select class="form-control" id="txt_one_page_limit" onchange="onePageLimit()">
@@ -335,23 +224,6 @@
        </div>
        <div class="row">
         <div class="col-md-12 col-xs-12 text-center">
-         <ul class="pagination">
-          <% if (highPrefEnableFlg) { %>  <li id ="non_selected_list"><a href="#" onClick="moveList(<%=highPreNum%>); return false;"><<</a></li>  <% }%>
-          <% if (prefEnableFlg) { %>      <li id ="non_selected_list"><a href="#" onClick="moveList(<%=preNum%>); return false;"><</a></li>   <% }%>
-          <% if (pageNum >= 10) { %>
-          <li id ="non_selected_list"><a href="#" onClick="moveList(1); return false;">1</a></li>
-          <li id ="omission_list"><a href="javascript:void(0)" >...</a></li>
-          <% }
-          for (int i = startPageNum; i <= endPageNum; i++) {
-          if (i == pageNum) { %>
-          <li class="active" id ="selected_list"><a href="javascript:void(0)" ><%=i%></a></li>
-          <% } else {%>
-          <li id ="non_selected_list"><a href="#" onClick="moveList(<%=i%>); return false;"><%=i%></a></li>
-          <%}
-          } %>
-          <% if (nextEnableFlg) { %>  <li id ="non_selected_list"><a href="#" onClick="moveList(<%=nextNum%>); return false;">></a></li>  <% }%>
-          <% if (highNextEnableFlg) { %><li id ="non_selected_list"><a href="#" onClick="moveList(<%=highNextNum%>); return false;">>></a></li>  <% }%>
-         </ul>
         </div>
        </div>
        <div class="row">
@@ -387,47 +259,47 @@
              </tr>
             </thead>
             <tbody>
-             <% for(int i = 0; i < notificationArray.length;i++){%>
+             <% notificationArray.each do |notification| %>
               <tr id="row_0">
                <th style="font-size:12px;" scope="row">
                 <center>
                   <label class="switch">
-                   <input class="input_form_field_radio" name="cb_data" id="cb_data_2" value='<%=notificationArray[i].getId()%>' type="checkbox"/><
+                   <input class="input_form_field_radio" name="cb_data" id="cb_data_2" value='<%=notification.id%>' type="checkbox"/><
                    <span class="slider round"></span>
                   </label>
                 </center>
                </th>
 
                <%
-                String startDate = (String)notificationArray[i].getStartDate();
-                String finalStartDate = startDate.substring(0, 16);
+                startDate = notification.start_date.strftime("%Y年%-m月%-d日")
+                finalStartDate = startDate.slice(0, 16);
 
-                String endDate = (String)notificationArray[i].getEndDate();
-                String finalEndDate = endDate.substring(0, 16);
+                endDate = notification.end_date.strftime("%Y年%-m月%-d日")
+                finalEndDate = endDate.slice(0, 16);
                %>
 
                <td style="font-size:12px;" data-title="掲載期間"><%=finalStartDate%> <%=finalEndDate%></td>
                <td style="font-size:12px;" data-title="タイトル">
-                <a onclick="update_selected_row(<%=notificationArray[i].getId()%>,<%=notificationArray[i].getStartDate()%>,<%=notificationArray[i].getEndDate()%>,<%=notificationArray[i].getTitle()%>,<%=notificationArray[i].getPurpose()%>,<%=notificationArray[i].getSituation()%>,<%=notificationArray[i].getCreateTime()%>)"><%=notificationArray[i].getTitle()%>
+                <a onclick="update_selected_row(<%=notification.id%>,<%=notification.start_date%>,<%=notification.end_date%>,<%=notification.title%>,<%=notification.purpose%>,<%=notification.situation%>,<%=notification.created_at%>)"><%=notification.title%>
                 </a>
                </td>
-               <td style="font-size:12px;" data-title="内容"><%=notificationArray[i].getPurpose()%></td>
-               <!--<td style="font-size:12px;" data-title="掲載状況"><%=notificationArray[i].getSituation()%></td>  あとで復元-->
+               <td style="font-size:12px;" data-title="内容"><%=notification.purpose%></td>
+               <!--<td style="font-size:12px;" data-title="掲載状況"><%=notification.situation%></td>  あとで復元-->
 
                <%
-                String createTime = (String)notificationArray[i].getCreateTime();
-                String finalCreateTime = createTime.substring(0, 16);
+                createTime = notification.created_at.strftime("%Y年%-m月%-d日 %-H時%-M分")
+                finalCreateTime = createTime.slice(0, 16);
                %>
 
                <td style="font-size:12px; width:120px;" data-title="作成日"><%=finalCreateTime%></td>
                <td style="font-size:12px;" data-title="操作">
                 <div class="text-center">
-                  <a id="edit_row_2" href="javascript:void(0)" onclick="update_selected_row('<%=notificationArray[i].getId()%>','<%=notificationArray[i].getStartDate()%>','<%=notificationArray[i].getEndDate()%>','<%=notificationArray[i].getTitle()%>','<%=notificationArray[i].getPurpose()%>','<%=notificationArray[i].getSituation()%>','<%=notificationArray[i].getCreateTime()%>')">編集</a> |
-                  <a id="delete_row_2" href="javascript:void(0)" onclick="delete_per_line('<%=notificationArray[i].getId()%>')" >削除</a>
+                  <a id="edit_row_2" href="javascript:void(0)" onclick="update_selected_row('<%=notification.id%>','<%=notification.start_date%>','<%=notification.end_date%>','<%=notification.title%>','<%=notification.purpose%>','<%=notification.situation%>','<%=notification.created_at%>')">編集</a> |
+                  <a id="delete_row_2" href="javascript:void(0)" onclick="delete_per_line('<%=notification.id%>')" >削除</a>
                 </div>
                </td>
               </tr>
-             <%}%>
+             <% end %>
             </tbody>
            </table>
           </div>
@@ -436,7 +308,7 @@
        <div class="row">
         <div class="col-md-12 col-xs-12">
          <div class="pull-left">
-          <a style="color:#000;" id="btn_create_new" href="/setting_account_create" class="btn btn-kujira">新規登録</a>
+          <a style="color:#000;" id="btn_create_new" href="/notifications/new" class="btn btn-kujira">新規登録</a>
          </div>
          <div class="pull-right">
           <a class="btn btn-rounded btn-danger" id="btn_delete_all_1" onclick="delete_all_line()">一括削除</a>
@@ -447,7 +319,7 @@
        <div class="row">
         <div class="col-md-12 col-xs-12">
          <div class="pull-left">
-          <%=maxNum%> 件中 <%=startNum%> ~ <%=endNum%> 件表示
+          <%='debug'%> 件中 <%=0%> ~ <%=0%> 件表示
          </div>
          <div class="pull-right">
           <select class="form-control" id="txt_one_page_limit2" onchange="onePageLimit()">
@@ -460,23 +332,6 @@
        </div>
        <div class="row">
         <div class="col-md-12 col-xs-12 text-center">
-         <ul class="pagination">
-          <% if (highPrefEnableFlg) { %>  <li id ="non_selected_list"><a href="#" onClick="moveList(<%=highPreNum%>); return false;"><<</a></li>  <% }%>
-          <% if (prefEnableFlg) { %>      <li id ="non_selected_list"><a href="#" onClick="moveList(<%=preNum%>); return false;"><</a></li>   <% }%>
-          <% if (pageNum >= 10) { %>
-          <li id ="non_selected_list"><a href="#" onClick="moveList(1); return false;">1</a></li>
-          <li id ="omission_list"><a href="javascript:void(0)" >...</a></li>
-          <% }
-          for (int i = startPageNum; i <= endPageNum; i++) {
-          if (i == pageNum) { %>
-          <li class="active" id ="selected_list"><a href="javascript:void(0)" ><%=i%></a></li>
-          <% } else {%>
-          <li id ="non_selected_list"><a href="#" onClick="moveList(<%=i%>); return false;"><%=i%></a></li>
-          <%}
-          } %>
-          <% if (nextEnableFlg) { %>  <li id ="non_selected_list"><a href="#" onClick="moveList(<%=nextNum%>); return false;">></a></li>  <% }%>
-          <% if (highNextEnableFlg) { %><li id ="non_selected_list"><a href="#" onClick="moveList(<%=highNextNum%>); return false;">>></a></li>  <% }%>
-         </ul>
         </div>
        </div>
 
@@ -484,7 +339,7 @@
      </div>
     </section>
    </div>
-   <jsp:include page="/WEB-INF/views/common/footer.jsp" flush="false" />
+   <%= render partial: "/common/footer" %>
   </div>
   <script>
    function clear_check_all() {
