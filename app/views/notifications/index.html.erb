@@ -2,18 +2,19 @@
   sidebar_collapse  = "nonsidebar-collapse";
   loginAccountObj = session["loginAccountObj"]
   message = params["message"]
-  notificationArray = @notifications
 
   ss = loginAccountObj['fullname'] unless loginAccountObj.nil?
   pict = ss.nil? ? '' : ss.slice(0, 1)
 %>
+<script language="JavaScript" type="text/javascript" src="/js/jquery-ui-1.12.1.custom/external/jquery/jquery.js"></script>
+<script language="JavaScript" type="text/javascript" src="/js/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+
 <!DOCTYPE html>
 <html>
  <head>
   <%= render partial: "/common/index_header" %>
   <title>くじら応募</title>
   <script>
-
       $(function() {
           //clear_screen();
           selectedOnePageLimit();
@@ -23,8 +24,8 @@
           //final action button
          });
       function selectedOnePageLimit(){
-                document.getElementById('txt_one_page_limit').value = "<%=20%>";
-                document.getElementById('txt_one_page_limit2').value = "<%=20%>";
+                document.getElementById('txt_one_page_limit').value = "<%=@per.to_s%>";
+                document.getElementById('txt_one_page_limit2').value = "<%=@per.to_s%>";
 
       }
       function take_get_parameter(){
@@ -129,7 +130,7 @@
         var inputPageNumStr = setParam('page_num','<%=1%>');
         var f = document.createElement("form");
                 f.setAttribute('method',"post");
-                f.setAttribute('action',"/setting_notification_delete");
+                f.setAttribute('action',"/notifications/batch_del");
         f.appendChild(inputDeleteArr);
                 f.appendChild(inputPageNumStr);
         var bodyElement = document.body ;
@@ -144,7 +145,7 @@
         var inputPageNum      = setParam("page_num",pageNumStr);
         var f = document.createElement("form");
                 f.setAttribute('method',"post");
-                f.setAttribute('action',"/setting_notification_upd");
+                f.setAttribute('action',"/notifications/update");
         var inputId = setParam("app_id",id);
         var inputStartDate = setParam("app_start_date",startDate);
         var inputEndDate = setParam("app_end_date",endDate);
@@ -170,7 +171,7 @@
         var inputOnePageLimit = setParam("one_page_limit",onePageLimit);
         var f = document.createElement("form");
         f.setAttribute('method',"post");
-        f.setAttribute('action',"/setting_notification/"+num);
+        f.setAttribute('action',"/notifications");
         f.appendChild(inputOnePageLimit);
         var bodyElement = document.body;
         bodyElement.append(f);
@@ -188,8 +189,15 @@
         }
 
   </script>
- </head>
- <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>">
+
+  <script language="JavaScript"><!--
+    function rCheck() {
+      window.onload = function () {window.location.reload()}
+    }
+    // -->
+  </script>
+   </head>
+   <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>" id="check" onLoad="rCheck()">
   <div class="wrapper">
    <%= render partial: "/common/top_bar" %>
    <%= render partial: "/common/side_bar" %>
@@ -211,14 +219,14 @@
        <div class="row">
         <div class="col-md-12 col-xs-12">
          <div class="pull-left">
-          <%='debug'%> 件中 <%=0%> ~ <%=0%> 件表示
+           <%= paginate @notifications %>
          </div>
          <div class="pull-right">
-          <select class="form-control" id="txt_one_page_limit" onchange="onePageLimit()">
-           <option value="20">20件</option>
-           <option value="50">50件</option>
-           <option value="100">100件</option>
-          </select>
+           <select class="form-control" id="txt_one_page_limit"  onchange="onePageLimit()">
+             <option value="20" <%=params['per'] == 20.to_s ? 'selected' : ''%>>20件</option>
+             <option value="50" <%=params['per'] == 50.to_s ? 'selected' : ''%>>50件</option>
+             <option value="100" <%=params['per'] == 100.to_s ? 'selected' : ''%>>100件</option>
+           </select>
          </div>
         </div>
        </div>
@@ -229,11 +237,13 @@
        <div class="row">
         <div class="col-md-12 col-xs-12">
          <div class="pull-left">
-          <a style="color:#000;" id="btn_create_new" href="/setting_notification_create" class="btn btn-kujira">新規登録</a>
+          <a style="color:#000;" id="btn_create_new" href="/notifications/new" class="btn btn-kujira">新規登録</a>
          </div>
          <div class="pull-right">
-          <a class="btn btn-rounded btn-danger" onclick="delete_all_line()" id="btn_delete_all_0">一括削除</a>
+           <%= form_tag '/notifications/batch_del' do %>
+            <%= submit_tag '一括削除', class: "btn btn-rounded btn-danger", data: { confirm: '削除しますか？' } %>
          </div>
+          </div>
         </div>
        </div>
        <br>
@@ -244,10 +254,6 @@
             <thead>
              <tr>
              <th scope="col"><center>
-              <label class="switch">
-               <input onclick="check_all()" id="cb_data_x" class="input_form_field_radio" type="checkbox" value="">
-               <span class="slider round"></span>
-              </label>
               </center>
              </th>
              <th style="font-size:12px;" scope="col"><b>掲載期間</b></th>
@@ -259,22 +265,30 @@
              </tr>
             </thead>
             <tbody>
-             <% notificationArray.each do |notification| %>
+              <% @notifications.each do |notification| %>
               <tr id="row_0">
                <th style="font-size:12px;" scope="row">
                 <center>
                   <label class="switch">
-                   <input class="input_form_field_radio" name="cb_data" id="cb_data_2" value='<%=notification.id%>' type="checkbox"/><
-                   <span class="slider round"></span>
+                    <%= check_box_tag 'batch_del[]', notification.id %>
+                    <span class="slider round"></span>
                   </label>
                 </center>
                </th>
 
                <%
-                startDate = notification.start_date.strftime("%Y年%-m月%-d日")
+                if notification.start_date.nil?
+                  startDate = '0000年01月01日'
+                else
+                  startDate = notification.start_date.strftime("%Y年%-m月%-d日")
+                end
                 finalStartDate = startDate.slice(0, 16);
 
-                endDate = notification.end_date.strftime("%Y年%-m月%-d日")
+                if notification.end_date.nil?
+                  endDate = '0000年01月01日'
+                else
+                  endDate = notification.end_date.strftime("%Y年%-m月%-d日")
+                end
                 finalEndDate = endDate.slice(0, 16);
                %>
 
@@ -294,12 +308,12 @@
                <td style="font-size:12px; width:120px;" data-title="作成日"><%=finalCreateTime%></td>
                <td style="font-size:12px;" data-title="操作">
                 <div class="text-center">
-                  <a id="edit_row_2" href="javascript:void(0)" onclick="update_selected_row('<%=notification.id%>','<%=notification.start_date%>','<%=notification.end_date%>','<%=notification.title%>','<%=notification.purpose%>','<%=notification.situation%>','<%=notification.created_at%>')">編集</a> |
-                  <a id="delete_row_2" href="javascript:void(0)" onclick="delete_per_line('<%=notification.id%>')" >削除</a>
+                  <a id="edit_row_2" href="/notifications/<%=notification.id%>/edit">編集</a> |
+                  <%= link_to '削除', notification, method: :delete, data: { confirm: '削除しますか？' } %>
                 </div>
                </td>
               </tr>
-             <% end %>
+              <% end %>
             </tbody>
            </table>
           </div>
@@ -311,7 +325,8 @@
           <a style="color:#000;" id="btn_create_new" href="/notifications/new" class="btn btn-kujira">新規登録</a>
          </div>
          <div class="pull-right">
-          <a class="btn btn-rounded btn-danger" id="btn_delete_all_1" onclick="delete_all_line()">一括削除</a>
+            <%= submit_tag '一括削除', class: "btn btn-rounded btn-danger", data: { confirm: '削除しますか？' } %>
+            <% end %>
          </div>
         </div>
        </div>
@@ -319,14 +334,14 @@
        <div class="row">
         <div class="col-md-12 col-xs-12">
          <div class="pull-left">
-          <%='debug'%> 件中 <%=0%> ~ <%=0%> 件表示
+          <%= paginate @notifications %>
          </div>
          <div class="pull-right">
-          <select class="form-control" id="txt_one_page_limit2" onchange="onePageLimit()">
-           <option value="20">20件</option>
-           <option value="50">50件</option>
-           <option value="100">100件</option>
-          </select>
+           <select class="form-control" id="txt_one_page_limit"  onchange="onePageLimit()">
+             <option value="20" <%=params['per'] == 20.to_s ? 'selected' : ''%>>20件</option>
+             <option value="50" <%=params['per'] == 50.to_s ? 'selected' : ''%>>50件</option>
+             <option value="100" <%=params['per'] == 100.to_s ? 'selected' : ''%>>100件</option>
+           </select>
          </div>
         </div>
        </div>

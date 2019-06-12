@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   post '/s_groups/batch_del', to: 's_groups#batch_del'
   resources :blacklists
   resources :notifications
+  post '/notifications/conf/', to: 'notifications#conf'
+  post '/notifications/new/', to: 'notifications#new'
+  post '/notifications', to: 'notifications#set_page_limit'
+  post '/notifications/batch_del', to: 'notifications#batch_del'
 
   root 'top#show'
 

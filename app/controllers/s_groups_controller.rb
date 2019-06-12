@@ -39,6 +39,7 @@ class SGroupsController < ApplicationController
   # POST /s_groups
   # POST /s_groups.json
   def create
+    logger.debug "debug:params=#{params.inspect}"
     @s_group = SGroup.new(s_group_params)
 
     respond_to do |format|
