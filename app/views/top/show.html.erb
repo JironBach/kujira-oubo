@@ -34,7 +34,7 @@
              </tr>
             </thead>
             <tbody>
-             <% @notificationArray.all.each do |notification| %>
+             <% @notificationArray.each do |notification| %>
              <tr>
               <td> <%=notification.start_date.strftime("%Y年%-m月%-d日")%> 〜  <%=notification.end_date.strftime("%Y年%-m月%-d日")%> </td>
               <td>

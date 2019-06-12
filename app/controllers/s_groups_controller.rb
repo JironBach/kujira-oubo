@@ -34,6 +34,7 @@ class SGroupsController < ApplicationController
     @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all.order(id: "DESC")
     @accounts = Account.where(delete_flg: 0).all
     @areas = Area.where(delete_flg: 0).all
+    @s_group = SGroup.find(params[:id].to_i)
   end
 
   # POST /s_groups
@@ -116,6 +117,17 @@ class SGroupsController < ApplicationController
       format.html { redirect_to s_groups_url, notice: 'S group was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def conf
+    if params[:id].to_i == 0
+      @s_group = SGroup.new
+    else
+      @s_group = SGroup.find(params[:id].to_i)
+    end
+    @s_group.name = params['s_group']['name']
+    @s_group.manager = params['s_group']['manager']
+    @s_group.admin_comment = params['s_group']['admin_comment']
   end
 
   private
