@@ -148,10 +148,10 @@
              <h6 style="font-size:12px;">お知らせの掲載期間を登録して下さい。開始日を<span style="color:red;">当日、もしくは当日以前</span>にした場合はすぐにお知らせが掲載されます。</h6>
             </div>
             <div class="col-lg-offset-2 col-lg-2 col-md-6 col-sm-12 col-xs-12">
-              <input type="text" id="txt_start_date" class="form-control text-center" style="margin-top: 5px;" value="<%=@notification.start_date.strftime("%Y/%m/%d")%>"/>
+              <input type="text" id="txt_start_date" class="form-control text-center" style="margin-top: 5px;"  value="<%=@notification.start_date.strftime("%Y/%m/%d")%>" />
             </div>
             <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 5px;">
-             <input type="text" id="txt_end_date" class="form-control text-center" style="margin-top: 5px;" value="<%=@notification.end_date.strftime("%Y/%m/%d")%>"/>
+             <input type="text" id="txt_end_date" class="form-control text-center" value="<%=@notification.end_date.strftime("%Y/%m/%d")%>"/>
             </div>
             <div id="div_publish_date_error" style="color: red;" class="error_msg"></div>
            </div>
@@ -226,9 +226,7 @@ $(document).ready(function() {
             var text_length = $("#txt_purpose").val().length;
             $("#span_purpose_total_char").html(text_length);
           });
-
-
-})
+        })
   </script>
 
    <!--　カレンダー表示　-->

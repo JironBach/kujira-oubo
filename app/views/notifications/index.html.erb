@@ -235,14 +235,14 @@
         </div>
        </div>
        <div class="row">
-        <div class="col-md-12 col-xs-12">
-         <div class="pull-left">
-          <a style="color:#000;" id="btn_create_new" href="/notifications/new" class="btn btn-kujira">新規登録</a>
-         </div>
-         <div class="pull-right">
-           <%= form_tag '/notifications/batch_del' do %>
-            <%= submit_tag '一括削除', class: "btn btn-rounded btn-danger", data: { confirm: '削除しますか？' } %>
-         </div>
+         <div class="col-md-12 col-xs-12">
+           <div class="pull-left">
+            <a style="color:#000;" id="btn_create_new" href="/notifications/new" class="btn btn-kujira">新規登録</a>
+           </div>
+           <div class="pull-right">
+             <%= form_tag '/notifications/batch_del' do %>
+              <%= submit_tag '一括削除', class: "btn btn-rounded btn-danger", data: { confirm: '削除しますか？' } %>
+           </div>
           </div>
         </div>
        </div>
@@ -349,12 +349,11 @@
         <div class="col-md-12 col-xs-12 text-center">
         </div>
        </div>
-
       </section>
      </div>
     </section>
+    <%= render partial: "/common/footer" %>
    </div>
-   <%= render partial: "/common/footer" %>
   </div>
   <script>
    function clear_check_all() {
