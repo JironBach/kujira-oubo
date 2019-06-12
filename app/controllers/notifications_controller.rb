@@ -101,8 +101,6 @@ class NotificationsController < ApplicationController
   end
 
   def batch_del
-    logger.debug "debug:params=#{params.inspect}"
-
     params['batch_del'].each do |i|
       @notification = Notification.find(i)
       @notification.delete_flg = 1
