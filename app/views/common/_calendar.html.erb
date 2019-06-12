@@ -1,0 +1,130 @@
+
+<!--　カレンダー表示　-->
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css" rel="stylesheet" />
+
+<script type="text/javascript">
+ $(function(){
+   $("#start_date").datepicker({
+     autoclose: true,
+     onClose: function(dateText, inst) {
+       $('#txt_end_date').datepicker('option', 'minDate', dateText);
+     }
+   });
+   $("#end_date").datepicker({
+     autoclose: true,
+     onClose: function(dateText, inst) {
+       $('#txt_start_date').datepicker('option', 'maxDate', dateText);
+     }
+   });
+   $(".ui-datepicker").css("font-size", "100%");
+ });
+</script>
+<!--　カレンダー表示　-->
+
+<script>
+    function initialize_screen(){
+
+    }
+
+    $(function() {
+        //initial function call
+        initialize_screen();
+        clear_all_input_field();
+        take_get_parameter();
+
+    });
+
+    //function take get_parameter from link
+    function take_get_parameter(){
+
+      var app_start_date    = '<%=@notification.start_date.nil? ? '' : @notification.start_date.strftime("%Y/%-m/%-d")%>',
+        app_end_date    = '<%=@notification.start_date.nil? ? '' : @notification.end_date.strftime("%Y/%-m/%-d")%>',
+        app_title     = '<%=@notification.title%>',
+        app_purpose     = '<%=@notification.purpose%>';
+
+      document.getElementById("txt_start_date").value = app_start_date;
+      document.getElementById("txt_end_date").value = app_end_date;
+      document.getElementById("txt_title").value = app_title;
+      document.getElementById("txt_purpose").value = app_purpose;
+    }
+
+    function setParam(name,value){
+      var input = document.createElement('input');
+                  input.setAttribute('type', 'hidden'),
+                  input.setAttribute('name', name),
+                  input.setAttribute('value', value);
+                  return input;
+      }
+
+    //redirect to confirmation page
+    function redirect_to_confirm_page() {
+
+      var app_start_date = document.getElementById("txt_start_date").value,
+        app_end_date = document.getElementById("txt_end_date").value,
+        app_title = document.getElementById("txt_title").value,
+        app_purpose = document.getElementById("txt_purpose").value;
+
+/*
+*        var link = "setting_notification_create_conf.html?";
+
+      link += "app_start_date=" + app_start_date + "&app_end_date=" + app_end_date + "&app_title=" + app_title +
+          "&app_purpose=" + app_purpose ;
+
+      window.location.href = link;
+*/
+      var onePageLimit = '${param.one_page_limit}';
+      var f = document.createElement('form');
+      f.setAttribute('method','post');
+      f.setAttribute('action','/notifications/<%=params[:id]%>/conf');
+      var inputOnePageLimit = setParam('one_page_limit',onePageLimit);
+      var inputStartDate = setParam('app_start_date',app_start_date);
+      var inputEndDate = setParam('app_end_date',app_end_date);
+      var inputTitle = setParam('app_title',app_title);
+      var inputPurpose = setParam('app_purpose',app_purpose);
+      f.appendChild(inputOnePageLimit);
+      f.appendChild(inputStartDate);
+      f.appendChild(inputEndDate);
+      f.appendChild(inputTitle);
+      f.appendChild(inputPurpose);
+
+      var bodyElement = document.body ;
+              bodyElement.append(f);
+              f.submit();
+    }
+
+    //validation
+    function validate_empty_text() {
+      var txt_start_date = document.getElementById("txt_start_date").value;
+      var txt_end_date = document.getElementById("txt_end_date").value;
+      var txt_title = document.getElementById("txt_title").value;
+      var txt_purpose = document.getElementById("txt_purpose").value;
+
+      var status = 0;
+
+      window.location.hash = '#check';
+
+      $("#div_publish_date_error").html("");
+      $("#div_title_error").html("");
+      $("#div_purpose_error").html("");
+
+      if (txt_start_date == "" || txt_end_date == "") {
+        $("#div_publish_date_error").html("掲載期間は必須です。");
+        status = 1;
+      }
+
+      if (txt_title == "") {
+        $("#div_title_error").html("タイトルは必須です。");
+        status = 1;
+      }
+
+      if (txt_purpose == "") {
+        $("#div_purpose_error").html("内容は必須です。");
+        status = 1;
+      }
+
+      return status;
+    }
+</script>

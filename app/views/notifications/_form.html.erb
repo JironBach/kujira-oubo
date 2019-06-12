@@ -1,15 +1,76 @@
-<%= form_with(model: notification, local: true) do |form| %>
-  <% if notification.errors.any? %>
+<%= form_with(model: @notification, local: true, url: "/notifications/#{params[:id].to_s}/conf", method: (params[:id].to_i == 0 ? :post : :patch)) do |form| %>
+  <% if @notification.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(notification.errors.count, "error") %> prohibited this notification from being saved:</h2>
+      <h2><%= pluralize(@notification.errors.count, "error") %> prohibited this notification from being saved:</h2>
 
       <ul>
-      <% notification.errors.full_messages.each do |message| %>
+      <% @notification.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
       </ul>
     </div>
   <% end %>
+
+  <section class="col-md-12 col-xs-12">
+   <div class="callout callout-warning">
+    <h4 style="font-size:16px;">採用責任者からのお知らせ登録</h4>
+   </div>
+   <div class="row">
+    <div class="col-md-12 col-xs-12">
+     <div class="box box-kujira box-solid">
+      <div class="box-header with-border">
+       お知らせ情報
+      </div>
+      <div class="box-body">
+       <div class="form-group">
+        <h6 class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="font-size:12px;">掲載期間 <span style="font-size:12px; background-color: #d9534f; border-color: #d43f3a; padding:5px; border-radius: 3px; color: #fff;">必須</span></h6>
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+         <h6 style="font-size:12px;">お知らせの掲載期間を登録して下さい。開始日を<span style="color:red;">当日、もしくは当日以前</span>にした場合はすぐにお知らせが掲載されます。</h6>
+        </div>
+        <div class="col-lg-offset-2 col-lg-2 col-md-6 col-sm-12 col-xs-12">
+         <%= text_field_tag "notification", "start_date", id: "txt_start_date", class: "form-control text-center", style: "margin-top: 5px;", value: @notification.start_date.nil? ? '' : @notification.start_date.strftime("%Y/%-m/%-d") %>
+        </div>
+        <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 5px;">
+         <%= form.text_field "end_date", id: "txt_end_date", class: "form-control text-center", value: @notification.end_date.nil? ? '' : @notification.end_date.strftime("%Y/%-m/%-d") %>
+        </div>
+        <div id="div_publish_date_error" style="color: red;" class="error_msg"></div>
+       </div>
+      </div>
+      <div class="box-body" style="background-color: rgb(238, 120, 0, 0.2)">
+       <div class="form-group">
+        <h6 class="col-lg-2 col-md-3 col-sm-12 col-xs-12" style="font-size:12px;">タイトル <span style="font-size:12px; background-color: #d9534f; border-color: #d43f3a; padding:5px; border-radius: 3px; color: #fff;">必須</span></h6>
+        <div class="col-lg-6 col-md-9 col-sm-12 col-xs-12">
+         <%= form.text_field "title", id: "txt_title", class: "form-control" %>
+         (<span id="span_title_total_char" >0</span> / 100文字)
+        </div>
+        <div id="div_title_error" style="color: red;" class="error_msg"></div>
+       </div>
+      </div>
+      <div class="box-body">
+       <div class="form-group">
+        <h6 class="col-lg-2 col-md-3 col-sm-12 col-xs-12" style="font-size:12px;">内容 <span style="font-size:12px; background-color: #d9534f; border-color: #d43f3a; padding:5px; border-radius: 3px; color: #fff;">必須</span></h6>
+        <div class="col-lg-6 col-md-9 col-sm-12 col-xs-12">
+         <%= form.text_area "purpose", id: "txt_purpose", class:"form-control", style: "resize:none;" %>
+         (<span id="span_purpose_total_char" >0</span> / 100文字)
+        </div>
+        <div id="div_purpose_error" style="color: red;" class="error_msg"></div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <br>
+   <div class="row">
+    <div class="col-md-12 col-xs-12" id="footer_go_to_confirmation">
+     <div class="pull-left">
+      <a class="btn btn-warning btn-rounded" onclick="history.back()">< 戻る</a>
+     </div>
+     <div class="text-center">
+      <a class="btn btn-rounded  btn-warning" id="btn_confirm_data_change">入力内容を確認</a>
+     </div>
+    </div>
+   </div>
+  </section>
 
   <div class="actions">
     <%= form.submit %>

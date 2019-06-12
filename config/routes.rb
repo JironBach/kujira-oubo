@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   resources :notifications
   post '/notifications/new/', to: 'notifications#new'
   post '/notifications', to: 'notifications#set_page_limit'
+  patch '/notifications', to: 'notifications#update'
   post '/notifications/batch_del', to: 'notifications#batch_del'
+  post '/notifications/conf', to: 'notifications#conf'
   post '/notifications/:id/conf', to: 'notifications#conf'
 
   root 'top#show'

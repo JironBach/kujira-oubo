@@ -4,8 +4,6 @@ class NotificationsController < ApplicationController
   # GET /notifications
   # GET /notifications.json
   def index
-    logger.debug "debug:params=#{params.inspect}"
-
     if params['one_page_limit'].blank?
       per = params['per'].blank? ? 20 : params['per']
     else
@@ -60,9 +58,11 @@ class NotificationsController < ApplicationController
   # PATCH/PUT /notifications/1
   # PATCH/PUT /notifications/1.json
   def update
+    @notification = Notification.find(params[:notification][:id].to_i)
+
     respond_to do |format|
       if @notification.update(notification_params)
-        format.html { redirect_to @notification, notice: 'Notification was successfully updated.' }
+        format.html { redirect_to '/notifications', notice: 'Notification was successfully updated.' }
         format.json { render :index, status: :ok, location: @notification }
       else
         format.html { render :edit }

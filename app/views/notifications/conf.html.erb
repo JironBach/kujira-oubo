@@ -144,7 +144,8 @@
       </div>
     <div id="footer_go_to_confirmation">
       <div><a class="edit_data_back_btn  btn btn-primary" id="btn_back"  onclick="history.back()">＜戻る</a></div>
-      <%= form_tag '/notifications', method: :post do %>
+      <%= form_tag '/notifications', method: (params[:id].to_i == 0 ? :post : :patch) do %>
+        <%= hidden_field_tag 'notification[id]', params[:id].to_s %>
         <%= hidden_field_tag 'notification[start_date]', params[:app_start_date] %>
         <%= hidden_field_tag 'notification[end_date]', params[:app_end_date] %>
         <%= hidden_field_tag 'notification[title]', params[:app_title] %>
