@@ -19,7 +19,7 @@ default: &default
 
 development:
   <<: *default
-  host: oubo2.cbkiwkjr51qs.ap-northeast-1.rds.amazonaws.com
+  #host: oubo2.cbkiwkjr51qs.ap-northeast-1.rds.amazonaws.com
   database: kujira_oubo_development
   user: root
   password: password
