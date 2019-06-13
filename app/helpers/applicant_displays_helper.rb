@@ -1,0 +1,2 @@
+module ApplicantDisplaysHelper
+end

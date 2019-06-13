@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :applicant_displays
   resources :s_groups
   post '/s_groups/search', to: 's_groups#search'
   post '/s_groups/batch_del', to: 's_groups#batch_del'
