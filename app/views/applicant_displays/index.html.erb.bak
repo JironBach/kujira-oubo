@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Applicant Displays</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @applicant_displays.each do |applicant_display| %>
+      <tr>
+        <td><%= link_to 'Show', applicant_display %></td>
+        <td><%= link_to 'Edit', edit_applicant_display_path(applicant_display) %></td>
+        <td><%= link_to 'Destroy', applicant_display, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Applicant Display', new_applicant_display_path %>

@@ -1,0 +1,114 @@
+<%
+sidebar_collapse  = "nonsidebar-collapse";
+loginAccountObj = session["loginAccountObj"]
+message = params["message"]
+
+hour = params["app_hour"]
+icon = params["app_icon"]
+displayIcon = params["app_display_icon"]
+message = params["message"]
+
+ss = loginAccountObj['fullname'] unless loginAccountObj.nil?
+pict = ss.nil? ? '' : ss.slice(0, 1)
+%>
+<!DOCTYPE html>
+<html>
+ <head>
+  <%= render partial: "common/index_header" %>
+  <title>くじら応募</title>
+  <script src="/dist/js/jquery.js"></script>
+  <script src="/dist/js/bootstrap.js"></script>
+  <script src="/dist/js/adminlte.js?v=1"></script>
+ </head>
+ <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>">
+  <div class="wrapper">
+   <%= render partial: "common/top_bar" %>
+   <%= render partial: "common/side_bar" %>
+   <div class="content-wrapper">
+    <section class="content-header">
+     <h1>応募者表示設定</h1>
+     <ol class="breadcrumb">
+      <li><a href="/"><i class="fa fa-home"></i> ホーム</a></li>
+      <li><a href="/setting_applicant_display"><i class="fa fa-cogs"></i> 設定</a></li>
+      <li class="active">応募者表示設定</li>
+     </ol>
+    </section>
+    <section class="content">
+     <div class="row">
+      <section class="col-md-12 col-xs-12">
+       <div class="callout callout-warning">
+        <h4 style="font-size:16px;">応募者表示設定</h4>
+       </div>
+       <div class="row">
+        <div class="col-md-12 col-xs-12">
+         <div class="box box-kujira box-solid">
+          <div class="box-header with-border">
+           対応期限設定
+          </div>
+          <div class="box-body">
+           <div class="col-md-12 col-xs-12">
+            <div class="form-group">
+             <div class="pull-left">
+             </div>
+            </div>
+           </div>
+           <div class="form-group">
+             <%= form_with(model: @applicant_display, local: true, url: '/applicant_displays/1', method: :patch) do |form| %>
+               <h6 class="col-lg-2 col-md-2 col-sm-4 col-xs-12" style="font-size:12px;">対応期限 <span style="font-size:12px; background-color: #d9534f; border-color: #d43f3a; padding:5px; border-radius: 3px; color: #fff;">必須</span></h6>
+               <h6 class="col-lg-8 col-md-8 col-sm-3 col-xs-12" id="span_hour" style="font-size:12px;"><%=params['app_hour'].to_s%></h6>
+             <%= form.hidden_field 'hour', value: params['app_hour'].to_s %>
+             <%= form.hidden_field 'icon', value: '表示しない' %>
+             <%= form.hidden_field 'display_icon', value: '他店舗と重複している応募者に重複アイコン表示する' %>
+           </div>
+           <div style="display:none">
+            <ul class="mail_modal_body_ul">
+             <li class="mail_modal_body_li">重複応募設定</li>
+            </ul>
+            <div style="font-size:13px;margin-top:10px;margin-bot:10px;">重複アイコンを「表示しない」にすると、応募者一覧で重複を示すアイコンが非表示になります。</div>
+            <table class="app_mail_table_layout">
+             <tbody>
+              <tr>
+               <td style="width:200px" class="app_mail_cap_field">
+                <ul class="mandatory_field_cap"><li>重複アイコンの表示設定</li></ul>
+               </td>
+               <td>
+                 <ul class="ul_input_field_setting_page">
+                  <li><span id="span_icon"></span></li>
+                  <li><span id="span_display_icon"></span></li>
+                 </ul>
+               </td>
+              </tr>
+             </tbody>
+            </table>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <br>
+       <div class="row">
+        <div class="col-md-12 col-xs-12" id="footer_go_to_confirmation">
+         <div class="pull-left">
+           <a class="btn btn-warning btn-rounded" id="btn_back" onclick="history.back()">< 戻る</a>
+         </div>
+         <div class="text-center">
+           <%= form.submit '更新', class: "btn btn-rounded  btn-warning",  id: "btn_change_data"%>
+         </div>
+        </div>
+       </div>
+       <% end %>
+      </section>
+     </div>
+    </section>
+   </div>
+   <%= render partial: "common/footer" %>
+  </div>
+  <script>
+$(document).ready(function() {
+    // get current URL path and assign 'active' class
+    var pathname = window.location.pathname;
+    $('.setting').parent().addClass('active') && $('.setting > li > a[href="/setting_applicant_display"]').parent().addClass('active');
+})
+  </script>
+ </body>
+</html>

@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   post '/blacklists/batch_del', to: 'blacklists#batch_del'
   resources :auto_data_uploads
   resources :app_statuses
+  resources :applicant_displays
+  post '/applicant_displays/:id/conf', to: 'applicant_displays#conf'
 
   resources :sites
   resources :accounts
