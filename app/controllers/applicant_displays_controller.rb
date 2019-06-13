@@ -44,9 +44,9 @@ class ApplicantDisplaysController < ApplicationController
   def update
     logger.debug "debug_display:params=#{params.inspect}"
     @applicant_display = ApplicantDisplay.find(1)
-    @applicant_display.hour = params['app_hour'].to_i
-    @applicant_display.icon = params['app_icon']
-    @applicant_display.display_icon = params['app_display_icon']
+    @applicant_display.hour = params['applicant_display']['hour'].to_i
+    @applicant_display.icon = params['applicant_display']['icon']
+    @applicant_display.display_icon = params['applicant_display']['display_icon']
     @applicant_display.save!
 
     respond_to do |format|
@@ -71,6 +71,7 @@ class ApplicantDisplaysController < ApplicationController
   end
 
   def conf
+    @applicant_display = ApplicantDisplay.find(1)
   end
 
   private

@@ -19,70 +19,6 @@ pict = ss.nil? ? '' : ss.slice(0, 1)
   <script src="/dist/js/jquery.js"></script>
   <script src="/dist/js/bootstrap.js"></script>
   <script src="/dist/js/adminlte.js?v=1"></script>
-  <script>
-
-      function setParam(name,value){
-        var input = document.createElement('input');
-                    input.setAttribute('type', 'hidden');
-                    input.setAttribute('name', name);
-                    input.setAttribute('value', value);
-                    return input;
-        }
-
-        $(function() {
-        take_get_parameter();
-        $("#btn_back").click(function(){
-          var f = document.createElement("form");
-                    f.setAttribute('method',"patch");
-                    f.setAttribute('action',"/applicant_displays/1");
-                    <% params.each do |key, value| %>
-                        f.appendChild(setParam('<%=key%>','<%=value%>'));
-                    <% end %>
-                    var bodyElement = document.body ;
-                    bodyElement.append(f);
-                    f.submit();
-        });
-      });
-
-      $(function() {
-          take_get_parameter();
-          $("#btn_change_data").click(function(){
-            /*var app_hour = S_GET("app_hour"),
-            app_icon = S_GET("app_icon"),
-            app_display_icon = S_GET("app_display_icon"),
-            app_complete = "1";
-          window.location.href = "setting_applicant_display.html?app_hour=" + app_hour +
-                       "&app_icon=" + app_icon +
-                       "&app_display_icon=" + app_display_icon +
-                       "&app_complete=" + app_complete;*/
-
-          var f = document.createElement("form");
-            f.setAttribute('method',"patch");
-            f.setAttribute('action',"/applicant_displays/1");
-            <% params.each do |key, value| %>
-              f.appendChild(setParam('<%=key%>','<%=value%>'));
-            <% end %>
-            var bodyElement = document.body ;
-            bodyElement.append(f);
-            f.submit();
-        });
-         });
-
-      function take_get_parameter() {
-        /*var app_hour = S_GET("app_hour"),
-          app_icon = S_GET("app_icon"),
-          app_display_icon = S_GET("app_display_icon");*/
-        var app_hour = '<%=params['app_hour']%>',
-          app_icon = '${param.app_icon}',
-          app_display_icon = '${param.app_display_icon}',
-          app_complete = '${param.app_complete}';
-
-        document.getElementById("span_icon").innerHTML = app_icon;
-        document.getElementById("span_display_icon").innerHTML = app_display_icon;
-        //document.getElementById("span_hour").innerHTML = app_hour + " 時間（h）"; // TO-DO 時間単位から分単位に変更　DB等のカラム名等は変更せず修正箇所は必要最小限に抑える 20180918
-        document.getElementById("span_hour").innerHTML = app_hour + " 分（m）";
-      }
-  </script>
  </head>
  <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>">
   <div class="wrapper">
@@ -117,8 +53,12 @@ pict = ss.nil? ? '' : ss.slice(0, 1)
             </div>
            </div>
            <div class="form-group">
-             <h6 class="col-lg-2 col-md-2 col-sm-4 col-xs-12" style="font-size:12px;">対応期限 <span style="font-size:12px; background-color: #d9534f; border-color: #d43f3a; padding:5px; border-radius: 3px; color: #fff;">必須</span></h6>
-             <h6 class="col-lg-8 col-md-8 col-sm-3 col-xs-12" id="span_hour" style="font-size:12px;"></h6>
+             <%= form_with(model: @applicant_display, local: true, url: '/applicant_displays/1', method: :patch) do |form| %>
+               <h6 class="col-lg-2 col-md-2 col-sm-4 col-xs-12" style="font-size:12px;">対応期限 <span style="font-size:12px; background-color: #d9534f; border-color: #d43f3a; padding:5px; border-radius: 3px; color: #fff;">必須</span></h6>
+               <h6 class="col-lg-8 col-md-8 col-sm-3 col-xs-12" id="span_hour" style="font-size:12px;"><%=params['app_hour'].to_s%></h6>
+             <%= form.hidden_field 'hour', value: params['app_hour'].to_s %>
+             <%= form.hidden_field 'icon', value: '表示しない' %>
+             <%= form.hidden_field 'display_icon', value: '他店舗と重複している応募者に重複アイコン表示する' %>
            </div>
            <div style="display:none">
             <ul class="mail_modal_body_ul">
@@ -149,13 +89,14 @@ pict = ss.nil? ? '' : ss.slice(0, 1)
        <div class="row">
         <div class="col-md-12 col-xs-12" id="footer_go_to_confirmation">
          <div class="pull-left">
-           <a class="btn btn-warning btn-rounded" id="btn_back">< 戻る</a>
+           <a class="btn btn-warning btn-rounded" id="btn_back" onclick="history.back()">< 戻る</a>
          </div>
          <div class="text-center">
-           <a class="btn btn-rounded  btn-warning" id="btn_change_data">更新</a>
+           <%= form.submit '更新', class: "btn btn-rounded  btn-warning",  id: "btn_change_data"%>
          </div>
         </div>
        </div>
+       <% end %>
       </section>
      </div>
     </section>

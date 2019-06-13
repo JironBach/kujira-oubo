@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   resources :auto_data_uploads
   resources :app_statuses
   resources :applicant_displays
-  get '/applicant_displays/:id/conf', to: 'applicant_displays#conf'
+  post '/applicant_displays/:id/conf', to: 'applicant_displays#conf'
 
   resources :sites
   resources :accounts
