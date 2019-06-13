@@ -20,7 +20,6 @@ class BlacklistsController < ApplicationController
     @blacklists = Blacklist
     if !params['bl_name'].blank?
       @blacklists = @blacklist.where("name LIKE ?", "%#{params['bl_name']}%")
-      logger.debug "debug:blacklist_count=#{@blacklist.count.inspect}"
     end
     if !params['bl_mail'].blank?
       @blacklists = @blacklist.where("mail LIKE ? OR mail2 LIKE ? OR tel LIKE ? OR tel2 LIKE ?", \
@@ -90,7 +89,6 @@ class BlacklistsController < ApplicationController
   # DELETE /blacklists/1
   # DELETE /blacklists/1.json
   def destroy
-    logger.debug "debug:params#{params.inspect}"
     @blacklist = Blacklist.where(id: params[:id].to_i).first
     @blacklist.destroy
     respond_to do |format|
@@ -100,7 +98,6 @@ class BlacklistsController < ApplicationController
   end
 
   def search
-    logger.debug "debug:search_params=#{params.inspect}"
     if params['one_page_limit'].blank?
       per = params['per'].blank? ? 20 : params['per']
     else
@@ -124,13 +121,11 @@ class BlacklistsController < ApplicationController
       blacklists = blacklists.order(id: 'desc').page(params[:page]).per(per)
     end
     @blacklists = blacklists.all
-    logger.debug "debug:blacklists=#{@blacklists.count.inspect}"
 
     render 'index'
   end
 
   def batch_del
-    logger.debug "debug:params=#{params.inspect}"
     params['batch_del'].each do |i|
       @blacklist = Blacklist.find(i.to_i)
       @blacklist.destroy

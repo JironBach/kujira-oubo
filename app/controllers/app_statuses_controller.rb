@@ -4,7 +4,7 @@ class AppStatusesController < ApplicationController
   # GET /app_statuses
   # GET /app_statuses.json
   def index
-    @app_statuses = AppStatus.all
+    @app_statuses = AppStatus.where(delete_flg: 0).all
   end
 
   # GET /app_statuses/1
@@ -19,17 +19,20 @@ class AppStatusesController < ApplicationController
 
   # GET /app_statuses/1/edit
   def edit
+    @app_status = AppStatus.find(params['id'].to_i)
   end
 
   # POST /app_statuses
   # POST /app_statuses.json
   def create
-    @app_status = AppStatus.new(app_status_params)
+    @app_status = AppStatus.new()
+    @app_status.status_name = params[:status_name]
+    @app_status.follow_up = params[:follow_up].to_i
 
     respond_to do |format|
       if @app_status.save
-        format.html { redirect_to @app_status, notice: 'App status was successfully created.' }
-        format.json { render :show, status: :created, location: @app_status }
+        format.html { redirect_to app_statuses_url, notice: 'App status was successfully created.' }
+        format.json { render json: @app_status, status: :ok }
       else
         format.html { render :new }
         format.json { render json: @app_status.errors, status: :unprocessable_entity }
@@ -40,9 +43,14 @@ class AppStatusesController < ApplicationController
   # PATCH/PUT /app_statuses/1
   # PATCH/PUT /app_statuses/1.json
   def update
+    logger.debug "debug:params=#{params.inspect}"
+    @app_status = AppStatus.find(params[:id].to_i)
+    @app_status.status_name = params[:status_name]
+    @app_status.follow_up = params[:follow_up].to_i
+
     respond_to do |format|
       if @app_status.update(app_status_params)
-        format.html { redirect_to @app_status, notice: 'App status was successfully updated.' }
+        format.html { redirect_to app_statuses_url, notice: 'App status was successfully updated.' }
         format.json { render :show, status: :ok, location: @app_status }
       else
         format.html { render :edit }
@@ -54,7 +62,9 @@ class AppStatusesController < ApplicationController
   # DELETE /app_statuses/1
   # DELETE /app_statuses/1.json
   def destroy
-    @app_status.destroy
+    @app_status = AppStatus.find(params[:id].to_i)
+    @app_status.delete_flg = 1
+    @app_status.save
     respond_to do |format|
       format.html { redirect_to app_statuses_url, notice: 'App status was successfully destroyed.' }
       format.json { head :no_content }
