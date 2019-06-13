@@ -1,0 +1,8 @@
+class CreateAppStatuses < ActiveRecord::Migration[5.1]
+  def change
+    create_table :app_statuses do |t|
+
+      t.timestamps
+    end
+  end
+end

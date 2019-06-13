@@ -1,0 +1,17 @@
+<%= form_with(model: auto_data_upload, local: true) do |form| %>
+  <% if auto_data_upload.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(auto_data_upload.errors.count, "error") %> prohibited this auto_data_upload from being saved:</h2>
+
+      <ul>
+      <% auto_data_upload.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
