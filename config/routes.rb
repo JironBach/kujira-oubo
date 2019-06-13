@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :app_statuses
   resources :s_groups
   post '/s_groups/search', to: 's_groups#search'
   post '/s_groups/batch_del', to: 's_groups#batch_del'
@@ -14,6 +15,8 @@ Rails.application.routes.draw do
   resources :blacklists
   post '/blacklists/search', to: 'blacklists#search'
   post '/blacklists/batch_del', to: 'blacklists#batch_del'
+  resources :auto_data_uploads
+
   resources :sites
   resources :accounts
 

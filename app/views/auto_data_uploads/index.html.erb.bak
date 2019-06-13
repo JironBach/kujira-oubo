@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Auto Data Uploads</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @auto_data_uploads.each do |auto_data_upload| %>
+      <tr>
+        <td><%= link_to 'Show', auto_data_upload %></td>
+        <td><%= link_to 'Edit', edit_auto_data_upload_path(auto_data_upload) %></td>
+        <td><%= link_to 'Destroy', auto_data_upload, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Auto Data Upload', new_auto_data_upload_path %>
