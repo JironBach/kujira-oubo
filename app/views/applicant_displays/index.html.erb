@@ -1,25 +1,277 @@
-<p id="notice"><%= notice %></p>
+<%
+  sidebar_collapse  = "nonsidebar-collapse";
+  loginAccountObj = session["loginAccountObj"]
+  message = params["message"]
 
-<h1>Applicant Displays</h1>
+  hour = params["app_hour"]
+  icon = params["app_icon"]
+  displayIcon = params["app_display_icon"]
+  message = params["message"]
 
-<table>
-  <thead>
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+  ss = loginAccountObj['fullname'] unless loginAccountObj.nil?
+  pict = ss.nil? ? '' : ss.slice(0, 1)
+%>
+<!DOCTYPE html>
+<html>
+ <head>
+  <%= render partial: "common/index_header" %>
+  <title>くじら応募</title>
+  <script src="/dist/js/jquery.js"></script>
+  <script src="/dist/js/bootstrap.js"></script>
+  <script src="/dist/js/adminlte.js?v=1"></script>
+  <script>
+      $(function() {
 
-  <tbody>
-    <% @applicant_displays.each do |applicant_display| %>
-      <tr>
-        <td><%= link_to 'Show', applicant_display %></td>
-        <td><%= link_to 'Edit', edit_applicant_display_path(applicant_display) %></td>
-        <td><%= link_to 'Destroy', applicant_display, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+          clear_screen();
 
-<br>
+          take_get_parameter();
 
-<%= link_to 'New Applicant Display', new_applicant_display_path %>
+          //final action button
+          $("#btn_confirm_data_change").click(function(){
+            if(check_empty_text() != 1){
+              redirect_page();
+            }
+          });
+         });
+
+      function take_get_parameter(){
+        /*var app_hour = S_GET("app_hour"),
+          app_icon = S_GET("app_icon"),
+          app_display_icon = S_GET("app_display_icon"),
+          app_complete = S_GET("app_complete");*/
+
+
+        var app_hour = '${param.app_hour}',
+          app_icon = '${param.app_icon}',
+          app_display_icon = '${param.app_display_icon}',
+          app_complete = '${param.app_complete}';
+
+        if((app_hour == null) || (app_hour == ""))
+          app_hour = 15;
+        if((app_icon == null) || (app_icon == ""))
+          app_icon = '<%=icon %>';
+        if((app_display_icon == null) || (app_display_icon == ""))
+          app_display_icon = '<%=displayIcon %>';
+        if((app_complete == null) || (app_complete == ""))
+          app_complete = "";
+        var	message = '<%=message %>';
+
+
+        var rad_display = document.getElementsByName(rad_display);
+
+        if ( app_icon == "表示しない" ) {
+          document.getElementById("rad_not_display_app").checked = true;
+          document.getElementById("check_display_app").checked = false;
+          document.getElementById("check_display_app").disabled = true;
+        }
+        else {
+          document.getElementById("rad_display_app").checked = true;
+          document.getElementById("check_display_app").disabled = false;
+          if( app_display_icon != "")
+            document.getElementById("check_display_app").checked = true;
+          else
+            document.getElementById("check_display_app").checked = false;
+        }
+
+//				if(app_complete != ""){
+//					document.getElementById("div_change_notification").style.display = "block";
+//				}
+//				if(message != ""){
+//					document.getElementById("div_change_notification").style.display = "block";
+//				}
+
+        document.getElementById("txt_minute").value = app_hour;
+      }
+
+      function validate_radio_button(index) {
+        if(index == 0) {
+          document.getElementById("rad_display_app").checked = true;
+          document.getElementById("check_display_app").disabled = false;
+        }
+        else {
+          document.getElementById("rad_not_display_app").checked = true;
+          document.getElementById("check_display_app").disabled = true;
+          document.getElementById("check_display_app").checked = false;
+        }
+      }
+
+      function setParam(name,value){
+        var input = document.createElement('input');
+                    input.setAttribute('type', 'hidden');
+                    input.setAttribute('name', name);
+                    input.setAttribute('value', value);
+                    return input;
+        }
+
+      function redirect_page(){
+        /*var link = "setting_applicant_display_conf.html?";*/
+
+        var app_hour = document.getElementById("txt_minute").value;
+        var app_display_icon = "",
+          app_icon = "";
+
+        var rad_display = document.getElementsByName("rad_display");
+
+        for ( var i = 0; i < rad_display.length; i++ ) {
+          if ( rad_display[i].checked == true )
+             app_icon = rad_display[i].value;
+        }
+
+        if (document.getElementById("check_display_app").checked == true)
+          app_display_icon = "他店舗と重複している応募者に重複アイコン表示する";
+        else
+          app_display_icon = "";
+
+        /*link += "app_hour=" + app_hour + "&app_icon=" + app_icon + "&app_display_icon=" + app_display_icon;
+        window.location.href = link;*/
+
+        var f = document.createElement("form");
+        f.setAttribute('method',"get");
+        f.setAttribute('action',"/applicant_displays/1/conf");
+        var inputHour = setParam('app_hour',app_hour);
+        var inputIcon = setParam('app_icon',app_icon);
+        var inputDisplayIcon = setParam('app_display_icon',app_display_icon);
+        f.appendChild(inputHour);
+        f.appendChild(inputIcon);
+        f.appendChild(inputDisplayIcon);
+        var bodyElement = document.body ;
+        bodyElement.append(f);
+        f.submit();
+      }
+
+      function check_empty_text() {
+        var txt_hour = document.getElementById("txt_minute").value;
+        var status = 0;
+
+        window.location.hash = '#check';
+
+        $("#span_hour_error").html("");
+
+        if(txt_hour == "") {
+          $("#div_hour_error").html("対応期限は必須です。");
+          status = 1;
+        }
+
+        return status;
+      }
+  </script>
+ </head>
+ <body class="hold-transition skin-kujira sidebar-mini <%=sidebar_collapse%>" id="check">
+  <div class="wrapper">
+   <%= render partial: "/common/top_bar" %>
+   <%= render partial: "/common/side_bar" %>
+   <div class="content-wrapper">
+    <section class="content-header">
+     <h1>応募者表示設定</h1>
+     <ol class="breadcrumb">
+      <li><a href="/"><i class="fa fa-home"></i> ホーム</a></li>
+      <li><a href="/setting_applicant_display"><i class="fa fa-cogs"></i> 設定</a></li>
+      <li class="active">応募者表示設定</li>
+     </ol>
+    </section>
+    <section class="content">
+     <div class="row">
+      <section class="col-md-12 col-xs-12">
+       <div class="callout callout-warning" style="display:none">
+        <h4 style="font-size:16px;">応募者表示設定</h4>
+       </div>
+       <div class="row">
+        <div class="col-md-12 col-xs-12">
+         <div class="box box-kujira box-solid">
+          <div class="box-header with-border">
+           対応期限設定
+          </div>
+          <div class="box-body">
+           <div class="col-md-12 col-xs-12">
+            <div class="form-group">
+             <div class="pull-left">
+              <div id="div_change_notification" style="font-size: 12px;">更新処理を実行しました。</div>
+              <br>
+             </div>
+            </div>
+           </div>
+
+           <!-- 現状未使用:20180918 start -->
+           <div style="display:none">
+            <ul class="mail_modal_body_ul">
+             <li class="mail_modal_body_li">重複応募設定</li>
+            </ul>
+            <div style="font-size:13px;margin-top:10px;margin-bot:10px;">重複アイコンを「表示しない」にすると、応募者一覧で重複を示すアイコンが非表示になります。</div>
+            <table class="app_mail_table_layout">
+             <tbody>
+              <tr>
+               <td style="width:200px" class="app_mail_cap_field">
+                 <ul class="mandatory_field_cap">
+                  <li>重複アイコンの表示設定</li>
+                  <li class="mandatory_sign">必須</li>
+                 </ul>
+               </td>
+               <td>
+                 <ul class="ul_input_field_setting_page">
+                  <li><label><input type="radio" value="表示する" onclick="validate_radio_button(0)" name="rad_display" id="rad_display_app" checked="true" /> 表示する</label></li>
+                  <ul class="ul_input_field_setting_page_sub" >
+                   <li><label><input type="checkbox" value="他店舗と重複している応募者に重複アイコン表示する" name="check_display" id="check_display_app" checked="true" /> 他店舗と重複している応募者に重複アイコン表示する</label></li>
+                  </ul>
+                  <li><label><input type="radio" onclick="validate_radio_button(1)" value="表示しない" name="rad_display" id="rad_not_display_app" /> 表示しない</label></li>
+                 </ul>
+               </td>
+              </tr>
+             </tbody>
+            </table>
+           </div>
+           <!-- 現状未使用:20180918 end -->
+
+           <div class="form-group">
+             <h6 class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="font-size:12px;">対応期限 <span style="font-size:12px; background-color: #d9534f; border-color: #d43f3a; padding:5px; border-radius: 3px; color: #fff;">必須</span></h6>
+             <div class="form-group col-md-2 col-xs-12">
+             <select class="form-control" id="txt_minute">
+               <!-- <option value="">選択してください。</option> -->
+               <%
+               minute = 0;
+               25.times do |i|
+                 minute = 5 * i;
+                 if minute == @applicant_display.hour %>
+                   <option value="<%=minute%>" selected><%=minute%></option>
+                 <% else %>
+                   <option value="<%=minute%>"><%=minute%></option>
+                 <% end %>
+               <% end %>
+             </select>
+            </div>
+            <div class="col-md-2 col-xs-12" style="margin-top: 10px">分(m)</div>
+           </div>
+          </div>
+          <div class="box-body">
+           <div class="col-md-12 col-xs-12">
+             <div class="text-center" id="footer_go_to_confirmation">
+              <a class="btn btn-rounded btn-kujira" id="btn_confirm_data_change">入力内容を確認</a>
+             </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <br>
+      </section>
+     </div>
+    </section>
+   </div>
+   <%= render partial: "common/footer" %>
+  </div>
+  <script>
+   function clear_screen() {
+//   	document.getElementById("rad_display_app").checked = true;
+     document.getElementById("txt_minute").value = "60";
+//   	document.getElementById("check_display_app").disabled = false;
+     document.getElementById("div_change_notification").style.display = "none";
+   }
+  </script>
+  <script>
+$(document).ready(function() {
+    // get current URL path and assign 'active' class
+    var pathname = window.location.pathname;
+    $('.setting').parent().addClass('active') && $('.setting > li > a[href="'+pathname+'"]').parent().addClass('active');
+})
+  </script>
+ </body>
+</html>

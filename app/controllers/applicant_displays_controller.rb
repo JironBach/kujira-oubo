@@ -4,7 +4,7 @@ class ApplicantDisplaysController < ApplicationController
   # GET /applicant_displays
   # GET /applicant_displays.json
   def index
-    @applicant_displays = ApplicantDisplay.all
+    @applicant_display = ApplicantDisplay.find(1)
   end
 
   # GET /applicant_displays/1
@@ -19,15 +19,17 @@ class ApplicantDisplaysController < ApplicationController
 
   # GET /applicant_displays/1/edit
   def edit
+    @applicant_display = ApplicantDisplay.find(1)
   end
 
   # POST /applicant_displays
   # POST /applicant_displays.json
   def create
     @applicant_display = ApplicantDisplay.new(applicant_display_params)
+    @applicant_display.save
 
     respond_to do |format|
-      if @applicant_display.save
+      if true #@applicant_display.save
         format.html { redirect_to @applicant_display, notice: 'Applicant display was successfully created.' }
         format.json { render :show, status: :created, location: @applicant_display }
       else
@@ -40,9 +42,16 @@ class ApplicantDisplaysController < ApplicationController
   # PATCH/PUT /applicant_displays/1
   # PATCH/PUT /applicant_displays/1.json
   def update
+    logger.debug "debug_display:params=#{params.inspect}"
+    @applicant_display = ApplicantDisplay.find(1)
+    @applicant_display.hour = params['app_hour'].to_i
+    @applicant_display.icon = params['app_icon']
+    @applicant_display.display_icon = params['app_display_icon']
+    @applicant_display.save!
+
     respond_to do |format|
-      if @applicant_display.update(applicant_display_params)
-        format.html { redirect_to @applicant_display, notice: 'Applicant display was successfully updated.' }
+      if true #update(applicant_display_params)
+        format.html { redirect_to '/applicant_displays', notice: 'Applicant display was successfully updated.' }
         format.json { render :show, status: :ok, location: @applicant_display }
       else
         format.html { render :edit }
@@ -59,6 +68,9 @@ class ApplicantDisplaysController < ApplicationController
       format.html { redirect_to applicant_displays_url, notice: 'Applicant display was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def conf
   end
 
   private
