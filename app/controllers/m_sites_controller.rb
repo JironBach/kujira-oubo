@@ -15,6 +15,7 @@ class MSitesController < ApplicationController
 
   # GET /sites/new
   def new
+    @m_site = MSite.new
     @recruitment_sites = RecruitmentSite.where(del_flg: 0).all
   end
 
@@ -25,8 +26,8 @@ class MSitesController < ApplicationController
   # POST /sites
   # POST /sites.json
   def create
+    logger.debug "debug:params=#{params.inspect}"
     @m_site = MSite.new #(m_site_params)
-    @m_site = MSite.new
     @m_site.id = MSite.maximum(:id) + 1
     @m_site.name = params['app_job_offer_name']
     @m_site.password = params['app_password']
