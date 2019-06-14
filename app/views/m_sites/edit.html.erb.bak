@@ -1,0 +1,6 @@
+<h1>Editing M Site</h1>
+
+<%= render 'form', m_site: @m_site %>
+
+<%= link_to 'Show', @m_site %> |
+<%= link_to 'Back', m_sites_path %>
