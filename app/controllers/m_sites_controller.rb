@@ -55,12 +55,12 @@ class MSitesController < ApplicationController
   # PATCH/PUT /sites/1.json
   def update
     respond_to do |format|
-      if @site.update(site_params)
-        format.html { redirect_to @site, notice: 'Site was successfully updated.' }
-        format.json { render :show, status: :ok, location: @site }
+      if @m_site.update(site_params)
+        format.html { redirect_to @m_site, notice: 'Site was successfully updated.' }
+        format.json { render :show, status: :ok, location: @m_site }
       else
         format.html { render :edit }
-        format.json { render json: @site.errors, status: :unprocessable_entity }
+        format.json { render json: @m_site.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -68,9 +68,13 @@ class MSitesController < ApplicationController
   # DELETE /sites/1
   # DELETE /sites/1.json
   def destroy
-    @site.destroy
+    #m_@site.destroy
+    m_site = MSite.find(params[:id].to_i)
+    m_site.del_flg = 1
+    m_site.save
+
     respond_to do |format|
-      format.html { redirect_to sites_url, notice: 'Site was successfully destroyed.' }
+      format.html { redirect_to '/m_sites', notice: 'Site was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
