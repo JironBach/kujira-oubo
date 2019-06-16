@@ -461,9 +461,9 @@
               <% end %>
               </td>
                <td style="font-size:12px;" data-title="操作">
-                <div class="text-center">
-                  <a id="edit_row_2" href="javascript:void(0)" onClick="toUpdServlet('<%=m_site.id%>','<%=m_site.password%>')">編集</a> |
-                  <a id="delete_row_2" href="javascript:void(0)" onclick="delete_per_line('<%=m_site.id%>')">削除</a>
+                  <%= link_to '編集',
+                "/m_sites/#{m_site.id}/edit" %> |
+                  <%= link_to '削除', "/m_sites/#{m_site.id}", data: { confirm: "削除しますか？"}, method: :delete %>
                 </div>
                </td>
               </tr>
