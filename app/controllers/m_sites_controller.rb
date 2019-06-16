@@ -21,12 +21,13 @@ class MSitesController < ApplicationController
 
   # GET /sites/1/edit
   def edit
+    @m_site = MSite.find(params[:id].to_i)
+    @recruitment_sites = RecruitmentSite.where(del_flg: 0).all
   end
 
   # POST /sites
   # POST /sites.json
   def create
-    logger.debug "debug:params=#{params.inspect}"
     @m_site = MSite.new #(m_site_params)
     @m_site.id = MSite.maximum(:id) + 1
     @m_site.name = params['app_job_offer_name']
