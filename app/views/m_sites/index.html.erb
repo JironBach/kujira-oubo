@@ -463,7 +463,7 @@
                <td style="font-size:12px;" data-title="操作">
                 <div class="text-center">
                   <a id="edit_row_2" href="javascript:void(0)" onClick="toUpdServlet('<%=m_site.id%>','<%=m_site.password%>')">編集</a> |
-                  <%= link_to '削除', "/m_sites/#{m_site.id}", confirm: "削除しますか？", method: :delete %>
+                  <%= link_to '削除', "/m_sites/#{m_site.id}", data: { confirm: "削除しますか？"}, method: :delete %>
                 </div>
                </td>
               </tr>
