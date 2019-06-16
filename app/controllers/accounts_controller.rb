@@ -4,7 +4,8 @@ class AccountsController < ApplicationController
   # GET /accounts
   # GET /accounts.json
   def index
-    @accounts = Account.all
+    @accounts = Account.where(delete_flg: 0).all
+    @s_groups = SGroup.where(delete_flg: 0).all
   end
 
   # GET /accounts/1
