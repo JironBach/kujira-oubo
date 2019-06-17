@@ -16,6 +16,9 @@ class AccountsController < ApplicationController
   # GET /accounts/new
   def new
     @account = Account.new
+    @accounts = Account.where(delete_flg: 0).all
+    @s_groups = SGroup.where(delete_flg: 0).all
+    @stores = Store.where(delete_flg: 0).all
   end
 
   # GET /accounts/1/edit
@@ -60,6 +63,9 @@ class AccountsController < ApplicationController
       format.html { redirect_to accounts_url, notice: 'Account was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def conf
   end
 
   private

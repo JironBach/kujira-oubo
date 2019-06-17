@@ -29,10 +29,9 @@
       </div>
       <div class="box-body" style="background-color: rgb(238, 120, 0, 0.2)">
        <div class="form-group">
-        <h6 class="col-lg-3 col-md-4 col-sm-12 col-xs-12" style="font-size:12px;">グループ名 <span style="font-size:12px; background-color: #d9534f; border-color: #d43f3a; padding:5px; border-radius: 3px; color: #fff;">必須</span></h6>
         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
          <%= text_field :s_group, :name, value: @s_group.name %>
-         <div id="div_group_name_error" style="color: red;" class="error_msg"></div>
+         <div id="div_group_name_error" style="color: red;" class="error_msg"><%=@error_msg.nil? ? '' : @error_msg%></div>
         </div>
        </div>
       </div>

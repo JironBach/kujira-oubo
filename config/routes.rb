@@ -20,11 +20,11 @@ Rails.application.routes.draw do
   resources :applicant_displays
   post '/applicant_displays/:id/conf', to: 'applicant_displays#conf'
   resources :m_sites
-  post '/m_sites/conf', to: 'm_sites#conf'
+  post '/m_sites/conf', to: 'm_sites#conf_new'
   post '/m_sites/:id/conf', to: 'm_sites#conf'
-
-  #resources :sites
   resources :accounts
+  post '/accounts/conf', to: 'accounts#conf_new'
+  post '/accounts/:id/conf', to: 'accounts#conf'
 
   root 'top#show'
 

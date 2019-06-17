@@ -125,6 +125,15 @@ class SGroupsController < ApplicationController
     else
       @s_group = SGroup.find(params[:id].to_i)
     end
+    if params[:s_group][:name].blank?
+      @error_msg = 'グループ名は必須です。'
+      per = params['per'].blank? ? 20 : params['per']
+      @s_groups = SGroup.where(delete_flg: 0).page(params[:page]).per(per).all.order(id: "DESC")
+      @areas = Area.where(delete_flg: 0).all
+      render :new
+      return
+    end
+
     @s_group.name = params['s_group']['name']
     @s_group.manager = params['s_group']['manager']
     @s_group.admin_comment = params['s_group']['admin_comment']

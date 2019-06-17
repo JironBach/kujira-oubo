@@ -1,4 +1,4 @@
-<%= form_with(model: @m_site, local: true) do |form| %>
+<%= form_with(model: @m_site, local: true, url: '/m_sites/conf') do |form| %>
   <% if @m_site.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@m_site.errors.count, "error") %> prohibited this m_site from being saved:</h2>
@@ -23,12 +23,14 @@
          <h6 class="col-lg-2 col-md-3 col-sm-12 col-xs-12" style="font-size:12px;">掲載サイト</h6>
          <h6 class="col-lg-1 col-md-1 col-sm-12 col-xs-12 text-center"><span style="font-size:10px; background-color: #d9534f; border-color: #d43f3a; padding:3px; border-radius: 3px; color: #fff;">必須</span></h6>
          <div class="col-md-4 col-xs-12">
-          <select id="cmb_site_id" class="form-control" onchange="change_site()">
-           <option value="">選択してください</option>
-           <% @recruitment_sites.each do |recruitment_site| %>
-             <option value="<%=recruitment_site.id%>" data-type="<%=recruitment_site.scraping_type%>" data-url="<%=recruitment_site.url%>"><%=recruitment_site.site_name%></option>
-           <% end %>
-          </select>
+          <%= select_tag "cmb_site_id", options_for_select(@recruitment_sites.map{|site|[
+            site.site_name,
+            site.id,
+            {'data-type': "#{site.scraping_type}",
+            'data-url': "#{site.url}"}]}),
+            prompt: '選択して下さい。',
+            class: "form-control",
+            onchange: "change_site()" %>
           <h6 id="div_site_id_error" style="font-size:12px; color:red;"></h6>
          </div>
        </div>

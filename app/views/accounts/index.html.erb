@@ -388,7 +388,7 @@
        <div class="row">
         <div class="col-md-12 col-xs-12">
          <div class="pull-left">
-          <a style="color:#000;" id="btn_create_new" href="/setting_account_create" class="btn btn-kujira">新規登録</a>
+           <%= link_to '新規登録', "/accounts/new", class: "btn btn-kujira" %>
          </div>
          <div class="pull-right">
           <a style="display: none;" class="btn btn-rounded btn-danger" onclick="reissue_mass()" id="btn_reissue_all_0">一括再発行</a>
@@ -465,7 +465,7 @@
        <div class="row">
         <div class="col-md-12 col-xs-12">
          <div class="pull-left">
-          <a style="color:#000;" id="btn_create_new" href="/setting_account_create" class="btn btn-kujira">新規登録</a>
+          <%= link_to '新規登録', "/accounts/new", class: "btn btn-kujira" %>
          </div>
          <div class="pull-right">
           <a style="display: none;" class="btn btn-rounded btn-danger" onclick="reissue_mass()" id="btn_reissue_all_1">一括再発行</a>
