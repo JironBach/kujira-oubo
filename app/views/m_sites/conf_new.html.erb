@@ -40,7 +40,7 @@
         var app_site_id = '<%=@recruitment_site.id%>',
           app_site_name = '<%=@recruitment_site.site_name%>',
           app_job_offer_name = '<%=@m_site.name%>',
-          app_user_id = '<%=@m_site.user_id.to_s%>',
+          app_id = '<%=@m_site.user_id.to_s%>',
           app_password = '<%=@m_site.password%>',
           app_url = '<%=@m_site.url%>',
           app_no_scraping_flg = '<%=@m_site.no_scraping_flg.to_s%>' ,
@@ -49,7 +49,7 @@
         document.getElementById("txt_password").value = app_password;
         document.getElementById("span_site_name").innerHTML = app_site_name;
         document.getElementById("span_job_offer_name").innerHTML = app_job_offer_name;
-        document.getElementById("span_id").innerHTML = app_user_id;
+        document.getElementById("span_id").innerHTML = app_id;
         document.getElementById("span_url").innerHTML = app_url;
         document.getElementById("span_no_scraping_txt").innerHTML = app_no_scraping_txt;
 
@@ -70,7 +70,7 @@
       function back(){
         var f = document.createElement("form");
         f.setAttribute('method',"post");
-        f.setAttribute('action',"/setting_site_create");
+        f.setAttribute('action',"/m_sites/new");
         <%
         params.each do |key, value|
         %>
@@ -146,6 +146,7 @@
             <h6 class="col-sm-2 col-xs-12" style="font-size:12px;">ID</h6>
             <div class="col-sm-10 col-xs-12" id="span_id"></div>
            </div>
+           <%= params[:app_id] %>
           </div>
 
           <div id="div_password_box" class="box-body" style="background-color: rgb(238, 120, 0, 0.2)">
@@ -197,12 +198,14 @@
            <a class="btn btn-warning" style="font-size: 12px;" onClick="history.back()">< 戻る</a>
           </div>
           <div class="text-center">
-           <% logger.debug "debug:params_conf=#{params.inspect}" %>
+           <% logger.debug "debug:params_conf_new=#{params.inspect}" %>
            <%= form_tag "/m_sites/#{params[:id]}", method: (params[:id].nil? ? :post : :patch) do %>
+             <%= hidden_field_tag 'recruitment_site_id', @recruitment_site.id %>
+             <%= hidden_field_tag 'app_user_id', params['app_id'] %>
              <%= hidden_field_tag 'app_job_offer_name', params['app_job_offer_name'] %>
-             <%= hidden_field_tag 'app_user_id', params['app_user_id'] %>
+             <%= hidden_field_tag 'app_id', params['app_id'] %>
              <%= hidden_field_tag 'app_password', params['app_password'] %>
-             <%= hidden_field_tag 'app_url', params['url'] %>
+             <%= hidden_field_tag 'app_url', params['app_url'] %>
              <%= hidden_field_tag 'app_no_scraping_flg', params['app_no_scraping_flg'] %>
              <%= submit_tag '登録', class: "btn btn-primary" %>
            <% end %>

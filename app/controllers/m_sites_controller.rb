@@ -34,17 +34,27 @@ class MSitesController < ApplicationController
     @m_site.name = params['app_job_offer_name']
     @m_site.password = params['app_password']
     @m_site.no_scraping_flg = params['app_no_scraping_flg']
-    @m_site.recruitment_site_id = params['cmb_site_id'].nil? ? '' : params['cmb_site_id']
+    @m_site.recruitment_site_id = params['recruitment_site_id'].nil? ? '' : params['recruitment_site_id']
     @m_site.url = params['app_url']
-    @m_site.user_id = params['app_id'].nil? ? '' : params['app_id']
+    @m_site.user_id = params['app_user_id'].nil? ? '' : params['app_user_id']
     @m_site.extra1 = params['extra1'].nil? ? '' : params['extra1']
     @m_site.extra2 = params['extra2'].nil? ? '' : params['extra2']
     @m_site.extra3 = params['extra3'].nil? ? '' : params['extra3'].to_i
     @m_site.enterprise_cnt = params['enterprise_cnt'].nil? ? 0 : params['enterprise_cnt']
     @recruitment_sites = RecruitmentSite.all
+    if (params[:app_password] != params[:app_conf_password]) &&
+       !params[:app_conf_password].nil?
+      @error_msg = 'パスワードが一致しません。'
+    end
 
+    @m_site.valid?
+    logger.debug "debug:errors=#{@m_site.errors.full_messages.inspect}"
+    logger.debug "debug:error_msg=#{@error_msg}?"
+    logger.debug "debug:redirect?"
     respond_to do |format|
-      if @m_site.save
+      if @m_site.valid? && @error_msg.blank?
+        @m_site.save
+        logger.debug "debug:create_redirect"
         format.html { redirect_to '/m_sites', notice: 'Site was successfully created.' }
         format.json { render :show, status: :created, location: @site }
       else
@@ -57,18 +67,13 @@ class MSitesController < ApplicationController
   # PATCH/PUT /sites/1
   # PATCH/PUT /sites/1.json
   def update
-    logger.debug "debug:params=#{params.inspect}"
-    if params[:id].nil?
-      @m_site = MSite.new
-      @m_site.id = MSite.maximum(:id) + 1
-    else
-      @m_site = MSite.where(id: params[:id].to_i).first
-    end
+    logger.debug "debug_update:params=#{params.inspect}"
+    @m_site = MSite.where(id: params[:id].to_i).first
     @m_site.name = params['app_job_offer_name']
     @m_site.password = params['app_password'].nil? ? '' : params['app_password']
     @m_site.no_scraping_flg = params['app_no_scraping_flg']
-    #@m_site.recruitment_site_id = params['app_site_id'].nil? unless params['app_site_id'].blank?
-    @m_site.user_id = params['app_id'].nil? ? '' : params['app_id']
+    #@m_site.recruitment_site_id = params['app_site_id'].nil? ? '' :  params['app_site_id']
+    @m_site.user_id = params['app_user_id'].nil? ? '' : params['app_user_id']
     @m_site.extra1 = params['extra1'].nil? ? '' : params['extra1']
     @m_site.extra2 = params['extra2'].nil? ? '' : params['extra2']
     @m_site.extra3 = params['extra3'].nil? ? '' : params['extra3'].to_i
@@ -119,6 +124,7 @@ class MSitesController < ApplicationController
   end
 
   def conf
+    logger.debug "debug_conf_update:params#{params.inspect}"
     if params[:id].nil?
       @m_site = MSite.new
       @m_site.id = MSite.maximum(:id) + 1
@@ -129,7 +135,7 @@ class MSitesController < ApplicationController
     @m_site.password = params['app_password'].nil? ? '' : params['app_password']
     @m_site.no_scraping_flg = params['app_no_scraping_flg']
     #@m_site.recruitment_site_id = params['app_site_id'].nil? unless params['app_site_id'].blank?
-    @m_site.user_id = params['app_id'].nil? ? '' : params['app_id']
+    @m_site.user_id = params['app_user_id'].nil? ? '' : params['app_user_id']
     @m_site.extra1 = params['extra1'].nil? ? '' : params['extra1']
     @m_site.extra2 = params['extra2'].nil? ? '' : params['extra2']
     @m_site.extra3 = params['extra3'].nil? ? '' : params['extra3'].to_i
@@ -175,7 +181,8 @@ class MSitesController < ApplicationController
     @m_site.enterprise_cnt = params['enterprise_cnt'].nil? ? 0 : params['enterprise_cnt']
     @m_site.no_scraping_flg = params['cmb_no_scraping_flg'].to_i
 
-    @recruitment_site = RecruitmentSite.where(id: @m_site.recruitment_site_id).first
+    @recruitment_site = RecruitmentSite.where(id: params['app_site_id'].to_i).first
+
 
     if params[:app_password].blank?
       @error_msg = 'パスワードは必須です。'
@@ -185,7 +192,7 @@ class MSitesController < ApplicationController
       @error_msg = nil
     end
     if @m_site.valid? && @error_msg.blank?
-      render 'conf'
+      render 'conf_new'
     end
   end
 

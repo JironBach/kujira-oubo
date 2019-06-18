@@ -71,7 +71,7 @@
               <h6 class="col-lg-2 col-md-3 col-sm-12 col-xs-12" style="font-size:12px;">ID</h6>
               <h6 class="col-lg-1 col-md-1 col-sm-12 col-xs-12 text-center"><span style="font-size:10px; background-color: #d9534f; border-color: #d43f3a; padding:3px; border-radius: 3px; color: #fff;">必須</span></h6>
               <div class="col-md-6 col-xs-12">
-               <%= text_field_tag "app_site_id", @m_site.user_id, class: "form-control", maxlength: "100" %>
+               <%= text_field_tag "app_user_id", @m_site.user_id, class: "form-control", maxlength: "100" %>
                <h6 id="div_id_error" style="font-size:12px; color:red;"><%=@m_site.errors.messages[:user_id].first%></h6>
               </div>
               <div class="col-md-2 col-xs-12">

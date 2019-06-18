@@ -191,6 +191,7 @@
             $("#div_conf_password_error").html("パスワード（確認用）は必須です。");
             status = 1;
           } else {
+            //alert(txt_conf_password);
             if (txt_conf_password != txt_password) {
               $("#div_conf_password_error").html("確認用のパスワードが間違っています。");
               status = 1;
