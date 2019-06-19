@@ -114,7 +114,7 @@
         var inputMode = setParam("mode",mode);
         var f = document.createElement("form");
         f.setAttribute('method',"post");
-        f.setAttribute('action',"/setting_site/"+num);
+        f.setAttribute('action',"/m_sites/search");
         f.appendChild(inputOnePageLimit);
         f.appendChild(inputMode);
         if(mode == "search"){
@@ -155,7 +155,7 @@
         var inputPageNumStr = setParam('pageNumStr','<%=pageNumStr%>');
         var f = document.createElement("form");
                 f.setAttribute('method',"post");
-                f.setAttribute('action',"/setting_site_delete");
+                f.setAttribute('action',"/m_sites/batch_del");
         f.appendChild(inputDeleteArr);
                 f.appendChild(inputPageNumStr);
         var bodyElement = document.body ;
@@ -405,7 +405,7 @@
           <a style="color:#000;" id="btn_create_new" href="/m_sites/new" class="btn btn-kujira">新規登録</a>
          </div>
          <div class="pull-right">
-          <a class="btn btn-rounded btn-danger" onclick="delete_all_line()" id="btn_delete_all_0">一括削除</a>
+          <a class="btn btn-rounded btn-danger" onclick="delete_all_line()" id="batch_del[]">一括削除</a>
          </div>
         </div>
        </div>

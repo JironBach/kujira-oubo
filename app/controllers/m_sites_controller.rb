@@ -107,7 +107,7 @@ class MSitesController < ApplicationController
 
   def search
     @recruitment_sites = RecruitmentSite.where(del_flg: 0).all
-    @m_sites = MSite
+    @m_site = MSite
     if !params[:searchSite].blank?
       @m_site = @m_site.where(recruitment_site_id: params[:searchSite]).where(del_flg: 0)
     end
@@ -115,9 +115,9 @@ class MSitesController < ApplicationController
       @m_site = @m_site.where("name LIKE ?", "%#{params[:searchTitle]}%").where(del_flg: 0)
     end
     if params[:searchSite].blank? && params[:searchTitle].blank?
-      @m_siteArray = MSite.where(del_flg: 0).all
+      @m_sites = MSite.where(del_flg: 0).all
     else
-      @m_siteArray = @m_site.all
+      @m_sites = @m_site.where(del_flg: 0).all
     end
 
     render 'index'
@@ -193,6 +193,22 @@ class MSitesController < ApplicationController
     end
     if @m_site.valid? && @error_msg.blank?
       render 'conf_new'
+    end
+  end
+
+  def batch_del
+    logger.debug "debug:params_batch=#{params.inspect}"
+    batch_del = params['delete_id_arr'].split(",")
+    batch_del.each do |i|
+      next if i.to_i == 0
+      @m_site = MSite.where(id: i.to_i).first
+      @m_site.del_flg = 1
+      @m_site.save
+    end
+
+    respond_to do |format|
+      format.html { redirect_to m_sites_url, notice: 'M Site was successfully destroyed.' }
+      format.json { head :no_content }
     end
   end
 

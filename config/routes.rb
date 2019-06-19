@@ -22,6 +22,8 @@ Rails.application.routes.draw do
   resources :m_sites
   post '/m_sites/conf', to: 'm_sites#conf_new'
   post '/m_sites/:id/conf', to: 'm_sites#conf'
+  post '/m_sites/search', to: 'm_sites#search'
+  post '/m_sites/batch_del', to: 'm_sites#batch_del'
   resources :accounts
   post '/accounts/conf', to: 'accounts#conf_new'
   post '/accounts/:id/conf', to: 'accounts#conf'
